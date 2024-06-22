@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { LoginUserDto } from './dto/login-user.dto';
-import { JwtService } from '@nestjs/jwt';
+import { JsonWebTokenError, JwtService, TokenExpiredError } from '@nestjs/jwt';
 
 @Injectable()
 export class UsersService {
@@ -20,7 +20,7 @@ export class UsersService {
     const isExistUser = await this.usersRepository.findOne({ where: { email } });
 
     if (isExistUser) {
-      throw new HttpException('이미 존재하는 이메일입니다.', HttpStatus.BAD_REQUEST);
+      throw new HttpException('이미 존재하는 이메일', HttpStatus.BAD_REQUEST);
     }
 
     return await this.usersRepository.save(createUserDto);
@@ -49,10 +49,64 @@ export class UsersService {
     };
   }
 
-  async requestReset(email: string) {
-    const user = await this.usersRepository.findOne({ where: { email } });
+  async requestReset(req: any) {
+    const token = await req.cookies['jwt'];
 
-    
+    if (!token) {
+      throw new HttpException('토큰 없음', HttpStatus.UNAUTHORIZED);
+    }
+
+    try {
+      const payload = await this.jwtService.verifyAsync(token, {
+        secret: 'Secret',
+      });
+
+      console.log(payload);
+
+      return {
+        message: '비밀번호 초기화 요청 수락',
+      };
+    } catch (error) {
+      if (error instanceof JsonWebTokenError) {
+        return new HttpException('로그인 세션 만료', HttpStatus.UNAUTHORIZED);
+      }
+      if (error instanceof TokenExpiredError) {
+        return new HttpException('잘못된 토큰', HttpStatus.BAD_REQUEST);
+      }
+
+      return error;
+    }
+  }
+
+  async reset(password: string, req: any) {
+    const token = await req.cookies['jwt'];
+
+    if (!token) {
+      throw new HttpException('토큰 없음', HttpStatus.UNAUTHORIZED);
+    }
+
+    try {
+      const payload = await this.jwtService.verifyAsync(token, {
+        secret: 'Secret',
+      });
+
+      console.log(payload);
+
+      const { email } = payload;
+
+      const user = await this.usersRepository.findOne({ where: { email }})
+      user.password = password;
+      return await this.usersRepository.save(user);
+    } catch (error) {
+      if (error instanceof JsonWebTokenError) {
+        return new HttpException('로그인 세션 만료', HttpStatus.UNAUTHORIZED);
+      }
+      if (error instanceof TokenExpiredError) {
+        return new HttpException('잘못된 토큰', HttpStatus.BAD_REQUEST);
+      }
+
+      return error;
+    }
   }
 
   // async findAll() {

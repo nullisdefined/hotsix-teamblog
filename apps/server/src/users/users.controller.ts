@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, HttpException, ConflictException, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, HttpException, ConflictException, Res, Req, ExecutionContext, Put } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -6,7 +6,7 @@ import { LoginUserDto } from './dto/login-user.dto';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
+  constructor(private readonly usersService: UsersService) {}
 
   @Post('join')
   async join(@Body() createUserDto: CreateUserDto) {
@@ -31,6 +31,16 @@ export class UsersController {
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.UNAUTHORIZED);
     }
+  }
+
+  @Post('reset')
+  async passwordResetRequest(@Req() req: Request) {
+    return await this.usersService.requestReset(req);
+  }
+
+  @Put('reset')
+  async passwordReset(@Body() password: string, @Req() req: Request) {
+    return await this.usersService.reset(password, req);
   }
 
   // @Get(':id')
