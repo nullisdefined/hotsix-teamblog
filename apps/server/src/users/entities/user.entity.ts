@@ -1,31 +1,32 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
 
-@Entity()
+@Entity('user')
+@Unique(['email'])
 export class User {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
   userId: number;
 
-  @Column()
+  @Column({ type: 'varchar', length: 50, nullable: false })
   email: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 255, nullable: false })
   password: string;
 
-  @Column()
-  name: string;
+  @Column({ type: 'varchar', length: 10, nullable: false })
+  userName: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 15, nullable: false })
   nickname: string;
 
-  @Column()
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 255, nullable: true })
   profileImage: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 255, nullable: true })
   gitUrl: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 50, nullable: true })
   introduce: string;
 }
