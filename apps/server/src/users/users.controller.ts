@@ -9,15 +9,15 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post('join')
-  async join(@Body() createUserDto: CreateUserDto) {
+  async join(@Body() createUserDto: CreateUserDto): Promise<{ message: string } | HttpException> {
     try {
-      await this.usersService.createUser(createUserDto);
+      return await this.usersService.createUser(createUserDto);
     } catch (error) {
       if (error instanceof ConflictException) {
-        throw new HttpException(error.message, HttpStatus.CONFLICT);
+        return new HttpException(error.message, HttpStatus.CONFLICT);
       }
 
-      throw new HttpException('회원 가입에 실패하였습니다.', HttpStatus.INTERNAL_SERVER_ERROR);
+      return new HttpException('회원 가입에 실패하였습니다.', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -25,21 +25,21 @@ export class UsersController {
   async login(
     @Body() loginUserDto: LoginUserDto,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<Record<string, any>> {
+  ): Promise<Record<string, any> | HttpException> {
     try {
       return await this.usersService.loginUser(loginUserDto, res);
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.UNAUTHORIZED);
+      return new HttpException(error.message, HttpStatus.UNAUTHORIZED);
     }
   }
 
   @Post('reset')
-  async passwordResetRequest(@Req() req: Request) {
+  async passwordResetRequest(@Req() req: Request): Promise<{ message: string } | HttpException> {
     return await this.usersService.requestReset(req);
   }
 
   @Put('reset')
-  async passwordReset(@Body() password: string, @Req() req: Request) {
+  async passwordReset(@Body() password: string, @Req() req: Request): Promise<{ message: string } | HttpException> {
     return await this.usersService.reset(password, req);
   }
 
