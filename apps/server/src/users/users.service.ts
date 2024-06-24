@@ -17,7 +17,7 @@ export class UsersService {
 
   @InjectRepository(User) private usersRepository: Repository<User>
 
-  async join(joinDto: JoinDto): Promise<User> {
+  async join(joinDto: JoinDto) {
     try {
       const saltRounds = 12;
       const hashedPassword = await bcrypt.hash(joinDto.password, saltRounds);
@@ -25,7 +25,7 @@ export class UsersService {
       return await this.usersRepository.save(newUser);
     } catch(error) {
       console.error(error);
-      throw new Error(error);
+      return new Error(error);
     }
   }
 
@@ -68,7 +68,10 @@ export class UsersService {
       const payload = await this.verifyToken(req);
 
       console.log(payload);
-
+      /**
+       * ! 버그 존재함
+       * ! HttpException: 로그인 세션 만료 발생해도 비밀번호 초기화 요청 수락 메시지 전달
+       */
       return {
         message: '비밀번호 초기화 요청 수락',
       };
@@ -87,7 +90,9 @@ export class UsersService {
 
       const user = await this.usersRepository.findOne({ where: { email } });
       
-      user.password = password;
+      const saltRounds = 12;
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
+      user.password = hashedPassword;
 
       await this.usersRepository.save(user);
       return {
@@ -99,7 +104,7 @@ export class UsersService {
   }
 
   async verifyToken(req: any): Promise<any> {
-    const token = await req.cookies['jwt'];
+    const token = await req.cookies['access_token'];
 
     if (!token) {
       throw new HttpException('토큰 없음', HttpStatus.UNAUTHORIZED);
