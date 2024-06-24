@@ -1,4 +1,4 @@
-import { HttpException, Injectable, Res, UnauthorizedException } from '@nestjs/common';
+import { HttpException, Injectable, Res, UnauthorizedException, HttpStatus } from '@nestjs/common';
 import { JoinDto } from './dto/join.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -6,8 +6,8 @@ import { User } from '../entities/user.entity';
 import { LoginDto } from './dto/login.dto';
 import { ResetDto } from './dto/reset.dto';
 import * as bcrypt from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
+import { JsonWebTokenError, JwtService, TokenExpiredError } from '@nestjs/jwt';
 
 @Injectable()
 export class UsersService {
@@ -62,11 +62,63 @@ export class UsersService {
     return res.send({ message: '로그인 성공' });
   }
 
-  async resetPost(resetDto: ResetDto) {
-    // 비밀번호 초기화 로직
+
+  async requestReset(req: any): Promise<{ message: string } | HttpException> {
+    try {
+      const payload = await this.verifyToken(req);
+
+      console.log(payload);
+
+      return {
+        message: '비밀번호 초기화 요청 수락',
+      };
+    } catch (error) {
+      return error;
+    }
   }
 
-  async resetPut() {
+  async reset(password: string, req: any): Promise<{ message: string } | HttpException> {
+    try {
+      const payload = await this.verifyToken(req);
 
+      console.log(payload);
+
+      const { email } = payload;
+
+      const user = await this.usersRepository.findOne({ where: { email } });
+      
+      user.password = password;
+
+      await this.usersRepository.save(user);
+      return {
+        message: '비밀번호 변경 완료',
+      };
+    } catch (error) {
+      return error;
+    }
   }
+
+  async verifyToken(req: any): Promise<any> {
+    const token = await req.cookies['jwt'];
+
+    if (!token) {
+      throw new HttpException('토큰 없음', HttpStatus.UNAUTHORIZED);
+    }
+
+    try {
+      return await this.jwtService.verifyAsync(token, {
+        secret: 'Secret',
+      });
+    } catch (error) {
+      if (error instanceof JsonWebTokenError) {
+        return new HttpException('로그인 세션 만료', HttpStatus.UNAUTHORIZED);
+      }
+      if (error instanceof TokenExpiredError) {
+        return new HttpException('잘못된 토큰', HttpStatus.BAD_REQUEST);
+      }
+
+      return new HttpException(error.name, HttpStatus.BAD_REQUEST);
+    }
+  }
+
 }

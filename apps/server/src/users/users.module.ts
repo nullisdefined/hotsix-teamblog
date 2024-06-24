@@ -9,8 +9,9 @@ import { JwtModule } from '@nestjs/jwt';
   imports: [
     TypeOrmModule.forFeature([User]),
     JwtModule.register({
-      secret: 'yourSecretKey',
-      signOptions: { expiresIn: '1h' }, // 토큰 만료 시간
+      global: true,
+      secret: 'Secret', // 오픈되어선 안되는 정보 -> 따로 빼야됨
+      signOptions: { expiresIn: '5m' },
     }),
   ],
   controllers: [UsersController],

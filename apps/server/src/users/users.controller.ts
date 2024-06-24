@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put, Req, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put, Req, Res, HttpException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JoinDto } from './dto/join.dto';
 import { LoginDto } from './dto/login.dto';
@@ -18,20 +18,20 @@ export class UsersController {
 
   @Delete()
   delete() {
-
+    // 회원탈퇴
   }
   @Post('/login')
   async login(@Res() res: Response, @Body() loginDto: LoginDto) {
     return await this.usersService.login(loginDto, res);
   }
 
-  @Post('/reset')
-  resetPost(@Body() resetDto: ResetDto) {
-    this.usersService.resetPost(resetDto);
+  @Post('reset')
+  async passwordResetRequest(@Req() req: Request): Promise<{ message: string } | HttpException> {
+    return await this.usersService.requestReset(req);
   }
 
-  @Put('/reset')
-  resetPut() {
-    this.usersService.resetPut();
+  @Put('reset')
+  async passwordReset(@Body() password: string, @Req() req: Request): Promise<{ message: string } | HttpException> {
+    return await this.usersService.reset(password, req);
   }
 }
