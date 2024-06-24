@@ -1,34 +1,37 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put, Req, Res } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { JoinDto } from './dto/join.dto';
+import { LoginDto } from './dto/login.dto';
+import { ResetDto } from './dto/reset.dto';
+import { Response } from 'express';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+  ) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  join(@Body() joinDto: JoinDto) {
+    return this.usersService.join(joinDto);
   }
 
-  @Get()
-  findAll() {
-    return this.usersService.findAll();
+  @Delete()
+  delete() {
+
+  }
+  @Post('/login')
+  async login(@Res() res: Response, @Body() loginDto: LoginDto) {
+    return await this.usersService.login(loginDto, res);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  @Post('/reset')
+  resetPost(@Body() resetDto: ResetDto) {
+    this.usersService.resetPost(resetDto);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  @Put('/reset')
+  resetPut() {
+    this.usersService.resetPut();
   }
 }
