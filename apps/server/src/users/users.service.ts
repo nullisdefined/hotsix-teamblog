@@ -11,9 +11,7 @@ import { JsonWebTokenError, JwtService, TokenExpiredError } from '@nestjs/jwt';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    private readonly jwtService: JwtService,
-  ) {}
+  constructor(private readonly jwtService: JwtService) {}
 
   @InjectRepository(User) private usersRepository: Repository<User>
 
@@ -21,9 +19,9 @@ export class UsersService {
     try {
       const saltRounds = 12;
       const hashedPassword = await bcrypt.hash(joinDto.password, saltRounds);
-      const newUser = this.usersRepository.create({ ...joinDto, password: hashedPassword });    
+      const newUser = this.usersRepository.create({ ...joinDto, password: hashedPassword });
       return await this.usersRepository.save(newUser);
-    } catch(error) {
+    } catch (error) {
       console.error(error);
       throw new Error(error);
     }
@@ -48,7 +46,7 @@ export class UsersService {
 
     // JWT 발급
     const payload = { id: user.userId, email: user.email };
-    const accessToken = this.getAccessToken(payload);
+    const accessToken = await this.getAccessToken(payload);
 
     // return { accessToken, message: '로그인 성공' };
 

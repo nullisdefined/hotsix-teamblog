@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn, OneToMany, JoinColumn } from 'typeorm';
 import { User } from './user.entity';
 import { Photo } from './photo.entity';
 import { Comment } from './comment.entity';
@@ -34,6 +34,7 @@ export class Article {
   updatedAt: Date;
 
   @ManyToOne(() => User, user => user.articles)
+  @JoinColumn({ name: 'userId' })
   user: User;
 
   @OneToMany(() => Photo, photo => photo.article)
