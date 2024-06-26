@@ -1,4 +1,4 @@
-export class CreateArticleDto {
+export class ArticleDto {
   thumb?: string;
   title: string;
   description?: string;

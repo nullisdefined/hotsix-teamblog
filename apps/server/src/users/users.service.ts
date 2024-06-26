@@ -13,7 +13,7 @@ import { JsonWebTokenError, JwtService, TokenExpiredError } from '@nestjs/jwt';
 export class UsersService {
   constructor(private readonly jwtService: JwtService) {}
 
-  @InjectRepository(User) private usersRepository: Repository<User>
+  @InjectRepository(User) private usersRepository: Repository<User>;
 
   async join(joinDto: JoinDto): Promise<User> {
     try {
@@ -60,7 +60,6 @@ export class UsersService {
     return res.send({ message: '로그인 성공' });
   }
 
-
   async requestReset(req: any): Promise<{ message: string } | HttpException> {
     try {
       const payload = await this.verifyToken(req);
@@ -84,7 +83,7 @@ export class UsersService {
       const { email } = payload;
 
       const user = await this.usersRepository.findOne({ where: { email } });
-      
+
       user.password = password;
 
       await this.usersRepository.save(user);
@@ -118,5 +117,4 @@ export class UsersService {
       return new HttpException(error.name, HttpStatus.BAD_REQUEST);
     }
   }
-
 }
