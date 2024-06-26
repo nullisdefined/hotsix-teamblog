@@ -1,39 +1,84 @@
 import { Injectable } from '@nestjs/common';
-import { ArticleDto } from './dto/create.dto';
+import { ArticleDto } from './dto/article.dto';
 import { Article } from 'src/entities/article.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { Like } from 'src/entities/like.entity';
 import { Comment } from 'src/entities/comment.entity';
-import { Photo } from 'src/entities/photo.entity';
 
 @Injectable()
 export class ArticlesService {
-  constructor(private readonly jwtService: JwtService) { }
+  constructor(private readonly jwtService: JwtService) {}
 
   @InjectRepository(Article) private articleRepository: Repository<Article>;
   @InjectRepository(Comment) private commentRepository: Repository<Comment>;
-  // @InjectRepository(Like) private likeRepository: Repository<Like>;
-  // @InjectRepository(Photo) private photoRepository: Repository<Photo>;
+  @InjectRepository(Like) private likeRepository: Repository<Like>;
 
   async getDetail(articleId: number) {
-    const article = await this.articleRepository.findOne({ where: { articleId: articleId } });
+    const [article] = await this.articleRepository.find({
+      select: {
+        title: true,
+        description: true,
+        content: true,
+        createdAt: true,
+        status: true,
+        user: {
+          nickname: true,
+        },
+        photos: {
+          fileName: true,
+        },
+      },
+      relations: {
+        user: true,
+        photos: true,
+      },
+      where: {
+        articleId: articleId,
+      },
+    });
 
     if (!article) {
       throw new Error('해당 게시글이 없습니다.');
     }
 
-    const comments: Comment[] = await this.commentRepository.find({ where: { articleId: articleId } });
-    // const likes = await this.likeRepository.find({ where: { articleId: articleId } });
+    const likes = await this.likeRepository.count({ where: { articleId: articleId } });
+    const comments = await this.commentRepository.find({
+      select: {
+        comment: true,
+        createdAt: true,
+        user: {
+          nickname: true,
+        },
+      },
+      relations: {
+        user: true,
+      },
+      where: { articleId: articleId },
+    });
 
-    console.log(comments);
+    const typedComments = comments.map((value) => ({
+      nickname: value.user.nickname,
+      comment: value.comment,
+      createdAt: value.createdAt,
+    }));
 
-    // comments.forEach((value, index)=>{
-    //   console.log(value.);
-    // })
+    const typedPhotos: string[] = [];
+    article.photos.forEach((value) => {
+      typedPhotos.push(value.fileName);
+    });
 
-    return;
+    return {
+      title: article.title,
+      nickname: article.user.nickname,
+      profileImg: typedPhotos,
+      content: article.content,
+      createdAt: article.createdAt,
+      comments: typedComments,
+      likes: likes,
+      status: article.status,
+    };
   }
 
   async delete(articleId: number, req: any) {

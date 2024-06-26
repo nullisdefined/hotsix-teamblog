@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Req, HttpException, HttpStatus } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
-import { ArticleDto } from './dto/create.dto';
+import { ArticleDto } from './dto/article.dto';
 
 @Controller('articles')
 export class ArticlesController {
