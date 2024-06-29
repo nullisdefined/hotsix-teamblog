@@ -12,7 +12,7 @@ export class Photo {
   @Column({ type: 'int', nullable: false })
   articleId: number;
 
-  @ManyToOne(() => Article, article => article.photos)
+  @ManyToOne(() => Article, article => article.photos, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   @JoinColumn({ name: 'articleId' })
   article: Article;
 }

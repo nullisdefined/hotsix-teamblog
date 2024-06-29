@@ -15,10 +15,10 @@ export class ArticlesController {
     }
   }
 
-  @Delete(':id')
-  async deleteArticles(@Param('id') id: string, @Req() req: Request) {
+  @Post()
+  async createArticles(@Body() articleDto: ArticleDto, @Req() req: Request) {
     try {
-      return await this.articlesService.delete(+id, req);
+      return await this.articlesService.create(articleDto, req);
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
@@ -33,10 +33,10 @@ export class ArticlesController {
     }
   }
 
-  @Post()
-  async createArticles(@Body() articleDto: ArticleDto, @Req() req: Request) {
+  @Delete(':id')
+  async deleteArticles(@Param('id') id: string, @Req() req: Request) {
     try {
-      return await this.articlesService.create(articleDto, req);
+      return await this.articlesService.delete(+id, req);
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
