@@ -28,7 +28,7 @@ export class ArticlesService {
         createdAt: true,
         status: true,
         user: {
-          nickname: true,
+          nickname: true, // user.nickname
         },
         photos: {
           fileName: true,
@@ -62,6 +62,8 @@ export class ArticlesService {
       },
       where: { articleId: articleId },
     });
+
+    // console.log(comments);
 
     // 댓글데이터 response 형식으로 변환
     const typedComments = comments.map((value) => ({

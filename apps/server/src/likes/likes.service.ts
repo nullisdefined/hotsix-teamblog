@@ -18,7 +18,7 @@ export class LikesService {
     });
 
     // DB에 좋아요 존재 여부 확인
-    const typedLike = this.likeRepository.create({ userId: id, articleId: articleId });
+    const typedLike = this.likeRepository.create({ userId: id, articleId: articleId }); // where userId= id and articleId = articleId
     const isLike = await this.likeRepository.findOne({ where: typedLike });
     if (isLike) {
       return {
@@ -30,7 +30,7 @@ export class LikesService {
     await this.likeRepository.save(typedLike);
 
     return {
-      message: '이미 좋아요 존재',
+      message: '좋아요 추가 완료',
     };
   }
 
