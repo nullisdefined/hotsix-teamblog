@@ -16,6 +16,10 @@ export class ArticlesService {
   @InjectRepository(Like) private likeRepository: Repository<Like>;
 
   async getDetail(articleId: number) {
+
+    // 로그인 확인
+
+    // article, user.nickname, photos정보 가져오기
     const [article] = await this.articleRepository.find({
       select: {
         title: true,
@@ -43,6 +47,7 @@ export class ArticlesService {
       throw new Error('해당 게시글이 없습니다.');
     }
 
+    //좋아요 수와 댓글정보 가져오기
     const likes = await this.likeRepository.count({ where: { articleId: articleId } });
     const comments = await this.commentRepository.find({
       select: {
@@ -58,12 +63,14 @@ export class ArticlesService {
       where: { articleId: articleId },
     });
 
+    // 댓글데이터 response 형식으로 변환
     const typedComments = comments.map((value) => ({
       nickname: value.user.nickname,
       comment: value.comment,
       createdAt: value.createdAt,
     }));
 
+    // photos정보 response 형식으로 변환
     const typedPhotos: string[] = [];
     article.photos.forEach((value) => {
       typedPhotos.push(value.fileName);
@@ -82,14 +89,15 @@ export class ArticlesService {
   }
 
   async create(articleDto: ArticleDto, req: any) {
+    // 로그인여부 확인 + jwt토큰 확인 + userId 확인
     const token = await req.cookies['access_token'];
-
     const { id } = await this.jwtService.verifyAsync(token, {
       secret: 'Secret',
     });
 
-    const result = this.articleRepository.create({ ...articleDto, userId: id });
-    await this.articleRepository.save(result);
+    // DB에 insert
+    const typedArticle = this.articleRepository.create({ ...articleDto, userId: id });
+    await this.articleRepository.save(typedArticle);
 
     return {
       message: '게시글 생성 완료',
@@ -97,25 +105,25 @@ export class ArticlesService {
   }
 
   async update(articleId: number, articleDto: ArticleDto, req: any) {
+    // 개시글 존재 여부 확인
     let article = await this.articleRepository.findOne({ where: { articleId: articleId } });
-
     if (!article) {
       throw new Error('해당 게시글이 없습니다.');
     }
 
+    // 로그인여부 확인 + jwt토큰 확인 + userId 확인
     const token = await req.cookies['access_token'];
-
     const { id } = await this.jwtService.verifyAsync(token, {
       secret: 'Secret',
     });
 
+    // 사용자가 작성한 개시글인지 확인
     if (article.userId !== id) {
       throw new Error('사용자의 게시글이 아닙니다.');
     }
 
-    // article을 수정된 값으로 변경
+    // DB에 update
     article = { ...article, ...articleDto };
-
     await this.articleRepository.save(article);
 
     return {
@@ -124,22 +132,24 @@ export class ArticlesService {
   }
 
   async delete(articleId: number, req: any) {
+    // 개시글 존재 여부 확인
     const article = await this.articleRepository.findOne({ where: { articleId: articleId } });
-
     if (!article) {
       throw new Error('해당 게시글이 없습니다.');
     }
 
+    // 로그인여부 확인 + jwt토큰 확인 + userId 확인
     const token = await req.cookies['access_token'];
-
     const { id } = await this.jwtService.verifyAsync(token, {
       secret: 'Secret',
     });
 
+    // 사용자가 작성한 개시글인지 확인
     if (article.userId !== id) {
       throw new Error('사용자의 게시글이 아닙니다.');
     }
 
+    // DB에 delete
     await this.articleRepository.remove(article);
 
     return {

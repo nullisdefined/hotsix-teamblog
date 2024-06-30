@@ -39,8 +39,11 @@ export class UsersService {
     }
 
     // 비밀번호 확인
-    const isPasswordValid = await bcrypt.compare(loginDto.password, user.password);
-    if (!isPasswordValid) {
+    // const isPasswordValid = await bcrypt.compare(loginDto.password, user.password);
+    // if (!isPasswordValid) {
+    //   throw new UnauthorizedException('잘못된 비밀번호입니다.');
+    // }
+    if (loginDto.password !== user.password) {
       throw new UnauthorizedException('잘못된 비밀번호입니다.');
     }
 

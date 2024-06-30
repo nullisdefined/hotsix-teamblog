@@ -11,44 +11,48 @@ export class LikesService {
   @InjectRepository(Like) private likeRepository: Repository<Like>;
 
   async add(articleId: number, req: any) {
+    // 로그인여부 확인 + jwt토큰 확인 + userId 확인
     const token = await req.cookies['access_token'];
-
     const { id } = await this.jwtService.verifyAsync(token, {
       secret: 'Secret',
     });
 
-    const newLike = this.likeRepository.create({ userId: id, articleId: articleId });
-    const isLike = await this.likeRepository.findOne({ where: newLike });
-
+    // DB에 좋아요 존재 여부 확인
+    const typedLike = this.likeRepository.create({ userId: id, articleId: articleId });
+    const isLike = await this.likeRepository.findOne({ where: typedLike });
     if (isLike) {
       return {
-        message: '추가할 좋아요 없음',
+        message: '좋아요 추가 중복',
       };
     }
 
-    await this.likeRepository.save(newLike);
+    // DB에 insert
+    await this.likeRepository.save(typedLike);
+
     return {
       message: '이미 좋아요 존재',
     };
   }
 
   async delete(articleId: number, req: any) {
+    // 로그인여부 확인 + jwt토큰 확인 + userId 확인
     const token = await req.cookies['access_token'];
-
     const { id } = await this.jwtService.verifyAsync(token, {
       secret: 'Secret',
     });
 
-    const newLike = this.likeRepository.create({ userId: id, articleId: articleId });
-    const isLike = await this.likeRepository.findOne({ where: newLike });
-
+    // DB에 좋아요 존재 여부 확인
+    const typedLike = this.likeRepository.create({ userId: id, articleId: articleId });
+    const isLike = await this.likeRepository.findOne({ where: typedLike });
     if (!isLike) {
       return {
         message: '삭제할 좋아요가 없음',
       };
     }
 
-    await this.likeRepository.delete(newLike);
+    // DB에 delete
+    await this.likeRepository.delete(typedLike);
+
     return {
       message: '좋아요 삭제 완료',
     };
