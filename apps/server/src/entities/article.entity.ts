@@ -33,7 +33,7 @@ export class Article {
   @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
 
-  @ManyToOne(() => User, user => user.articles)
+  @ManyToOne(() => User, user => user.articles, { onDelete: 'CASCADE' })
   user: User;
 
   @OneToMany(() => Photo, photo => photo.article)
