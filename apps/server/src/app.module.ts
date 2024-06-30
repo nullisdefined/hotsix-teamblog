@@ -6,9 +6,9 @@ import { join } from 'path';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeORMConfig } from './configs/typeorm.config';
 import { UsersModule } from './users/users.module';
-import { ArticlesModule } from './articles/articles.module';
-import { LikesModule } from './likes/likes.module';
-import { CommentsModule } from './comments/comments.module';
+import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
+import { MailerModule } from '@nestjs-modules/mailer';
 
 @Module({
   imports: [
@@ -18,10 +18,27 @@ import { CommentsModule } from './comments/comments.module';
     }),
     // typrorm
     TypeOrmModule.forRoot(typeORMConfig),
+    // config
+    ConfigModule.forRoot({
+      envFilePath: `./src/configs/env/.${process.env.NODE_ENV || 'development'}.env`,
+      isGlobal: true, // 다른 모듈에서도 전역으로 동작
+    }),
+    MailerModule.forRoot({
+      transport: {
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false, // 465를 사용할 경우 true로 설정
+        auth: {
+          user: process.env.FROM_EMAIL_USER,
+          pass: process.env.FROM_EMAIL_PASS,
+        },
+      },
+      defaults: {
+        from: '"Hotsix-Blog" <hotsixblog@gmail.com>',
+      },
+    }),
     UsersModule,
-    ArticlesModule,
-    LikesModule,
-    CommentsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
