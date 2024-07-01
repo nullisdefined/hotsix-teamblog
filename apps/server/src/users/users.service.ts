@@ -9,7 +9,7 @@ import { CredentialDto } from 'src/auth/dto/credential.dto';
 
 @Injectable()
 export class UsersService {
-  @InjectRepository(User) private usersRepository: Repository<User>
+  @InjectRepository(User) private usersRepository: Repository<User>;
 
   async findByFields(options: FindOneOptions<User>): Promise<User | undefined> {
     return await this.usersRepository.findOne(options);
@@ -22,15 +22,13 @@ export class UsersService {
 
   async transformPassword(user: CredentialDto): Promise<void> {
     const saltRounds = 12;
-    user.password = await bcrypt.hash(
-      user.password, saltRounds,
-    );
+    user.password = await bcrypt.hash(user.password, saltRounds);
     return Promise.resolve();
   }
 
   async deleteUser(userId: number): Promise<void> {
-    let user = await this.findByFields({
-      where: { userId }
+    const user = await this.findByFields({
+      where: { userId },
     });
     if (!user) {
       throw new BadRequestException('존재하지 않는 사용자입니다.');

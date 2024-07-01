@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { CommentDto } from './dto/comment.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { Article } from 'src/entities/article.entity';
 import { Comment } from 'src/entities/comment.entity';
+import { ArticleDetailCommentType } from 'src/types/type';
 
 @Injectable()
 export class CommentsService {
@@ -86,5 +87,17 @@ export class CommentsService {
     return {
       message: '댓글 삭제 완료',
     };
+  }
+
+  async findByFields(options: FindOneOptions<Comment>): Promise<Comment[] | undefined> {
+    return await this.commentRepository.find(options);
+  }
+
+  changeToResponseType(comments: Comment[]): ArticleDetailCommentType[] {
+    return comments.map((value) => ({
+      nickname: value.user.nickname,
+      comment: value.comment,
+      createdAt: value.createdAt,
+    }));
   }
 }

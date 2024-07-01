@@ -13,44 +13,44 @@ import { RequestPasswordResetDto } from './dto/requestPasswordReset.dto';
 @Injectable()
 export class AuthService {
   private verificationCodes = new Map<string, string>();
-  
+
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
     private mailerService: MailerService,
-  ){}
+  ) {}
 
   async signup(newUser: UserDto): Promise<UserDto> {
     let user: UserDto = await this.usersService.findByFields({
-      where: { email: newUser.email }
-    })
-    if(user) {
-      throw new HttpException("이메일 또는 닉네임이 중복되었습니다.", HttpStatus.BAD_REQUEST);
+      where: { email: newUser.email },
+    });
+    if (user) {
+      throw new HttpException('이메일 또는 닉네임이 중복되었습니다.', HttpStatus.BAD_REQUEST);
     }
     return await this.usersService.save(newUser);
   }
 
-  async signin(credentialDto: CredentialDto): Promise<{accessToken: string} | undefined> {
+  async signin(credentialDto: CredentialDto): Promise<{ accessToken: string } | undefined> {
     let user: User = await this.usersService.findByFields({
-      where: { email: credentialDto.email }
+      where: { email: credentialDto.email },
     });
     const isValidatePassword = await bcrypt.compare(credentialDto.password, user.password);
-    if(!user || !isValidatePassword) {
+    if (!user || !isValidatePassword) {
       throw new UnauthorizedException();
     }
     const payload: Payload = { id: user.userId, email: user.email };
     return {
       accessToken: this.jwtService.sign(payload),
-    }
+    };
   }
 
   async requestPasswordReset(requestPasswordResetDto: RequestPasswordResetDto): Promise<void> {
     const { email } = requestPasswordResetDto;
     let user: User = await this.usersService.findByFields({
-      where: { email }
+      where: { email },
     });
-    if(!user) {
-      throw new BadRequestException("등록되지 않은 이메일입니다.");
+    if (!user) {
+      throw new BadRequestException('등록되지 않은 이메일입니다.');
     }
 
     const verificationCode = Math.floor(100000 + Math.random() * 900000).toString(); // 6자리 코드 생성

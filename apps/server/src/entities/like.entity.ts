@@ -13,11 +13,11 @@ export class Like {
   @Column({ type: 'int', nullable: false })
   articleId: number;
 
-  @ManyToOne(() => User, user => user.likes, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
+  @ManyToOne(() => User, (user) => user.likes, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   @JoinColumn({ name: 'userId' })
   user: User;
 
-  @ManyToOne(() => Article, article => article.likes, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
+  @ManyToOne(() => Article, (article) => article.likes, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   @JoinColumn({ name: 'articleId' })
   article: Article;
 }

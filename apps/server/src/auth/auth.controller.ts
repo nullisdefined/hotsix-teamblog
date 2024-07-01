@@ -16,14 +16,14 @@ export class AuthController {
   ) {}
 
   @Post('/signup')
-  async signup(@Req() req, @Body() userDto: UserDto): Promise<any>{
+  async signup(@Req() req, @Body() userDto: UserDto): Promise<any> {
     return await this.authService.signup(userDto);
   }
 
   @Post('/signin')
   async signin(@Body() credentialDto: CredentialDto, @Res() res: Response): Promise<any> {
-    const jwt =  await this.authService.signin(credentialDto);
-    res.header('Authorization', 'Bearer '+ jwt.accessToken);
+    const jwt = await this.authService.signin(credentialDto);
+    res.header('Authorization', 'Bearer ' + jwt.accessToken);
     return res.json(jwt);
   }
 

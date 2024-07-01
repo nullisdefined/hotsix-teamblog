@@ -1,82 +1,46 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { ArticleDto } from './dto/article.dto';
 import { Article } from 'src/entities/article.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { JwtService } from '@nestjs/jwt';
-import { Like } from 'src/entities/like.entity';
+import { LikesService } from 'src/likes/likes.service';
+import { CommentsService } from 'src/comments/comments.service';
+import { ArticleDetailCommentType, DetailResponse, ResponseMessage } from 'src/types/type';
 import { Comment } from 'src/entities/comment.entity';
 
 @Injectable()
 export class ArticlesService {
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(
+    private likesservice: LikesService,
+    private commentsservice: CommentsService,
+  ) {}
 
   @InjectRepository(Article) private articleRepository: Repository<Article>;
-  @InjectRepository(Comment) private commentRepository: Repository<Comment>;
-  @InjectRepository(Like) private likeRepository: Repository<Like>;
 
-  async getDetail(articleId: number) {
-
-    // 로그인 확인
-
+  async getDetail(articleId: number): Promise<DetailResponse> {
     // article, user.nickname, photos정보 가져오기
-    const [article] = await this.articleRepository.find({
-      select: {
-        title: true,
-        description: true,
-        content: true,
-        createdAt: true,
-        status: true,
-        user: {
-          nickname: true, // user.nickname
-        },
-        photos: {
-          fileName: true,
-        },
-      },
-      relations: {
-        user: true,
-        photos: true,
-      },
-      where: {
-        articleId: articleId,
-      },
+    const [article]: Article[] = await this.articleRepository.find({
+      relations: ['user', 'photos'],
+      where: { articleId },
     });
 
     if (!article) {
-      throw new Error('해당 게시글이 없습니다.');
+      throw new NotFoundException('해당 게시글이 없습니다.');
     }
 
     //좋아요 수와 댓글정보 가져오기
-    const likes = await this.likeRepository.count({ where: { articleId: articleId } });
-    const comments = await this.commentRepository.find({
-      select: {
-        comment: true,
-        createdAt: true,
-        user: {
-          nickname: true,
-        },
-      },
-      relations: {
-        user: true,
-      },
-      where: { articleId: articleId },
+    const likes: number = await this.likesservice.getLikesCount({ where: { articleId } });
+    const comments: Comment[] = await this.commentsservice.findByFields({
+      select: ['comment', 'createdAt'],
+      relations: ['user'],
+      where: { articleId },
     });
-
-    // console.log(comments);
 
     // 댓글데이터 response 형식으로 변환
-    const typedComments = comments.map((value) => ({
-      nickname: value.user.nickname,
-      comment: value.comment,
-      createdAt: value.createdAt,
-    }));
+    const typedComments: ArticleDetailCommentType[] = this.commentsservice.changeToResponseType(comments);
 
     // photos정보 response 형식으로 변환
-    const typedPhotos: string[] = [];
-    article.photos.forEach((value) => {
-      typedPhotos.push(value.fileName);
-    });
+    const typedPhotos = article.photos.map((photo) => photo.fileName);
 
     return {
       title: article.title,
@@ -85,20 +49,14 @@ export class ArticlesService {
       content: article.content,
       createdAt: article.createdAt,
       comments: typedComments,
-      likes: likes,
+      likes,
       status: article.status,
     };
   }
 
-  async create(articleDto: ArticleDto, req: any) {
-    // 로그인여부 확인 + jwt토큰 확인 + userId 확인
-    const token = await req.cookies['access_token'];
-    const { id } = await this.jwtService.verifyAsync(token, {
-      secret: 'Secret',
-    });
-
+  async create(articleDto: ArticleDto, userId: number): Promise<ResponseMessage> {
     // DB에 insert
-    const typedArticle = this.articleRepository.create({ ...articleDto, userId: id });
+    const typedArticle: Article = this.articleRepository.create({ ...articleDto, userId: userId });
     await this.articleRepository.save(typedArticle);
 
     return {
@@ -106,22 +64,16 @@ export class ArticlesService {
     };
   }
 
-  async update(articleId: number, articleDto: ArticleDto, req: any) {
+  async update(articleId: number, articleDto: ArticleDto, userId: number): Promise<ResponseMessage> {
     // 개시글 존재 여부 확인
-    let article = await this.articleRepository.findOne({ where: { articleId: articleId } });
+    let article: Article = await this.articleRepository.findOne({ where: { articleId: articleId } });
     if (!article) {
-      throw new Error('해당 게시글이 없습니다.');
+      throw new NotFoundException('해당 게시글이 없습니다.');
     }
 
-    // 로그인여부 확인 + jwt토큰 확인 + userId 확인
-    const token = await req.cookies['access_token'];
-    const { id } = await this.jwtService.verifyAsync(token, {
-      secret: 'Secret',
-    });
-
     // 사용자가 작성한 개시글인지 확인
-    if (article.userId !== id) {
-      throw new Error('사용자의 게시글이 아닙니다.');
+    if (article.userId !== userId) {
+      throw new UnauthorizedException('사용자의 게시글이 아닙니다.');
     }
 
     // DB에 update
@@ -133,22 +85,16 @@ export class ArticlesService {
     };
   }
 
-  async delete(articleId: number, req: any) {
+  async delete(articleId: number, userId: number): Promise<ResponseMessage> {
     // 개시글 존재 여부 확인
-    const article = await this.articleRepository.findOne({ where: { articleId: articleId } });
+    const article: Article = await this.articleRepository.findOne({ where: { articleId: articleId } });
     if (!article) {
-      throw new Error('해당 게시글이 없습니다.');
+      throw new NotFoundException('해당 게시글이 없습니다.');
     }
 
-    // 로그인여부 확인 + jwt토큰 확인 + userId 확인
-    const token = await req.cookies['access_token'];
-    const { id } = await this.jwtService.verifyAsync(token, {
-      secret: 'Secret',
-    });
-
     // 사용자가 작성한 개시글인지 확인
-    if (article.userId !== id) {
-      throw new Error('사용자의 게시글이 아닙니다.');
+    if (article.userId !== userId) {
+      throw new UnauthorizedException('사용자의 게시글이 아닙니다.');
     }
 
     // DB에 delete

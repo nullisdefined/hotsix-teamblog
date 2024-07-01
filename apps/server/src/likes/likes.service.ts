@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Repository } from 'typeorm';
+import { CountOptions, FindManyOptions, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like } from 'src/entities/like.entity';
 
@@ -56,5 +56,9 @@ export class LikesService {
     return {
       message: '좋아요 삭제 완료',
     };
+  }
+
+  async getLikesCount(options: FindManyOptions<Like>): Promise<number> {
+    return await this.likeRepository.count(options);
   }
 }

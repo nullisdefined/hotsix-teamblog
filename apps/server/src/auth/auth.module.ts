@@ -11,14 +11,14 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
-    PassportModule.register({ 
-      global: true, 
-      defaultStrategy: 'jwt'
+    PassportModule.register({
+      global: true,
+      defaultStrategy: 'jwt',
     }),
     JwtModule.register({
       global: true,
       secret: 'SECRET_KEY', // JWT Signature의 Secret Key
-      signOptions: {expiresIn: '30m'}, // 토큰 만료시간
+      signOptions: { expiresIn: '30m' }, // 토큰 만료시간
     }),
   ],
   controllers: [AuthController],
