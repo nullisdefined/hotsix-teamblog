@@ -1,0 +1,37 @@
+.Profile {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  padding: 2em 0;
+}
+.Title {
+  display: flex;
+  align-items: center;
+}
+.Thumb {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+.Thumb img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+.Thumb img,
+.Thumb svg {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+.Thumb svg {
+  color: #764fe1;
+}
+.Text {
+  padding-left: 1em;
+}
+
+.Icons a {
+  padding-left: 1em;
+}
