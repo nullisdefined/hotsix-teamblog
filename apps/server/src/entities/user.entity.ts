@@ -1,8 +1,16 @@
-import { Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, OneToMany, BeforeInsert, BeforeUpdate } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  Unique,
+  CreateDateColumn,
+  OneToMany,
+  BeforeInsert,
+  BeforeUpdate,
+} from 'typeorm';
 import { Article } from './article.entity';
 import { Comment } from './comment.entity';
 import { Like } from './like.entity';
-import * as bcrypt from 'bcrypt';
 
 @Entity()
 @Unique(['email', 'nickname'])
@@ -34,12 +42,12 @@ export class User {
   @Column({ type: 'varchar', length: 50, nullable: true })
   introduce: string;
 
-  @OneToMany(() => Article, article => article.user)
+  @OneToMany(() => Article, (article) => article.user)
   articles: Article[];
 
-  @OneToMany(() => Comment, comment => comment.user)
+  @OneToMany(() => Comment, (comment) => comment.user)
   comments: Comment[];
 
-  @OneToMany(() => Like, like => like.user)
+  @OneToMany(() => Like, (like) => like.user)
   likes: Like[];
 }
