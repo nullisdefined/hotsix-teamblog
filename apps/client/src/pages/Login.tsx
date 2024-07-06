@@ -1,11 +1,16 @@
 import React from "react";
+import LoginInput from "../components/LoginInput/LoginInput";
+import { Link } from "react-router-dom";
 
-const Loin = () => {
+const Login = () => {
   return (
-    <>
-      <h1>Loin Page</h1>
-    </>
+    <div className='LoginPage'>
+      <Link to="/">
+        <h1 style={{fontSize: "3em", fontFamily: "Pretendard-Black", marginBottom: "20px"}}>Hotsix</h1>
+      </Link>
+      <LoginInput />
+    </div>
   );
 };
 
-export default Loin;
+export default Login;
