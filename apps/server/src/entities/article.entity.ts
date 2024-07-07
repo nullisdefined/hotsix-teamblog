@@ -1,13 +1,4 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-  CreateDateColumn,
-  UpdateDateColumn,
-  OneToMany,
-  JoinColumn,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn, OneToMany, JoinColumn } from 'typeorm';
 import { User } from './user.entity';
 import { Photo } from './photo.entity';
 import { Comment } from './comment.entity';
@@ -39,19 +30,19 @@ export class Article {
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamp' })
+  @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
 
-  @ManyToOne(() => User, (user) => user.articles, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
+  @ManyToOne(() => User, user => user.articles, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   @JoinColumn({ name: 'userId' })
   user: User;
 
-  @OneToMany(() => Photo, (photo) => photo.article)
+  @OneToMany(() => Photo, photo => photo.article)
   photos: Photo[];
 
-  @OneToMany(() => Comment, (comment) => comment.article)
+  @OneToMany(() => Comment, comment => comment.article)
   comments: Comment[];
 
-  @OneToMany(() => Like, (like) => like.article)
+  @OneToMany(() => Like, like => like.article)
   likes: Like[];
 }
