@@ -19,11 +19,10 @@ import { UserDto } from 'src/auth/dto/createUser.dto';
 export class UsersService {
   @InjectRepository(User) private usersRepository: Repository<User>;
 
+  // TODO: API 명세서 수정
+  // * 원래 500 init server error -> 404
   async findByFields(options: FindOneOptions<User>): Promise<User | undefined> {
     const user = await this.usersRepository.findOne(options);
-    if (!user) {
-      throw new NotFoundException('사용자를 찾을 수 없습니다.');
-    }
     return user;
   }
 

@@ -31,12 +31,15 @@ export class AuthService {
   }
 
   async signin(credentialDto: CredentialDto): Promise<{ accessToken: string } | undefined> {
-    let user: User = await this.usersService.findByFields({
+    const user: User = await this.usersService.findByFields({
       where: { email: credentialDto.email },
     });
-    const isValidatePassword = await bcrypt.compare(credentialDto.password, user.password);
+    if (!user) {
+      throw new UnauthorizedException('이메일 또는 비밀번호가 올바르지 않습니다.');
+    }
 
-    if (!user || !isValidatePassword) {
+    const isValidatePassword = await bcrypt.compare(credentialDto.password, user.password);
+    if (!isValidatePassword) {
       throw new UnauthorizedException('이메일 또는 비밀번호가 올바르지 않습니다.');
     }
     const payload: Payload = { id: user.userId, email: user.email };
@@ -47,14 +50,14 @@ export class AuthService {
 
   async requestPasswordReset(requestPasswordResetDto: RequestPasswordResetDto): Promise<void> {
     const { email } = requestPasswordResetDto;
-    let user: User = await this.usersService.findByFields({
+    const user: User = await this.usersService.findByFields({
       where: { email },
     });
     if (!user) {
       throw new BadRequestException('등록되지 않은 이메일입니다.');
     }
-
-    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString(); // 6자리 코드 생성
+    // 이메일 인증코드 생성
+    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
     this.verificationCodes.set(email, verificationCode);
 
     await this.mailerService.sendMail({
@@ -79,7 +82,6 @@ export class AuthService {
 
     user.password = newPassword;
     await this.usersService.save(user);
-
     this.verificationCodes.delete(email);
   }
 }

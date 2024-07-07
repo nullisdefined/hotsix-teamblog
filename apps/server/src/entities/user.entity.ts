@@ -30,7 +30,7 @@ export class User {
   @Column({ type: 'varchar', length: 15, nullable: false })
   nickname: string;
 
-  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
   @Column({ type: 'varchar', length: 255, nullable: false })
