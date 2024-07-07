@@ -1,10 +1,11 @@
 import React from "react";
+import JoinInput from "../components/JoinInput/JoinInput";
 
 const Join = () => {
   return (
-    <>
-      <h1>Join Page</h1>
-    </>
+    <div className="Container">
+      <JoinInput />
+    </div>
   );
 };
 
