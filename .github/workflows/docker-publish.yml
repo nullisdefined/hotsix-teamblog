@@ -21,6 +21,11 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+    - name: Create GCP key file
+      run: |
+        mkdir -p apps/server/src/configs
+        echo '${{ secrets.GCP_KEY_JSON }}' > apps/server/src/configs/superb-app-428715-m2-70554e73216e.json
+
     - name: Build and push
       uses: docker/build-push-action@v4
       with:
