@@ -1,7 +1,7 @@
 import { Transform } from 'class-transformer';
 import { IsEmail, IsNotEmpty, IsOptional, IsString, IsUrl } from 'class-validator';
-import { IsStrongPassword } from '../validators/password.validator';
-import { IsValidImageUrl } from '../validators/url.validator';
+import { IsStrongPassword } from '../../validators/password.validator';
+import { IsValidImageUrl } from '../../validators/image.url.validator';
 
 export class UserDto {
   @IsEmail({}, { message: '올바른 이메일 형식이 아닙니다.' })

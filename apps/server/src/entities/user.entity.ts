@@ -13,12 +13,11 @@ import { Comment } from './comment.entity';
 import { Like } from './like.entity';
 
 @Entity()
-@Unique(['email', 'nickname'])
 export class User {
   @PrimaryGeneratedColumn()
   userId: number;
 
-  @Column({ type: 'varchar', length: 50, nullable: false })
+  @Column({ type: 'varchar', length: 50, nullable: false, unique: true })
   email: string;
 
   @Column({ type: 'varchar', length: 255, nullable: false })
@@ -27,7 +26,7 @@ export class User {
   @Column({ type: 'varchar', length: 10, nullable: false })
   name: string;
 
-  @Column({ type: 'varchar', length: 15, nullable: false })
+  @Column({ type: 'varchar', length: 15, nullable: false, unique: true })
   nickname: string;
 
   @CreateDateColumn({ type: 'timestamp' })

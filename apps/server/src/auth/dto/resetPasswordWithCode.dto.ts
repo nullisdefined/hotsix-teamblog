@@ -1,7 +1,7 @@
 import { PickType } from '@nestjs/mapped-types';
 import { UserDto } from './createUser.dto';
-import { IsStrongPassword } from '../validators/password.validator';
 import { IsEmail, IsString } from 'class-validator';
+import { IsStrongPassword } from 'src/validators/password.validator';
 
 export class ResetPasswordWithCodeDto extends PickType(UserDto, ['email']) {
   email: string;
