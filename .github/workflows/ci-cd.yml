@@ -46,13 +46,14 @@ jobs:
           docker pull hotsix-blog.kr.ncr.ntruss.com/hotsix-blog:latest
           docker stop hotsix-blog-container || true
           docker rm hotsix-blog-container || true
-          docker run -d --name hotsix-blog-container -p 3001:3001 hotsix-blog.kr.ncr.ntruss.com/hotsix-blog:latest \
+          docker run -d --name hotsix-blog-container -p 3001:3001 \
             -e NODE_ENV=production \
             -e DB_HOST=${{ secrets.DB_HOST }} \
             -e DB_PORT=${{ secrets.DB_PORT }} \
-            -e DB_USERNAME=${{ secrets.DB_USERNAME }}
+            -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
             -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
-            -e DB_NAME=${{ secrets.DB_NAME }}
+            -e DB_NAME=${{ secrets.DB_NAME }} \
+            hotsix-blog.kr.ncr.ntruss.com/hotsix-blog:latest
 
     - name: 도커 이미지 다이제스트 출력
       run: echo ${{ steps.docker_build.outputs.digest }}

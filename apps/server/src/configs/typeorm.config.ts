@@ -7,13 +7,11 @@ import { User } from 'src/entities/user.entity';
 
 export const typeORMConfig: TypeOrmModuleOptions = {
   type: 'mysql',
-  // host: process.env.DB_HOST || 'localhost',
-  host: process.env.DB_HOST || '34.64.75.16',
-  // host: 'localhost',
+  host: process.env.DB_HOST || 'localhost',
   port: parseInt(process.env.DB_PORT) || 3306,
   username: process.env.DB_USERNAME || 'root',
-  // password: process.env.DB_PASSWORD || 'mysql',
-  database: process.env.DB_NAME || 'hotsix_blog',
+  password: process.env.DB_PASSWORD || 'mysql',
+  database: process.env.DB_NAME || 'hotsix',
   entities: [User, Article, Comment, Photo, Like],
   synchronize: false,
 };

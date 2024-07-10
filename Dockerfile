@@ -34,4 +34,3 @@ COPY --from=builder /app/apps/server/src/configs/superb-app-428715-m2-70554e7321
 
 # 서버 실행
 CMD ["npm", "run", "start:prod"]
-# CMD ["sh", "-c", "cloud_sql_proxy -instances=superb-app-428715-m2:asia-northeast3:hotsix-blog-db=tcp:3306 & npm run start:prod"]

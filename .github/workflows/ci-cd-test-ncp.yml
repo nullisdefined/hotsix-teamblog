@@ -33,7 +33,6 @@ jobs:
         push: true
         tags: |
           hotsix-blog.kr.ncr.ntruss.com/hotsix-blog:test
-          hotsix-blog.kr.ncr.ntruss.com/hotsix-blog:${{ github.sha }}
 
     - name: 서버 배포
       uses: appleboy/ssh-action@master
