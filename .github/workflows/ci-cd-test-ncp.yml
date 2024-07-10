@@ -6,7 +6,7 @@ on:
 
 jobs:
   build-and-push:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-22.04 
     steps:
     - name: 코드 체크아웃
       uses: actions/checkout@v3
