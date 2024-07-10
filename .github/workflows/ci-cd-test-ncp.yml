@@ -5,7 +5,7 @@ on:
     branches: [ nullisdefined ]
 
 jobs:
-  build-and-push:
+  build-push-deploy:
     runs-on: ubuntu-22.04 
     steps:
     - name: 코드 체크아웃
@@ -26,7 +26,7 @@ jobs:
         username: ${{ secrets.NCP_ACCESS_KEY }}
         password: ${{ secrets.NCP_SECRET_KEY }}
 
-    - name: Docker Image 빌드 및 Push
+    - name: 이미지 빌드 및 푸시
       uses: docker/build-push-action@v4
       with:
         context: .
@@ -43,7 +43,6 @@ jobs:
         key: ${{ secrets.SERVER_SSH_KEY }}
         port: 22
         script: |
-          echo "${{ secrets.SERVER_SSH_KEY }}" | ssh-keygen -y >> ~/.ssh/authorized_keys
           docker login hotsix-blog.kr.ncr.ntruss.com -u ${{ secrets.NCP_ACCESS_KEY }} -p ${{ secrets.NCP_SECRET_KEY }}
           docker pull hotsix-blog.kr.ncr.ntruss.com/hotsix-blog:test
           docker stop hotsix-blog-container || true
