@@ -2,9 +2,9 @@ name: Docker Publish
 
 on:
   push:
-    branches: [ "nullisdefined" ]
+    branches: [ none ]
   pull_request:
-    branches: [ "nullisdefined" ]
+    branches: [ none ]
 
 jobs:
   build-and-push:
