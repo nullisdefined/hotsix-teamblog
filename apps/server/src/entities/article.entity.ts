@@ -7,6 +7,7 @@ import {
   UpdateDateColumn,
   OneToMany,
   JoinColumn,
+  BaseEntity,
 } from 'typeorm';
 import { User } from './user.entity';
 import { Photo } from './photo.entity';

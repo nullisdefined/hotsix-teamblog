@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Storage } from '@google-cloud/storage';
-import { join } from 'path';
 
-// const keyFilePath = join(process.cwd(), 'dist', 'configs', 'superb-app-428715-m2-70554e73216e.json');
 @Injectable()
 export class UploadService {
   private storage: Storage;

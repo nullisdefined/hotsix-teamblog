@@ -48,7 +48,7 @@ export class UploadController {
       if (error instanceof BadRequestException) {
         throw error;
       } else {
-        throw new InternalServerErrorException('파일 업로드에 실패했습니다. 잠시 후 다시 시도해 주세요.');
+        throw new InternalServerErrorException('파일 업로드에 실패했습니다.');
       }
     }
   }

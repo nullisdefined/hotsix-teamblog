@@ -6,12 +6,13 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   JoinColumn,
+  BaseEntity,
 } from 'typeorm';
 import { User } from './user.entity';
 import { Article } from './article.entity';
 
 @Entity()
-export class Comment {
+export class Comment extends BaseEntity {
   @PrimaryGeneratedColumn()
   commentId: number;
 

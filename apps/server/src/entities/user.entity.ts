@@ -7,13 +7,14 @@ import {
   OneToMany,
   BeforeInsert,
   BeforeUpdate,
+  BaseEntity,
 } from 'typeorm';
 import { Article } from './article.entity';
 import { Comment } from './comment.entity';
 import { Like } from './like.entity';
 
 @Entity()
-export class User {
+export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
   userId: number;
 
