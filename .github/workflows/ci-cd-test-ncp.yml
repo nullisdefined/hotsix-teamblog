@@ -41,7 +41,9 @@ jobs:
         host: ${{ secrets.SERVER_HOST }}
         username: ${{ secrets.SERVER_USERNAME }}
         key: ${{ secrets.SERVER_SSH_KEY }}
+        port: 22
         script: |
+          echo "${{ secrets.SERVER_SSH_KEY }}" | ssh-keygen -y >> ~/.ssh/authorized_keys
           docker login hotsix-blog.kr.ncr.ntruss.com -u ${{ secrets.NCP_ACCESS_KEY }} -p ${{ secrets.NCP_SECRET_KEY }}
           docker pull hotsix-blog.kr.ncr.ntruss.com/hotsix-blog:test
           docker stop hotsix-blog-container || true
