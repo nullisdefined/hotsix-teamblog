@@ -50,4 +50,4 @@ jobs:
           docker run -d --name hotsix-blog-container -p 3001:3001 hotsix-blog.kr.ncr.ntruss.com/hotsix-blog:test
 
     - name: Docker Image digest 출력
-      run: echo ${{ steps.docker_build.outputs.digest }} 
+      run: echo ${{ steps.docker_build.outputs.digest }}
