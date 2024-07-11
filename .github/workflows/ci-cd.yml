@@ -48,12 +48,18 @@ jobs:
           docker rm hotsix-blog-container || true
           docker run -d --name hotsix-blog-container -p 3001:3001 \
             -e NODE_ENV=production \
+            -e NODE_ENV=production \
             -e JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} \
             -e DB_HOST=${{ secrets.DB_HOST }} \
             -e DB_PORT=${{ secrets.DB_PORT }} \
             -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
             -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
             -e DB_NAME=${{ secrets.DB_NAME }} \
+            -e FROM_EMAIL_USER=${{ FROM_EMAIL_USER }} \
+            -e FROM_EMAIL_PASS=${{ FROM_EMAIL_PASS }} \
+            -e GOOGLE_CLOUD_PROJECT_ID=${{ GOOGLE_CLOUD_PROJECT_ID }} \
+            -e GOOGLE_CLOUD_STORAGE_BUCKET=${{ GOOGLE_CLOUD_STORAGE_BUCKET }} \
+            -e GOOGLE_APPLICATION_CREDENTIALS=${{ GOOGLE_APPLICATION_CREDENTIALS }} \
             hotsix-blog.kr.ncr.ntruss.com/hotsix-blog:latest
 
     - name: 도커 이미지 다이제스트 출력
