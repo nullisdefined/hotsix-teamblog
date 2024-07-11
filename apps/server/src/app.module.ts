@@ -21,7 +21,7 @@ import { UploadModule } from './upload/upload.module';
       isGlobal: true,
     }),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '../..', 'client', 'dist'),
+      rootPath: process.env.NODE_ENV === 'production' ? '/app/public' : join(__dirname, '../..', 'client', 'dist'),
     }),
     TypeOrmModule.forRoot(typeORMConfig),
     MailerModule.forRoot({
