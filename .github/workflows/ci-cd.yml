@@ -57,3 +57,5 @@ jobs:
 
     - name: 도커 이미지 다이제스트 출력
       run: echo ${{ steps.docker_build.outputs.digest }}
+
+      
