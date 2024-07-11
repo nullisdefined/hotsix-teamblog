@@ -32,6 +32,7 @@ jobs:
         context: .
         push: true
         tags: |
+          hotsix-blog.kr.ncr.ntruss.com/hotsix-blog:${{ github.sha }}
           hotsix-blog.kr.ncr.ntruss.com/hotsix-blog:test
 
     - name: 서버 배포
@@ -48,6 +49,7 @@ jobs:
           docker rm hotsix-blog-container || true
           docker run -d --name hotsix-blog-container -p 3001:3001 \
             -e NODE_ENV=production \
+            -e JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} \
             -e DB_HOST=${{ secrets.DB_HOST }} \
             -e DB_PORT=${{ secrets.DB_PORT }} \
             -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
@@ -57,4 +59,3 @@ jobs:
 
     - name: 도커 이미지 다이제스트 출력
       run: echo ${{ steps.docker_build.outputs.digest }}
-      
