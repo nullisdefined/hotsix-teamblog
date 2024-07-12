@@ -18,3 +18,8 @@ export type DetailResponse = {
 export type ResponseMessage = {
   message: string;
 };
+
+export enum UserRole {
+  USER = 'user',
+  ADMIN = 'admin',
+}

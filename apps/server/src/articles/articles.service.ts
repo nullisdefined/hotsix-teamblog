@@ -1,4 +1,4 @@
-import { HttpException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { ArticleDto } from './dto/article.dto';
 import { Article } from 'src/entities/article.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -12,6 +12,7 @@ import { Comment } from 'src/entities/comment.entity';
 export class ArticlesService {
   constructor(
     private likesservice: LikesService,
+    @Inject(forwardRef(() => CommentsService))
     private commentsservice: CommentsService,
   ) {}
 
@@ -25,7 +26,7 @@ export class ArticlesService {
     });
 
     if (!article) {
-      throw new NotFoundException('해당 게시글이 없습니다.');
+      throw new NotFoundException('Article not found');
     }
 
     //좋아요 수와 댓글정보 가져오기
@@ -64,16 +65,12 @@ export class ArticlesService {
     };
   }
 
-  async update(articleId: number, articleDto: ArticleDto, userId: number): Promise<ResponseMessage> {
+  async update(articleId: number, articleDto: ArticleDto): Promise<ResponseMessage> {
     // 개시글 존재 여부 확인
-    let article: Article = await this.articleRepository.findOne({ where: { articleId: articleId } });
-    if (!article) {
-      throw new NotFoundException('해당 게시글이 없습니다.');
-    }
+    let article: Article = await this.findOne(articleId);
 
-    // 사용자가 작성한 개시글인지 확인
-    if (article.userId !== userId) {
-      throw new UnauthorizedException('사용자의 게시글이 아닙니다.');
+    if (!article) {
+      throw new NotFoundException('Article not found');
     }
 
     // DB에 update
@@ -85,16 +82,11 @@ export class ArticlesService {
     };
   }
 
-  async delete(articleId: number, userId: number): Promise<ResponseMessage> {
-    // 개시글 존재 여부 확인
-    const article: Article = await this.articleRepository.findOne({ where: { articleId: articleId } });
-    if (!article) {
-      throw new NotFoundException('해당 게시글이 없습니다.');
-    }
+  async delete(articleId: number): Promise<ResponseMessage> {
+    const article: Article = await this.findOne(articleId);
 
-    // 사용자가 작성한 개시글인지 확인
-    if (article.userId !== userId) {
-      throw new UnauthorizedException('사용자의 게시글이 아닙니다.');
+    if (!article) {
+      throw new NotFoundException('Article not found');
     }
 
     // DB에 delete
@@ -103,5 +95,9 @@ export class ArticlesService {
     return {
       message: '게시글 삭제 완료',
     };
+  }
+
+  async findOne(articleId: number): Promise<Article> {
+    return await this.articleRepository.findOne({ where: { articleId } });
   }
 }

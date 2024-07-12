@@ -12,6 +12,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { ArticlesModule } from './articles/articles.module';
 import { CommentsModule } from './comments/comments.module';
 import { LikesModule } from './likes/likes.module';
+import { DriveModule } from './drive/drive.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { LikesModule } from './likes/likes.module';
     ArticlesModule,
     CommentsModule,
     LikesModule,
+    DriveModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,17 +1,8 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  Unique,
-  CreateDateColumn,
-  OneToMany,
-  BeforeInsert,
-  BeforeUpdate,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, OneToMany } from 'typeorm';
 import { Article } from './article.entity';
 import { Comment } from './comment.entity';
 import { Like } from './like.entity';
-import * as bcrypt from 'bcrypt';
+import { UserRole } from 'src/types/type';
 
 @Entity()
 @Unique(['email', 'nickname'])
@@ -42,6 +33,13 @@ export class User {
 
   @Column({ type: 'varchar', length: 50, nullable: true })
   introduce: string;
+
+  @Column({
+    type: 'enum',
+    enum: UserRole,
+    default: UserRole.USER,
+  })
+  role: UserRole;
 
   @OneToMany(() => Article, (article) => article.user)
   articles: Article[];

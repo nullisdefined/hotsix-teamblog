@@ -38,7 +38,7 @@ export class AuthService {
     if (!user || !isValidatePassword) {
       throw new UnauthorizedException();
     }
-    const payload: Payload = { id: user.userId, email: user.email };
+    const payload: Payload = { id: user.userId, email: user.email, role: user.role };
     return {
       accessToken: this.jwtService.sign(payload),
     };
