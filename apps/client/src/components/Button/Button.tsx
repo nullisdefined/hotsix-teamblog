@@ -5,17 +5,31 @@ import "./Button.css";
 type TButtonProps = {
   text: string;
   type: string;
+  spacing?: string;
+  size?: string;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   link?: string;
 };
 
-const Button: FC<TButtonProps> = ({ text, type, onClick, link }) => {
+const Button: FC<TButtonProps> = ({
+  text,
+  type,
+  spacing,
+  size = "SMALL",
+  onClick,
+  link,
+}) => {
   return link ? (
     <Link to={link}>
-      <button className={`Button Button_${type}`}>{text}</button>
+      <button className={`Button Button_${type} Button_${size} ${spacing}`}>
+        {text}
+      </button>
     </Link>
   ) : (
-    <button onClick={onClick} className={`Button Button_${type}`}>
+    <button
+      onClick={onClick}
+      className={`Button Button_${type} Button_${size} ${spacing}`}
+    >
       {text}
     </button>
   );

@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @font-face {
   font-family: "Pretendard-Regular";
   src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff")
@@ -27,7 +31,7 @@ a {
 }
 
 .Container {
-  padding-top: 75px;
+  padding-top: 100px;
   height: 2000px;
 }
 
@@ -39,4 +43,10 @@ h2 {
 }
 h3 {
   font-size: 20px;
+}
+
+:root {
+  --color-primary: theme("colors.primary");
+  --color-disable: theme("colors.disable");
+  --color-background: theme("colors.background");
 }

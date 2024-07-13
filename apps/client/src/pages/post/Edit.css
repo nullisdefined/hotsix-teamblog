@@ -1,0 +1,33 @@
+/* .Container {
+  max-width: 450px;
+  margin: 0 auto;
+} */
+
+.InputTitle {
+  background-color: var(--color-background);
+  width: 100%;
+}
+.InputThumb {
+  background-color: var(--color-background);
+  cursor: pointer;
+  margin-top: 1em;
+}
+
+.InputThumb::file-selector-button {
+  color: transparent;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.ButtonGroup button {
+  padding: 0.3em 1em;
+  background: var(--color-disable);
+  color: #fff;
+  font-weight: bold;
+}
+.ButtonGroup button.active {
+  border: 1px solid var(--color-primary);
+  background: #fff;
+  color: #000;
+}

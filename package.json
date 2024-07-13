@@ -7,6 +7,7 @@
     "turbo": "^2.0.4"
   },
   "dependencies": {
+    "react-dropzone": "^14.2.3",
     "turbo-windows-64": "^2.0.4"
   },
   "workspaces": [
