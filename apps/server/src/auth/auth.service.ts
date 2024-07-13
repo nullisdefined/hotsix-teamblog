@@ -22,11 +22,7 @@ export class AuthService {
 
   async signup(newUser: UserDto): Promise<UserDto> {
     await this.checkDuplicateEmailAndNickname(newUser.email, newUser.nickname);
-
-    const hashedPassword = await this.hashPassword(newUser.password);
-    const userToSave = { ...newUser, password: hashedPassword };
-
-    return await this.usersService.save(userToSave);
+    return await this.usersService.save(newUser);
   }
 
   async signin(credentialDto: CredentialDto): Promise<{ accessToken: string } | undefined> {
