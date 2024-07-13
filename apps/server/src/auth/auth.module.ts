@@ -17,8 +17,8 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     }),
     JwtModule.register({
       global: true,
-      secret: 'SECRET_KEY', // JWT Signature의 Secret Key
-      signOptions: { expiresIn: '30m' }, // 토큰 만료시간
+      secret: process.env.JWT_SECRET_KEY,
+      signOptions: { expiresIn: '30m' },
     }),
   ],
   controllers: [AuthController],

@@ -1,16 +1,42 @@
-import { Body, Controller, Delete, Get, Req, UseGuards, HttpCode, HttpStatus } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Req, UseGuards, HttpCode, HttpStatus, Post, Patch } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { AuthGuard } from '@nestjs/passport';
+import { CheckEmailDto } from './dto/checkEmail.dto';
+import { CheckNicknameDto } from './dto/checkNickname.dto';
+import { UpdateUserDto } from './dto/updateUser.dto';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Delete('/delete')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard())
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteUser(@Req() req): Promise<void> {
     const userId = req.user.userId;
     await this.usersService.deleteUser(userId);
+  }
+
+  @Get('/check-email')
+  @HttpCode(HttpStatus.OK)
+  async checkEmailDuplicate(@Body() checkEmailDto: CheckEmailDto): Promise<{ isDuplicate: boolean }> {
+    const isDuplicate = await this.usersService.isEmailDuplicate(checkEmailDto);
+    return { isDuplicate };
+  }
+
+  @Get('/check-nickname')
+  @HttpCode(HttpStatus.OK)
+  async checkNicknameDuplicate(@Body() checkNicknameDto: CheckNicknameDto): Promise<{ isDuplicate: boolean }> {
+    const { nickname } = checkNicknameDto;
+    const isDuplicate = await this.usersService.isNicknameDuplicate(nickname);
+    return { isDuplicate };
+  }
+
+  @Patch('/update')
+  @UseGuards(AuthGuard())
+  @HttpCode(HttpStatus.OK)
+  async updateUser(@Req() req, @Body() updateUserDto: UpdateUserDto): Promise<void> {
+    const userId = req.user.userId;
+    await this.usersService.updateUser(userId, updateUserDto);
   }
 }
