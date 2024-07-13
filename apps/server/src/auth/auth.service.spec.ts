@@ -60,17 +60,15 @@ describe('AuthService', () => {
         gitUrl: 'https://github.com/tester',
         introduce: 'Hello, I am a tester',
       };
-      const hashedPassword = 'hashedPassword';
 
       mockUsersService.findByFields.mockResolvedValue(null);
-      mockUsersService.save.mockResolvedValue({ ...newUser, password: hashedPassword });
-      (bcrypt.hash as jest.Mock).mockResolvedValue(hashedPassword);
+      mockUsersService.save.mockResolvedValue(newUser);
 
       const result = await authService.signup(newUser);
 
-      expect(result).toEqual({ ...newUser, password: hashedPassword });
+      expect(result).toEqual(newUser);
       expect(mockUsersService.findByFields).toHaveBeenCalledTimes(2);
-      expect(mockUsersService.save).toHaveBeenCalledWith({ ...newUser, password: hashedPassword });
+      expect(mockUsersService.save).toHaveBeenCalledWith(newUser);
     });
 
     it('이미 존재하는 이메일로 가입 시 예외를 발생시켜야 합니다', async () => {
