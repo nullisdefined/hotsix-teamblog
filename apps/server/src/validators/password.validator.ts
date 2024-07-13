@@ -13,8 +13,6 @@ const schema = new PasswordValidator()
   .is()
   .max(50) // 최대 길이 50
   .has()
-  .uppercase() // 대문자 포함
-  .has()
   .lowercase() // 소문자 포함
   .has()
   .digits(2) // 숫자 2개 이상 포함
@@ -32,7 +30,7 @@ class IsStrongPasswordConstraint implements ValidatorConstraintInterface {
   }
 
   defaultMessage() {
-    return '비밀번호는 최소 8자 이상, 최대 50자 이하, 대문자, 소문자, 숫자 2개 이상을 포함해야 하며 공백이 없어야 합니다.';
+    return '비밀번호는 최소 8자 이상, 최대 50자 이하, 알파벳 소문자와 숫자 2개 이상을 포함해야 하며 공백이 없어야 합니다.';
   }
 }
 

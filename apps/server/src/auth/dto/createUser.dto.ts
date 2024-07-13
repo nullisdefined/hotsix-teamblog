@@ -10,6 +10,7 @@ export class UserDto {
   password: string;
   @IsOptional()
   @IsString({ message: '올바른 타입이 아닙니다.' })
+  @Transform(({ value }) => (value === '' ? null : value))
   name: string;
   @IsNotEmpty({ message: '닉네임은 비워둘 수 없습니다.' })
   @IsString({ message: '올바른 타입이 아닙니다.' })

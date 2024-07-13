@@ -74,8 +74,7 @@ export class AuthService {
 
     this.validateVerificationCode(email, verificationCode);
 
-    const hashedPassword = await this.hashPassword(newPassword);
-    user.password = hashedPassword;
+    user.password = newPassword;
     await this.usersService.save(user);
     this.verificationCodes.delete(email);
   }
@@ -112,3 +111,4 @@ export class AuthService {
     }
   }
 }
+
