@@ -12,6 +12,9 @@ RUN npm install
 # 소스 코드 복사
 COPY . .
 
+# 테스트 실행
+RUN npm run test
+
 # 빌드
 RUN npm run build
 
