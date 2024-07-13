@@ -15,6 +15,7 @@ export class UserDto {
   @IsString({ message: '올바른 타입이 아닙니다.' })
   nickname: string;
   @IsOptional()
+  @Transform(({ value }) => (value === '' ? null : value))
   @IsValidImageUrl({ message: '올바른 이미지 URL 형식이 아니거나 허용되지 않은 도메인입니다.' })
   profileImage: string;
   @IsOptional()
