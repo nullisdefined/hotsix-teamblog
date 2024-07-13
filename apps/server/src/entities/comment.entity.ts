@@ -12,30 +12,30 @@ import { User } from './user.entity';
 import { Article } from './article.entity';
 
 @Entity()
-export class Comment extends BaseEntity {
+export class Comment {
   @PrimaryGeneratedColumn()
   commentId: number;
 
-  @Column({ type: 'int', nullable: false })
+  @Column()
   userId: number;
 
-  @Column({ type: 'int', nullable: false })
+  @Column()
   articleId: number;
 
-  @Column({ type: 'longtext', nullable: false })
+  @Column()
   comment: string;
 
-  @CreateDateColumn({ type: 'timestamp' })
+  @CreateDateColumn()
   createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamp' })
+  @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => User, (user) => user.comments, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
+  @ManyToOne(() => User, (user) => user.comments)
   @JoinColumn({ name: 'userId' })
   user: User;
 
-  @ManyToOne(() => Article, (article) => article.comments, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
+  @ManyToOne(() => Article, (article) => article.comments)
   @JoinColumn({ name: 'articleId' })
   article: Article;
 }

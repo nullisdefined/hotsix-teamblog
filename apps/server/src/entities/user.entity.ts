@@ -1,45 +1,35 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  Unique,
-  CreateDateColumn,
-  OneToMany,
-  BeforeInsert,
-  BeforeUpdate,
-  BaseEntity,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany } from 'typeorm';
 import { Article } from './article.entity';
 import { Comment } from './comment.entity';
 import { Like } from './like.entity';
 
 @Entity()
-export class User extends BaseEntity {
+export class User {
   @PrimaryGeneratedColumn()
   userId: number;
 
-  @Column({ type: 'varchar', length: 50, nullable: false, unique: true })
+  @Column()
   email: string;
 
-  @Column({ type: 'varchar', length: 255, nullable: false })
+  @Column()
   password: string;
 
-  @Column({ type: 'varchar', length: 10, nullable: false })
+  @Column()
   name: string;
 
-  @Column({ type: 'varchar', length: 15, nullable: false, unique: true })
+  @Column()
   nickname: string;
 
-  @CreateDateColumn({ type: 'timestamp' })
+  @CreateDateColumn()
   createdAt: Date;
 
-  @Column({ type: 'varchar', length: 255, nullable: false })
+  @Column()
   profileImage: string;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
+  @Column()
   gitUrl: string;
 
-  @Column({ type: 'varchar', length: 50, nullable: true })
+  @Column()
   introduce: string;
 
   @OneToMany(() => Article, (article) => article.user)

@@ -1,9 +1,9 @@
 import { BadRequestException, HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { CredentialDto } from './dto/credential.dto';
 import { JwtService } from '@nestjs/jwt';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from '../users/users.service';
 import { Payload } from './dto/payload.dto';
-import { User } from 'src/entities/user.entity';
+import { User } from '../entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { UserDto } from './dto/createUser.dto';
 import { ResetPasswordWithCodeDto } from './dto/resetPasswordWithCode.dto';
@@ -12,7 +12,7 @@ import { RequestPasswordResetDto } from './dto/requestPasswordReset.dto';
 
 @Injectable()
 export class AuthService {
-  private verificationCodes = new Map<string, string>();
+  private verificationCodes = new Map<string, { code: string; expiry: Date }>();
 
   constructor(
     private usersService: UsersService,
@@ -21,13 +21,12 @@ export class AuthService {
   ) {}
 
   async signup(newUser: UserDto): Promise<UserDto> {
-    let user: UserDto = await this.usersService.findByFields({
-      where: { email: newUser.email },
-    });
-    if (user) {
-      throw new HttpException('이메일 또는 닉네임이 중복되었습니다.', HttpStatus.BAD_REQUEST);
-    }
-    return await this.usersService.save(newUser);
+    await this.checkDuplicateEmailAndNickname(newUser.email, newUser.nickname);
+
+    const hashedPassword = await this.hashPassword(newUser.password);
+    const userToSave = { ...newUser, password: hashedPassword };
+
+    return await this.usersService.save(userToSave);
   }
 
   async signin(credentialDto: CredentialDto): Promise<{ accessToken: string } | undefined> {
@@ -38,10 +37,11 @@ export class AuthService {
       throw new UnauthorizedException('이메일 또는 비밀번호가 올바르지 않습니다.');
     }
 
-    const isValidatePassword = await bcrypt.compare(credentialDto.password, user.password);
-    if (!isValidatePassword) {
+    const isValidPassword = await this.validatePassword(credentialDto.password, user.password);
+    if (!isValidPassword) {
       throw new UnauthorizedException('이메일 또는 비밀번호가 올바르지 않습니다.');
     }
+
     const payload: Payload = { id: user.userId, email: user.email };
     return {
       accessToken: this.jwtService.sign(payload),
@@ -56,14 +56,15 @@ export class AuthService {
     if (!user) {
       throw new BadRequestException('등록되지 않은 이메일입니다.');
     }
-    // 이메일 인증코드 생성
-    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-    this.verificationCodes.set(email, verificationCode);
+
+    const verificationCode = this.generateVerificationCode();
+    const expiry = new Date(Date.now() + 15 * 60 * 1000);
+    this.verificationCodes.set(email, { code: verificationCode, expiry });
 
     await this.mailerService.sendMail({
       to: email,
       subject: '비밀번호 재설정 인증 코드',
-      text: `인증 코드는 ${verificationCode} 입니다.`,
+      text: `인증 코드는 ${verificationCode} 입니다. 이 코드는 15분 동안 유효합니다.`,
     });
   }
 
@@ -75,13 +76,43 @@ export class AuthService {
       throw new BadRequestException('등록되지 않은 이메일입니다.');
     }
 
-    const storedCode = this.verificationCodes.get(email);
-    if (!storedCode || storedCode !== verificationCode) {
-      throw new UnauthorizedException('유효하지 않은 인증 코드입니다.');
-    }
+    this.validateVerificationCode(email, verificationCode);
 
-    user.password = newPassword;
+    const hashedPassword = await this.hashPassword(newPassword);
+    user.password = hashedPassword;
     await this.usersService.save(user);
     this.verificationCodes.delete(email);
+  }
+
+  private async checkDuplicateEmailAndNickname(email: string, nickname: string): Promise<void> {
+    const userByEmail = await this.usersService.findByFields({ where: { email } });
+    if (userByEmail) {
+      throw new HttpException('이미 사용 중인 이메일입니다.', HttpStatus.BAD_REQUEST);
+    }
+
+    const userByNickname = await this.usersService.findByFields({ where: { nickname } });
+    if (userByNickname) {
+      throw new HttpException('이미 사용 중인 닉네임입니다.', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  private async hashPassword(password: string): Promise<string> {
+    const saltRounds = 10;
+    return await bcrypt.hash(password, saltRounds);
+  }
+
+  private async validatePassword(password: string, hashedPassword: string): Promise<boolean> {
+    return await bcrypt.compare(password, hashedPassword);
+  }
+
+  private generateVerificationCode(): string {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+  }
+
+  private validateVerificationCode(email: string, code: string): void {
+    const storedData = this.verificationCodes.get(email);
+    if (!storedData || storedData.code !== code || storedData.expiry < new Date()) {
+      throw new UnauthorizedException('유효하지 않거나 만료된 인증 코드입니다.');
+    }
   }
 }

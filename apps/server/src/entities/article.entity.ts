@@ -19,31 +19,31 @@ export class Article {
   @PrimaryGeneratedColumn()
   articleId: number;
 
-  @Column({ type: 'int', nullable: false })
+  @Column()
   userId: number;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
+  @Column()
   thumb: string;
 
-  @Column({ type: 'varchar', length: 100, nullable: false })
+  @Column()
   title: string;
 
-  @Column({ type: 'varchar', length: 30, nullable: true })
+  @Column()
   description: string;
 
-  @Column({ type: 'longtext', nullable: false })
+  @Column()
   content: string;
 
-  @Column({ type: 'varchar', length: 10, nullable: true })
+  @Column()
   status: string;
 
-  @CreateDateColumn({ type: 'timestamp' })
+  @CreateDateColumn()
   createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
+  @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => User, (user) => user.articles, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
+  @ManyToOne(() => User, (user) => user.articles)
   @JoinColumn({ name: 'userId' })
   user: User;
 

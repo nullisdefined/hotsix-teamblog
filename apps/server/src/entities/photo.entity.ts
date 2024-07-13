@@ -2,17 +2,17 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, BaseEnti
 import { Article } from './article.entity';
 
 @Entity()
-export class Photo extends BaseEntity {
+export class Photo {
   @PrimaryGeneratedColumn()
   photoId: number;
 
-  @Column({ type: 'varchar', length: 255, nullable: false })
+  @Column()
   fileName: string;
 
-  @Column({ type: 'int', nullable: false })
+  @Column()
   articleId: number;
 
-  @ManyToOne(() => Article, (article) => article.photos, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
+  @ManyToOne(() => Article, (article) => article.photos)
   @JoinColumn({ name: 'articleId' })
   article: Article;
 }
