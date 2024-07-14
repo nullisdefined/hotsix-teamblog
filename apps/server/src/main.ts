@@ -7,6 +7,8 @@ async function bootstrap() {
   process.env.NODE_ENV =
     process.env.NODE_ENV && process.env.NODE_ENV.trim().toLowerCase() == 'production' ? 'production' : 'development';
 
+  console.log(`* environment: ${process.env.NODE_ENV}`);
+
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
   app.useGlobalPipes(
@@ -18,7 +20,6 @@ async function bootstrap() {
     }),
   );
   const configService = app.get(ConfigService);
-  console.log(process.env.TEST);
   await app.listen(configService.get('PORT'), '0.0.0.0');
 }
 bootstrap();
