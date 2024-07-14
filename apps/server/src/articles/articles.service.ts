@@ -17,14 +17,6 @@ export class ArticlesService {
   ) {}
 
   @InjectRepository(Article) private articleRepository: Repository<Article>;
-<<<<<<< HEAD
-  @InjectRepository(Comment) private commentRepository: Repository<Comment>;
-  @InjectRepository(Like) private likeRepository: Repository<Like>;
-
-  async getDetail(articleId: number) {
-    // 로그인 확인
-=======
->>>>>>> K0hun
 
   async getDetail(articleId: number): Promise<DetailResponse> {
     // article, user.nickname, photos정보 가져오기
