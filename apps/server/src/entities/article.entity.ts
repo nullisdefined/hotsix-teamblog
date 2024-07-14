@@ -1,4 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn, OneToMany, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
+  JoinColumn,
+  BaseEntity,
+} from 'typeorm';
 import { User } from './user.entity';
 import { Photo } from './photo.entity';
 import { Comment } from './comment.entity';
@@ -9,40 +19,40 @@ export class Article {
   @PrimaryGeneratedColumn()
   articleId: number;
 
-  @Column({ type: 'int', nullable: false })
+  @Column()
   userId: number;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
+  @Column()
   thumb: string;
 
-  @Column({ type: 'varchar', length: 100, nullable: false })
+  @Column()
   title: string;
 
-  @Column({ type: 'varchar', length: 30, nullable: true })
+  @Column()
   description: string;
 
-  @Column({ type: 'longtext', nullable: false })
+  @Column()
   content: string;
 
-  @Column({ type: 'varchar', length: 10, nullable: true })
+  @Column()
   status: string;
 
-  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn()
   createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
+  @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => User, user => user.articles, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
+  @ManyToOne(() => User, (user) => user.articles)
   @JoinColumn({ name: 'userId' })
   user: User;
 
-  @OneToMany(() => Photo, photo => photo.article)
+  @OneToMany(() => Photo, (photo) => photo.article)
   photos: Photo[];
 
-  @OneToMany(() => Comment, comment => comment.article)
+  @OneToMany(() => Comment, (comment) => comment.article)
   comments: Comment[];
 
-  @OneToMany(() => Like, like => like.article)
+  @OneToMany(() => Like, (like) => like.article)
   likes: Like[];
 }

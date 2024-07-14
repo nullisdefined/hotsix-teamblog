@@ -1,0 +1,43 @@
+# name: Docker Publish
+
+# on:
+#   push:
+#     branches:
+#       - master
+#       - test
+#   pull_request:
+#     branches: 
+#       - master
+#       - test
+
+# jobs:
+#   build-and-push:
+#     runs-on: ubuntu-latest
+#     steps:
+#     - uses: actions/checkout@v3
+
+#     - name: Docker Buildx 설정
+#       uses: docker/setup-buildx-action@v2
+
+#     - name: Docker Hub 로그인
+#       uses: docker/login-action@v2
+#       with:
+#         username: ${{ secrets.DOCKERHUB_USERNAME }}
+#         password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+#     - name: GCP JSON Key 파일 생성
+#       run: |
+#         mkdir -p apps/server/src/configs
+#         echo '${{ secrets.GCP_KEY_JSON }}' > apps/server/src/configs/superb-app-428715-m2-70554e73216e.json
+
+#     - name: Docker Image 빌드 및 Push
+#       uses: docker/build-push-action@v4
+#       with:
+#         context: .
+#         push: true
+#         tags: |
+#           nullisdefined/hotsix-blog:latest
+#           nullisdefined/hotsix-blog:${{ github.sha }}
+
+#     - name: Docker Image digest 출력
+#       run: echo ${{ steps.docker_build.outputs.digest }}

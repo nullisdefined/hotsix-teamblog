@@ -16,7 +16,6 @@ export class ArticlesService {
   @InjectRepository(Like) private likeRepository: Repository<Like>;
 
   async getDetail(articleId: number) {
-
     // 로그인 확인
 
     // article, user.nickname, photos정보 가져오기

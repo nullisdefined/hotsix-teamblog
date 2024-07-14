@@ -1,45 +1,43 @@
-import { Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, OneToMany, BeforeInsert, BeforeUpdate } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany } from 'typeorm';
 import { Article } from './article.entity';
 import { Comment } from './comment.entity';
 import { Like } from './like.entity';
-import * as bcrypt from 'bcrypt';
 
 @Entity()
-@Unique(['email', 'nickname'])
 export class User {
   @PrimaryGeneratedColumn()
   userId: number;
 
-  @Column({ type: 'varchar', length: 50, nullable: false })
+  @Column()
   email: string;
 
-  @Column({ type: 'varchar', length: 255, nullable: false })
+  @Column()
   password: string;
 
-  @Column({ type: 'varchar', length: 10, nullable: false })
+  @Column()
   name: string;
 
-  @Column({ type: 'varchar', length: 15, nullable: false })
+  @Column()
   nickname: string;
 
-  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn()
   createdAt: Date;
 
-  @Column({ type: 'varchar', length: 255, nullable: false })
+  @Column()
   profileImage: string;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
+  @Column()
   gitUrl: string;
 
-  @Column({ type: 'varchar', length: 50, nullable: true })
+  @Column()
   introduce: string;
 
-  @OneToMany(() => Article, article => article.user)
+  @OneToMany(() => Article, (article) => article.user)
   articles: Article[];
 
-  @OneToMany(() => Comment, comment => comment.user)
+  @OneToMany(() => Comment, (comment) => comment.user)
   comments: Comment[];
 
-  @OneToMany(() => Like, like => like.user)
+  @OneToMany(() => Like, (like) => like.user)
   likes: Like[];
 }

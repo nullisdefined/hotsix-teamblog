@@ -7,18 +7,22 @@ import { User } from 'src/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
-    PassportModule.register({ 
-      global: true, 
-      defaultStrategy: 'jwt'
+    PassportModule.register({
+      defaultStrategy: 'jwt',
     }),
-    JwtModule.register({
-      global: true,
-      secret: 'SECRET_KEY', // JWT Signature의 Secret Key
-      signOptions: {expiresIn: '30m'}, // 토큰 만료시간
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        secret: process.env.JWT_SECRET_KEY,
+        signOptions: {
+          expiresIn: process.env.JWT_EXPIRATION_TIME,
+        },
+      }),
     }),
   ],
   controllers: [AuthController],

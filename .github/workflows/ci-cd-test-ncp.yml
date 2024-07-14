@@ -1,0 +1,69 @@
+name: CI/CD 자동화 테스트
+
+on:
+  push:
+    branches: [ nullisdefined ]
+
+jobs:
+  build-push-deploy:
+    runs-on: ubuntu-22.04 
+    steps:
+    - name: 코드 체크아웃
+      uses: actions/checkout@v3
+
+    - name: Docker Buildx 설정
+      uses: docker/setup-buildx-action@v2
+
+    - name: GCP JSON Key 파일 생성
+      run: |
+        mkdir -p apps/server/src/configs
+        echo '${{ secrets.GCP_KEY_JSON }}' > apps/server/src/configs/superb-app-428715-m2-70554e73216e.json
+
+    - name: NCR 로그인
+      uses: docker/login-action@v2
+      with:
+        registry: hotsix-blog.kr.ncr.ntruss.com
+        username: ${{ secrets.NCP_ACCESS_KEY }}
+        password: ${{ secrets.NCP_SECRET_KEY }}
+
+    - name: 도커 이미지 빌드 및 푸시
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        push: true
+        tags: |
+          hotsix-blog.kr.ncr.ntruss.com/hotsix-blog:${{ github.sha }}
+          hotsix-blog.kr.ncr.ntruss.com/hotsix-blog:test
+
+    - name: 서버 배포
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USERNAME }}
+        key: ${{ secrets.SERVER_SSH_KEY }}
+        port: 22
+        script: |
+          docker login hotsix-blog.kr.ncr.ntruss.com -u ${{ secrets.NCP_ACCESS_KEY }} -p ${{ secrets.NCP_SECRET_KEY }}
+          docker pull hotsix-blog.kr.ncr.ntruss.com/hotsix-blog:test
+          docker stop hotsix-blog-container || true
+          docker rm hotsix-blog-container || true
+          docker run -d --name hotsix-blog-container -p 3001:3001 \
+            -e NODE_ENV=production \
+            -e PORT=${{ secrets.PORT }} \
+            -e SMTP_PORT=${{ secrets.SMTP_PORT }} \
+            -e JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} \
+            -e JWT_SECRET_EXPIRATION_TIME=${{ secrets.JWT_EXPIRATION_TIME }} \
+            -e DB_HOST=${{ secrets.DB_HOST }} \
+            -e DB_PORT=${{ secrets.DB_PORT }} \
+            -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
+            -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+            -e DB_NAME=${{ secrets.DB_NAME }} \
+            -e FROM_EMAIL_USER=${{ secrets.FROM_EMAIL_USER }} \
+            -e FROM_EMAIL_PASS=${{ secrets.FROM_EMAIL_PASS }} \
+            -e GOOGLE_CLOUD_PROJECT_ID=${{ secrets.GOOGLE_CLOUD_PROJECT_ID }} \
+            -e GOOGLE_CLOUD_STORAGE_BUCKET=${{ secrets.GOOGLE_CLOUD_STORAGE_BUCKET }} \
+            -e GOOGLE_APPLICATION_CREDENTIALS=${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }} \
+            hotsix-blog.kr.ncr.ntruss.com/hotsix-blog:${{ github.sha }}
+
+    - name: 도커 이미지 다이제스트 출력
+      run: echo ${{ steps.docker_build.outputs.digest }}

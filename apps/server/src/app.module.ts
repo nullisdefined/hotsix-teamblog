@@ -9,25 +9,28 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [
-    // serve-static
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '../..', 'client', 'dist'), // '/client/dist'를 루트 디렉터리로 static 파일을 제공
-    }),
-    // typrorm
-    TypeOrmModule.forRoot(typeORMConfig),
-    // config
     ConfigModule.forRoot({
-      envFilePath: `./src/configs/env/.${process.env.NODE_ENV || 'development'}.env`,
-      isGlobal: true, // 다른 모듈에서도 전역으로 동작
+      isGlobal: true,
+      envFilePath:
+        process.env.NODE_ENV === 'production'
+          ? `/app/configs/env/.production.env`
+          : `./src/configs/env/.development.env`,
+      load: [],
+      cache: true,
     }),
+    ServeStaticModule.forRoot({
+      rootPath: process.env.NODE_ENV === 'production' ? '/app/public' : join(__dirname, '../..', 'client', 'dist'),
+    }),
+    TypeOrmModule.forRoot(typeORMConfig),
     MailerModule.forRoot({
       transport: {
         host: 'smtp.gmail.com',
-        port: 587,
-        secure: false, // 465를 사용할 경우 true로 설정
+        port: parseInt(process.env.SMTP_PORT),
+        secure: false,
         auth: {
           user: process.env.FROM_EMAIL_USER,
           pass: process.env.FROM_EMAIL_PASS,
@@ -39,6 +42,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
     }),
     UsersModule,
     AuthModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],

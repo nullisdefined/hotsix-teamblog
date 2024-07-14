@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, BaseEntity } from 'typeorm';
 import { User } from './user.entity';
 import { Article } from './article.entity';
 
@@ -7,17 +7,17 @@ export class Like {
   @PrimaryGeneratedColumn()
   likeId: number;
 
-  @Column({ type: 'int', nullable: false })
+  @Column()
   userId: number;
 
-  @Column({ type: 'int', nullable: false })
+  @Column()
   articleId: number;
 
-  @ManyToOne(() => User, user => user.likes, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
+  @ManyToOne(() => User, (user) => user.likes)
   @JoinColumn({ name: 'userId' })
   user: User;
 
-  @ManyToOne(() => Article, article => article.likes, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
+  @ManyToOne(() => Article, (article) => article.likes)
   @JoinColumn({ name: 'articleId' })
   article: Article;
 }
