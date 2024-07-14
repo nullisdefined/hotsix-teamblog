@@ -9,6 +9,20 @@ import { UpdateUserDto } from './dto/updateUser.dto';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Post('/')
+  @UseGuards(AuthGuard())
+  @HttpCode(HttpStatus.OK)
+  async getUserId(@Req() req): Promise<any> {
+    return req.user.userId;
+  }
+
+  @Get('/')
+  @UseGuards(AuthGuard())
+  @HttpCode(HttpStatus.OK)
+  async getUserInfo(@Body('userId') userId: number): Promise<any> {
+    return await this.usersService.getUserInfo(userId);
+  }
+
   @Delete('/delete')
   @UseGuards(AuthGuard())
   @HttpCode(HttpStatus.NO_CONTENT)

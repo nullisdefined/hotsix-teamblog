@@ -76,4 +76,16 @@ export class UsersService {
       throw new InternalServerErrorException('사용자 정보 업데이트 중 오류가 발생했습니다.');
     }
   }
+
+  async getUserInfo(userId: number): Promise<User> {
+    const user = await this.findByFields({
+      where: { userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException('존재하지 않는 사용자입니다.');
+    }
+
+    return user;
+  }
 }
