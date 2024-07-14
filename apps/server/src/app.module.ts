@@ -14,11 +14,13 @@ import { UploadModule } from './upload/upload.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
+      isGlobal: true,
       envFilePath:
         process.env.NODE_ENV === 'production'
           ? `/app/configs/env/.production.env`
           : `./src/configs/env/.development.env`,
-      isGlobal: true,
+      load: [],
+      cache: true,
     }),
     ServeStaticModule.forRoot({
       rootPath: process.env.NODE_ENV === 'production' ? '/app/public' : join(__dirname, '../..', 'client', 'dist'),
@@ -27,7 +29,7 @@ import { UploadModule } from './upload/upload.module';
     MailerModule.forRoot({
       transport: {
         host: 'smtp.gmail.com',
-        port: 587,
+        port: parseInt(process.env.SMTP_PORT),
         secure: false,
         auth: {
           user: process.env.FROM_EMAIL_USER,
