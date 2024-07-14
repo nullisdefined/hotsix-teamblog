@@ -6,11 +6,11 @@ import { Photo } from 'src/entities/photo.entity';
 import { User } from 'src/entities/user.entity';
 
 export const typeORMConfig: TypeOrmModuleOptions = {
-  type: 'mysql',
+  type: 'postgres',
   host: 'localhost',
-  port: 3306,
-  username: 'root',
-  password: 'mysql',
+  port: 5432,
+  username: 'postgres',
+  password: '1234',
   database: 'hotsix-blog',
   // __dirname + '/../**/*.entity.{js,ts}'
   entities: [User, Article, Comment, Photo, Like],
