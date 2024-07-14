@@ -1,33 +1,29 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CommentDto } from './dto/comment.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { JwtService } from '@nestjs/jwt';
-import { Article } from 'src/entities/article.entity';
+import { FindOneOptions, Repository } from 'typeorm';
 import { Comment } from 'src/entities/comment.entity';
+import { ArticleDetailCommentType, ResponseMessage } from 'src/types/type';
+import { ArticlesService } from 'src/articles/articles.service';
+import { Article } from 'src/entities/article.entity';
 
 @Injectable()
 export class CommentsService {
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(
+    @Inject(forwardRef(() => ArticlesService))
+    private readonly articlesService: ArticlesService,
+  ) {}
 
   @InjectRepository(Comment) private commentRepository: Repository<Comment>;
-  @InjectRepository(Article) private articleRepository: Repository<Article>;
 
-  async create(articleId: number, commentDto: CommentDto, req: any) {
-    // 게시글 존재 여부 확인
-    const article = await this.articleRepository.findOne({ where: { articleId: articleId } });
+  async create(articleId: number, commentDto: CommentDto, userId: number): Promise<ResponseMessage> {
+    const article: Article = await this.articlesService.findOne(articleId);
+
     if (!article) {
-      throw new Error('해당 게시글이 없습니다.');
+      throw new NotFoundException('Article not found');
     }
-
-    // 로그인여부 확인 + jwt토큰 확인 + userId 확인
-    const token = await req.cookies['access_token'];
-    const { id } = await this.jwtService.verifyAsync(token, {
-      secret: 'Secret',
-    });
-
     // DB에 insert
-    const typedComment = this.commentRepository.create({ ...commentDto, articleId: articleId, userId: id });
+    const typedComment: Comment = this.commentRepository.create({ ...commentDto, articleId, userId });
     await this.commentRepository.save(typedComment);
 
     return {
@@ -35,23 +31,8 @@ export class CommentsService {
     };
   }
 
-  async update(commentId: number, commentDto: CommentDto, req: any) {
-    // 댓글 존재 여부 확인
-    const comment = await this.commentRepository.findOne({ where: { commentId: commentId } });
-    if (!comment) {
-      throw new Error('해당 댓글이 없습니다.');
-    }
-
-    // 로그인여부 확인 + jwt토큰 확인 + userId 확인
-    const token = await req.cookies['access_token'];
-    const { id } = await this.jwtService.verifyAsync(token, {
-      secret: 'Secret',
-    });
-
-    // 사용자가 작성한 댓글인지 확인
-    if (comment.userId !== id) {
-      throw new Error('사용자의 댓글이 아닙니다.');
-    }
+  async update(commentId: number, commentDto: CommentDto): Promise<ResponseMessage> {
+    const comment: Comment = await this.findOne(commentId);
 
     // DB에 update
     comment.comment = commentDto.comment;
@@ -62,23 +43,8 @@ export class CommentsService {
     };
   }
 
-  async delete(commentId: number, req: any) {
-    // 댓글 존재 여부 확인
-    const comment = await this.commentRepository.findOne({ where: { commentId: commentId } });
-    if (!comment) {
-      throw new Error('해당 댓글이 없습니다.');
-    }
-
-    // 로그인여부 확인 + jwt토큰 확인 + userId 확인
-    const token = await req.cookies['access_token'];
-    const { id } = await this.jwtService.verifyAsync(token, {
-      secret: 'Secret',
-    });
-
-    // 사용자가 작성한 댓글인지 확인
-    if (comment.userId !== id) {
-      throw new Error('사용자의 댓글이 아닙니다.');
-    }
+  async delete(commentId: number): Promise<ResponseMessage> {
+    const comment: Comment = await this.findOne(commentId);
 
     // DB에 delete
     await this.commentRepository.remove(comment);
@@ -86,5 +52,21 @@ export class CommentsService {
     return {
       message: '댓글 삭제 완료',
     };
+  }
+
+  async findByFields(options: FindOneOptions<Comment>): Promise<Comment[] | undefined> {
+    return await this.commentRepository.find(options);
+  }
+
+  changeToResponseType(comments: Comment[]): ArticleDetailCommentType[] {
+    return comments.map((value) => ({
+      nickname: value.user.nickname,
+      comment: value.comment,
+      createdAt: value.createdAt,
+    }));
+  }
+
+  async findOne(commentId: number): Promise<Comment> {
+    return await this.commentRepository.findOne({ where: { commentId } });
   }
 }

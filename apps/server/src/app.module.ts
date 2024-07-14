@@ -10,6 +10,9 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { UploadModule } from './upload/upload.module';
+import { ArticlesModule } from './articles/articles.module';
+import { CommentsModule } from './comments/comments.module';
+import { LikesModule } from './likes/likes.module';
 
 @Module({
   imports: [
@@ -42,6 +45,9 @@ import { UploadModule } from './upload/upload.module';
     }),
     UsersModule,
     AuthModule,
+    ArticlesModule,
+    CommentsModule,
+    LikesModule,
     UploadModule,
   ],
   controllers: [AppController],
