@@ -30,7 +30,7 @@ export class Article {
   @Column({ type: 'varchar', length: 30, nullable: true })
   description: string;
 
-  @Column({ type: 'longtext', nullable: false })
+  @Column({ type: 'text', nullable: false })
   content: string;
 
   @Column({ type: 'varchar', length: 10, nullable: true })

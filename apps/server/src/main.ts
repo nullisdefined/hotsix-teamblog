@@ -10,14 +10,14 @@ async function bootstrap() {
   app.use(cookieParser());
   app.setGlobalPrefix('api'); // 서버로 들어오는 모든 요청 URL 맨 앞에 'api'를 붙임
   app.useStaticAssets(join(__dirname, '..', 'public')); // index.html파일 테스트를 위한 코드
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
-      disableErrorMessages: false,
-    }),
-  );
+  // app.useGlobalPipes(
+  //   new ValidationPipe({
+  //     whitelist: true,
+  //     forbidNonWhitelisted: true,
+  //     transform: true,
+  //     disableErrorMessages: false,
+  //   }),
+  // );
   await app.listen(4000);
 }
 bootstrap();

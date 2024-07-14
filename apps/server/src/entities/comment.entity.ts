@@ -21,7 +21,7 @@ export class Comment {
   @Column({ type: 'int', nullable: false })
   articleId: number;
 
-  @Column({ type: 'longtext', nullable: false })
+  @Column({ type: 'text', nullable: false })
   comment: string;
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
