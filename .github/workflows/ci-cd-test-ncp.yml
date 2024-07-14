@@ -49,10 +49,11 @@ jobs:
           docker rm hotsix-blog-container || true
           docker run -d --name hotsix-blog-container -p 3001:3001 \
             -e NODE_ENV=production \
-            -e NODE_ENV=${{ secrets.PORT }} \
-            -e NODE_ENV=${{ secrets.SMTP_PORT }} \
+            -e TEST=${{ secrets.test }} \
+            -e PORT=${{ secrets.PORT }} \
+            -e SMTP_PORT=${{ secrets.SMTP_PORT }} \
             -e JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} \
-            -e JWT_SECRET_KEY=${{ secrets.JWT_EXPIRATION_TIME }} \
+            -e JWT_SECRET_EXPIRATION_TIME=${{ secrets.JWT_EXPIRATION_TIME }} \
             -e DB_HOST=${{ secrets.DB_HOST }} \
             -e DB_PORT=${{ secrets.DB_PORT }} \
             -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
