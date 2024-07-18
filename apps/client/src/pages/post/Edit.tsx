@@ -8,7 +8,7 @@ const PostEdit = () => {
   const [titleValue, setTitleValue] = useState<string>("");
   const [editorValue, setEditorValue] = useState<string>("");
   const [filesValue, setfilesValue] = useState<File[]>([]);
-  const [isShow, setIsShow] = useState<booleanolean>(true);
+  const [isShow, setIsShow] = useState<boolean>(true);
 
   const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setTitleValue(e.target.value);
