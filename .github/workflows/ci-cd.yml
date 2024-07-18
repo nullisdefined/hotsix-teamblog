@@ -32,7 +32,8 @@ jobs:
         context: .
         push: true
         tags: |
-          hotsix-blog.kr.ncr.ntruss.com/hotsix-blog:latest
+          hotsix-blog.kr.ncr.ntruss.com/hotsix-blog:${{ github.sha }}
+          hotsix-blog.kr.ncr.ntruss.com/hotsix-blog:test
 
     - name: 서버 배포
       uses: appleboy/ssh-action@master
@@ -43,13 +44,15 @@ jobs:
         port: 22
         script: |
           docker login hotsix-blog.kr.ncr.ntruss.com -u ${{ secrets.NCP_ACCESS_KEY }} -p ${{ secrets.NCP_SECRET_KEY }}
-          docker pull hotsix-blog.kr.ncr.ntruss.com/hotsix-blog:latest
+          docker pull hotsix-blog.kr.ncr.ntruss.com/hotsix-blog:test
           docker stop hotsix-blog-container || true
           docker rm hotsix-blog-container || true
           docker run -d --name hotsix-blog-container -p 3001:3001 \
             -e NODE_ENV=production \
-            -e NODE_ENV=production \
+            -e PORT=${{ secrets.PORT }} \
+            -e SMTP_PORT=${{ secrets.SMTP_PORT }} \
             -e JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} \
+            -e JWT_SECRET_EXPIRATION_TIME=${{ secrets.JWT_EXPIRATION_TIME }} \
             -e DB_HOST=${{ secrets.DB_HOST }} \
             -e DB_PORT=${{ secrets.DB_PORT }} \
             -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
@@ -60,8 +63,7 @@ jobs:
             -e GOOGLE_CLOUD_PROJECT_ID=${{ secrets.GOOGLE_CLOUD_PROJECT_ID }} \
             -e GOOGLE_CLOUD_STORAGE_BUCKET=${{ secrets.GOOGLE_CLOUD_STORAGE_BUCKET }} \
             -e GOOGLE_APPLICATION_CREDENTIALS=${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }} \
-            hotsix-blog.kr.ncr.ntruss.com/hotsix-blog:latest
+            hotsix-blog.kr.ncr.ntruss.com/hotsix-blog:${{ github.sha }}
 
     - name: 도커 이미지 다이제스트 출력
       run: echo ${{ steps.docker_build.outputs.digest }}
-
