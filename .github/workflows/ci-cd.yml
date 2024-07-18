@@ -27,6 +27,7 @@ jobs:
         password: ${{ secrets.NCP_SECRET_KEY }}
 
     - name: 도커 이미지 빌드 및 푸시
+      id: docker_build
       uses: docker/build-push-action@v4
       with:
         context: .
