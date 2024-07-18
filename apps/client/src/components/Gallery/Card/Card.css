@@ -1,0 +1,23 @@
+.Card {
+  width: 30%;
+  border: 1px solid;
+  margin-right: 2%;
+}
+.Card:nth-child(3n) {
+  margin-right: 0;
+}
+.Image {
+  position: relative;
+}
+.Image img {
+  width: 100%;
+}
+.Likes {
+  position: absolute;
+  color: #fff;
+  bottom: 5px;
+  right: 10px;
+}
+.Text {
+  padding: 1em;
+}
