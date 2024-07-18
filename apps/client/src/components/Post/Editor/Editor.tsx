@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import "froala-editor/css/froala_editor.pkgd.min.css";
 import "froala-editor/css/froala_style.min.css";
-import FroalaEditor from "react-froala-wysiwyg";
+import FroalaEditor from "froala-editor";
+import ReactFroalaEditor from "react-froala-wysiwyg";
 import "froala-editor/js/plugins/image.min.js";
 import axios from "axios";
 import "./Editor.css";
@@ -28,7 +29,7 @@ const Editor: React.FC<EditorProps> = ({ onChange }) => {
     toolbarInline: false, // 인라인 툴바를 사용하지 않음
     attribution: false, // 푸터의 Froala 로고 및 링크 제거
     events: {
-      "image.beforeUpload": function (images: File[]) {
+      "image.beforeUpload": function (this: FroalaEditor, images: File[]) {
         const data = new FormData();
         data.append("file", images[0]);
 
@@ -45,7 +46,7 @@ const Editor: React.FC<EditorProps> = ({ onChange }) => {
           .then((response) => {
             const imageUrl = response.data.link; // 서버가 반환하는 이미지 URL
             num++;
-            this.image.insert(imageUrl, null, null, this.image.get(), null);
+            this.image.insert(imageUrl, false, {}, this.image.get());
           })
           .catch((error) => {
             // Handle upload error
@@ -59,7 +60,7 @@ const Editor: React.FC<EditorProps> = ({ onChange }) => {
 
   return (
     <div>
-      <FroalaEditor
+      <ReactFroalaEditor
         tag="textarea"
         config={config}
         model={content}

@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import Button from "../Button/Button";
 import "./Header.css";
@@ -6,7 +5,6 @@ import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 
 const Header = () => {
-
   const location = useLocation();
   const [isLoginPage, setIsLoginPage] = useState(true);
 

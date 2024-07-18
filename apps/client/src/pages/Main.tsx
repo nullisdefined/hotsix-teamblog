@@ -1,4 +1,3 @@
-import React from "react";
 import Profile from "../components/Profile/Profile";
 import Gallery from "../components/Gallery/Gallery";
 
