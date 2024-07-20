@@ -1,0 +1,12 @@
+.fr-toolbar.fr-top,
+.fr-second-toolbar,
+.fr-box.fr-basic .fr-wrapper {
+  border-radius: 0 !important;
+  border: none !important;
+  background-color: var(--color-background);
+}
+
+.fr-box.fr-basic .fr-wrapper {
+  height: 50vh;
+  overflow-y: scroll;
+}

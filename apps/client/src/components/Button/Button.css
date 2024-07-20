@@ -6,15 +6,25 @@
 }
 
 .Button_PRIMARY {
-  background-color: #764fe1;
+  background-color: var(--color-primary);
   color: #fff;
 }
 .Button_FOCUSED {
   background-color: #fff;
-  border: 1px solid #764fe1;
+  border: 1px solid var(--color-primary);
   color: #000;
 }
 .Button_DISABLED {
-  background-color: #d1d1d1;
+  background-color: var(--color-disable);
   color: #fff;
+}
+
+.Button_SMALL {
+  font-size: 1em;
+}
+.Button_MIDEUM {
+  font-size: 1.2em;
+}
+.Button_LARGE {
+  font-size: 1.5em;
 }

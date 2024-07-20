@@ -1,4 +1,3 @@
-import React from "react";
 import JoinInput from "../components/JoinInput/JoinInput";
 
 const Join = () => {

@@ -5,11 +5,13 @@ import { useNavigate } from "react-router-dom";
 
 const LoginInput = () => {
 
+
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [pwd, setPwd] = useState("");
 
+  
   const onChangeId = (e: ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
   };
@@ -41,6 +43,7 @@ const LoginInput = () => {
     });
   }
 
+
   return (
     <>
       <div className="LoginInput">
@@ -61,3 +64,4 @@ const LoginInput = () => {
 };
 
 export default LoginInput;
+
