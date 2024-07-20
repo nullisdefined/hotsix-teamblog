@@ -38,7 +38,7 @@ const JoinInput = () => {
 
         console.log(email + pwd + nickname + img + link + introduction);
 
-        axios.post('http://localhost:5173/api/join',
+        axios.post('http://localhost:3001/api/join',
             {
                 "email": email,
                 "pwd": pwd,
@@ -46,19 +46,24 @@ const JoinInput = () => {
                 "img": img,
                 "link": link,
                 "introduction": introduction
-            }, {
-                headers: { 'Content-type': 'application/json' }
-            })
+            }, 
+            {
+                headers: { 'Content-type': 'application/json' },
+                withCredentials: true
+            }
+        )
         .then((res)=>{
-              console.log(res);
-              alert("회원가입 성공");
-              navigate("/login");
-          }).catch(error=>{
-              alert("회원가입 실패");
-              navigate("/");
-              console.log(error);
-              throw new Error(error);
-          });
+            console.log(res);
+            alert("회원가입 성공");
+            navigate("/login");
+          }
+        ).catch(error=>{
+            alert("회원가입 실패");
+            navigate("/");
+            console.log(error);
+            throw new Error(error);
+          }
+        );
     }
 
     return (

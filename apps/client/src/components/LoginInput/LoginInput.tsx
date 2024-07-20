@@ -24,7 +24,7 @@ const LoginInput = () => {
 
     axios({
       method:"POST",
-      url: 'http://http://localhost:5173/api/login',
+      url: 'http://localhost:3001/api/login',
       data:{
           "email": email,
           "password": pwd
