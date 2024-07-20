@@ -8,15 +8,20 @@ import { useState, useEffect } from "react";
 const Header = () => {
 
   const location = useLocation();
-  const [isLoginPage, setIsLoginPage] = useState(true);
+  const [isLogin, setIsLogin] = useState(true);
 
   useEffect(() => {
-    location.pathname === "/login"
-      ? setIsLoginPage(true)
-      : setIsLoginPage(false);
-  }, [location.pathname, setIsLoginPage]);
+    if(location.pathname === "/login")
+    {
+      setIsLogin(true);
+    }
+    else {
+      setIsLogin(false);
+    }
+  }, [location.pathname]);
 
-  if (isLoginPage) return null;
+  if(isLogin) 
+    return null;
 
   return (
     <header className="Header">

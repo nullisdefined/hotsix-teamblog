@@ -1,6 +1,14 @@
+
 import "./JoinInput.css";
 
 const JoinInput = () => {
+
+    const onClickImg = () => {
+        //사진에 value를 부여해서 해당 사진의 value를 서버에 전송하도록 해야한다. 
+        
+    }
+
+
     return (
         <div className="JoinInput">
             <div className="email">
@@ -27,7 +35,7 @@ const JoinInput = () => {
             <div className="profileImg">
                 <p>프로필 이미지</p>
                 <div style={{display: "flex", justifyContent: "space-around"}}>
-                    <img src="https://picsum.photos/id/16/200/300"/>
+                    <img  onClick={onClickImg} src="https://picsum.photos/id/16/200/300"/>
                     <img src="https://picsum.photos/id/17/200/300"/>
                     <img src="https://picsum.photos/id/29/200/300"/>
                 </div>
