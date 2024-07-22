@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import Profile from "../components/Profile/Profile";
 import Gallery from "../components/Gallery/Gallery";
 import postAPI from "../services/post";
+import axios from "axios";
+import { IPost } from "../types";
 
 function Main() {
   useEffect(() => {
@@ -10,14 +12,18 @@ function Main() {
         const response = await postAPI.getArticles();
         console.log("SUCCESS", response);
       } catch (err) {
-        console.log("ERR", err.response.data);
+        if (axios.isAxiosError(err)) {
+          console.log("ERR", err.response?.data);
+        } else {
+          console.log("ERR", err);
+        }
       }
     };
 
     postArticle();
   }, []);
 
-  const posts = [
+  const posts: IPost[] = [
     {
       id: 1,
       nickname: "userName1",
@@ -27,6 +33,10 @@ function Main() {
       createdAt: "2024-06-28T12:34:56.789Z",
       updatedAt: "2024-06-28T12:34:56.789Z",
       status: true,
+      likes: 0,
+      content: "",
+      comments: [],
+      showStatus: true,
     },
     {
       id: 2,
@@ -37,6 +47,10 @@ function Main() {
       createdAt: "2024-06-28T12:34:56.789Z",
       updatedAt: "2024-06-28T12:34:56.789Z",
       status: true,
+      likes: 0,
+      content: "",
+      comments: [],
+      showStatus: true,
     },
   ];
   return (

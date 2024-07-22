@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import { IPost } from "../../types";
 import HtmlRenderer from "../../components/Post/HtmlRenderer";
 import Button from "../../components/Button/Button";
+import axios, { AxiosError } from "axios";
 import dayjs from "dayjs";
 
 const PostDetail = () => {
@@ -24,7 +25,11 @@ const PostDetail = () => {
         console.log(response);
         setArticle(response);
       } catch (err) {
-        console.log("ERR", err.response.data);
+        if (axios.isAxiosError(err)) {
+          console.log("ERR", err.response?.data);
+        } else {
+          console.log("ERR", err);
+        }
       }
     }
   };
@@ -38,7 +43,11 @@ const PostDetail = () => {
       await likesAPI.postLike(Number(id));
       postArticle();
     } catch (err) {
-      console.log("ERR", err.response.data);
+      if (axios.isAxiosError(err)) {
+        console.log("ERR", err.response?.data);
+      } else {
+        console.log("ERR", err);
+      }
     }
   };
 
@@ -50,7 +59,11 @@ const PostDetail = () => {
       await commentsAPI.postComment(Number(id), comment);
       postArticle();
     } catch (err) {
-      console.log("ERR", err.response.data);
+      if (axios.isAxiosError(err)) {
+        console.log("ERR", err.response?.data);
+      } else {
+        console.log("ERR", err);
+      }
     }
   };
 

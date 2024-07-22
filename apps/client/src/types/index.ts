@@ -9,6 +9,7 @@ export interface IPost {
   comments: IComments[];
   createdAt: string;
   updatedAt: string;
+  status: boolean;
   showStatus: boolean;
 }
 

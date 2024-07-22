@@ -1,4 +1,4 @@
-import { IsString, IsOptional, MaxLength } from 'class-validator';
+import { IsString, IsOptional, MaxLength, IsBoolean } from 'class-validator';
 
 export class ArticleDto {
   @IsOptional()
@@ -18,8 +18,7 @@ export class ArticleDto {
   @IsString()
   content: string;
 
+  @IsBoolean()
   @IsOptional()
-  @IsString()
-  @MaxLength(10)
-  status?: string;
+  status?: boolean;
 }

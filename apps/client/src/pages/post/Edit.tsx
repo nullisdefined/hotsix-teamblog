@@ -4,6 +4,7 @@ import Button from "../../components/Button/Button";
 import UploadFile from "../../components/Post/UploadFile/UploadFile";
 import "./Edit.css";
 import postAPI from "../../services/post";
+import axios, { AxiosError } from "axios";
 
 const PostEdit = () => {
   const [titleValue, setTitleValue] = useState<string>("");
@@ -33,7 +34,11 @@ const PostEdit = () => {
       const response = await postAPI.postArticle(data);
       console.log("SUCCESS", response);
     } catch (err) {
-      console.log("ERR", err.response.data);
+      if (axios.isAxiosError(err)) {
+        console.log("ERR", err.response?.data);
+      } else {
+        console.log("ERR", err);
+      }
     }
   };
 

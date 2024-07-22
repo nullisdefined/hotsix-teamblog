@@ -2,7 +2,7 @@ name: CI/CD 자동화
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, nullisdefined ]
 
 jobs:
   build-push-deploy:

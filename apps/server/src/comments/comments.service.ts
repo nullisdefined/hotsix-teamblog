@@ -58,11 +58,18 @@ export class CommentsService {
     return await this.commentRepository.find(options);
   }
 
-  changeToResponseType(comments: Comment[]): ArticleDetailCommentType[] {
+  changeToResponseType(comments: Comment[]): any[] {
     return comments.map((value) => ({
-      nickname: value.user.nickname,
+      commentId: value.commentId,
       comment: value.comment,
       createdAt: value.createdAt,
+      updatedAt: value.updatedAt,
+      user: {
+        userId: value.user.userId,
+        nickname: value.user.nickname,
+        profileImage: value.user.profileImage,
+      },
+      article: value.article,
     }));
   }
 

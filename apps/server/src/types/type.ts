@@ -12,7 +12,7 @@ export type DetailResponse = {
   createdAt: Date;
   comments: ArticleDetailCommentType[];
   likes: number;
-  status: string;
+  status: boolean;
 };
 
 export type ResponseMessage = {
