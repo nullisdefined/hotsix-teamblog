@@ -3,6 +3,7 @@ import Editor from "../../components/Post/Editor/Editor";
 import Button from "../../components/Button/Button";
 import UploadFile from "../../components/Post/UploadFile/UploadFile";
 import "./Edit.css";
+import postAPI from "../../services/post";
 
 const PostEdit = () => {
   const [titleValue, setTitleValue] = useState<string>("");
@@ -20,8 +21,20 @@ const PostEdit = () => {
     setfilesValue(value);
   };
 
-  const handleClickPost = () => {
-    console.log("포스트!", filesValue);
+  const handleClickPost = async () => {
+    const data = {
+      title: titleValue,
+      content: editorValue,
+      status: isShow,
+      description: "des",
+      thumb: filesValue[0],
+    };
+    try {
+      const response = await postAPI.postArticle(data);
+      console.log("SUCCESS", response);
+    } catch (err) {
+      console.log("ERR", err.response.data);
+    }
   };
 
   return (

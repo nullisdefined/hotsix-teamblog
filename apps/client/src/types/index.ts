@@ -8,3 +8,11 @@ export interface IPost {
   updatedAt: string;
   showStatus: boolean;
 }
+
+export interface IPostArticle {
+  title: string;
+  content: string;
+  status: boolean;
+  description?: string;
+  thumb?: File;
+}
