@@ -79,13 +79,47 @@ const JoinInput = () => {
         );
     }
 
+    const emailCheck = () => {
+        axios({
+            method:"GET",
+            url: 'http://localhost:3001/api/check-email',
+            data:{
+                "email": email
+            }
+          }).then((res)=>{
+              console.log(res);
+              alert("닉네임 사용 가능");
+          }).catch(error=>{
+              alert("중복된 닉네임입니다.");
+              console.log(error);
+              throw new Error(error);
+          });
+    }
+
+    const nicknameCheck = () => {
+        axios({
+            method:"GET",
+            url: 'http://localhost:3001/api/check-nickname',
+            data:{
+                "email": email
+            }
+          }).then((res)=>{
+              console.log(res);
+              alert("이메일 사용 가능");
+          }).catch(error=>{
+              alert("중복된 이메일입니다.");
+              console.log(error);
+              throw new Error(error);
+          });
+    }
+
     return (
         <div className="JoinInput">
             <div className="email">
                 <p>이메일</p>
                 <div style={{display: "flex"}}>
                     <input className="emailInput" type="email" placeholder="email@hotsix.co.kr" onChange={onChangeEmail}/>
-                    <button className="dupeCheck">중복 확인</button>
+                    <button className="dupeCheck" onClick={emailCheck}>중복 확인</button>
                 </div>
             </div>
             
@@ -98,7 +132,7 @@ const JoinInput = () => {
                 <p>닉네임</p>
                 <div style={{display: "flex"}}>
                     <input className="nicknameInput" placeholder="nickname" onChange={onChangeNickname}/>
-                    <button className="dupeCheck">중복 확인</button>
+                    <button className="dupeCheck" onClick={nicknameCheck}>중복 확인</button>
                 </div>
             </div>
             
