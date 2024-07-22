@@ -1,12 +1,21 @@
 export interface IPost {
   id: number;
-  author: string;
+  nickname: string;
   thumb: string;
   title: string;
+  likes: number;
   description: string;
+  content: string;
+  comments: IComments[];
   createdAt: string;
   updatedAt: string;
   showStatus: boolean;
+}
+
+export interface IComments {
+  nickname: string;
+  comment: string;
+  createdAt: string;
 }
 
 export interface IPostArticle {
