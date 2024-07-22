@@ -34,6 +34,19 @@ const JoinInput = () => {
         setIntroduction(e.target.value);
     }
 
+    const clickImg1 = () => {
+        
+        setImg(1);
+    }
+
+    const clickImg2 = () => {
+        setImg(2);
+    }
+
+    const clickImg3 = () => {
+        setImg(3);
+    }
+
     const Join = () => {
 
         console.log(email + pwd + nickname + img + link + introduction);
@@ -92,9 +105,9 @@ const JoinInput = () => {
             <div className="profileImg">
                 <p>프로필 이미지</p>
                 <div style={{display: "flex", justifyContent: "space-around"}}>
-                    <img src="https://picsum.photos/id/16/200/300"/>
-                    <img src="https://picsum.photos/id/17/200/300"/>
-                    <img src="https://picsum.photos/id/29/200/300"/>
+                    <img src="https://picsum.photos/id/16/200/300" onClick={clickImg1}/>
+                    <img src="https://picsum.photos/id/17/200/300" onClick={clickImg2}/>
+                    <img src="https://picsum.photos/id/29/200/300" onClick={clickImg3}/>
                 </div>
             </div>
             
