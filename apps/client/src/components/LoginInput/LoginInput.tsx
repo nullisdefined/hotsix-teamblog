@@ -3,6 +3,7 @@ import "./LoginInput.css";
 import axios from "../../config/axios";
 import { setCookie } from "../../utils/cookies";
 import { useNavigate } from "react-router-dom";
+import dayjs from "dayjs";
 
 const LoginInput = () => {
   const navigate = useNavigate();
@@ -18,6 +19,11 @@ const LoginInput = () => {
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
+    const expirationInMinutes = parseInt(
+      import.meta.env.VITE_APP_JWT_EXPIRATION_TIME,
+      10
+    );
+    const expiryDate = dayjs().add(expirationInMinutes, "minute").toDate();
     event.preventDefault();
     try {
       const data = {
@@ -29,7 +35,7 @@ const LoginInput = () => {
       const accessToken = response.data.accessToken;
       setCookie("accessToken", accessToken, {
         path: "/",
-        // expires:
+        expires: expiryDate,
         // secure: true, // HTTPS에서만 전송
         // httpOnly: true
       });
