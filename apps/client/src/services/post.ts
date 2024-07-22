@@ -52,8 +52,12 @@ const postAPI: PostAPI = {
 
   // 게시글 수정
   modifyArticle: async (id: number, data: IPostArticle) => {
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      formData.append(key, String(value));
+    });
     try {
-      const response = await axios.post(`/articles/${id}`, data);
+      const response = await axios.post(`/articles/${id}`, formData);
       return response.data;
     } catch (err) {
       console.error("Error creating post:", err);
