@@ -3,13 +3,15 @@ import postAPI from "../../services/post";
 import likesAPI from "../../services/likes";
 import commentsAPI from "../../services/comments";
 import { useParams } from "react-router-dom";
-import { IPost } from "../../types";
+import { IPost, IUser } from "../../types";
 import HtmlRenderer from "../../components/Post/HtmlRenderer";
 import Button from "../../components/Button/Button";
 import axios from "axios";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
+import { useNavigate } from "react-router-dom";
+import userAPI from "../../services/users";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -21,6 +23,9 @@ const PostDetail = () => {
   const [comment, setComment] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentUser, setCurrentUser] = useState<IUser | null>(null);
+
+  const navigate = useNavigate();
 
   const postArticle = async () => {
     setLoading(true);
@@ -47,6 +52,17 @@ const PostDetail = () => {
   };
 
   useEffect(() => {
+    const getUserId = async () => {
+      try {
+        const { data } = await userAPI.getCurrentUser();
+        setCurrentUser(data);
+        console.log(data);
+      } catch (err) {
+        console.error("Failed to fetch current user:", err);
+      }
+    };
+    getUserId();
+
     postArticle();
   }, [id]);
 
@@ -92,11 +108,22 @@ const PostDetail = () => {
           <p className="font-bold text-xl">{article.nickname}</p>
           <p>{article.createdAt}</p>
         </div>
-        <Button
-          text={article.likes > 0 ? `좋아요 ${article.likes}` : "좋아요"}
-          type="FOCUSED"
-          onClick={handleLikes}
-        />
+        <div className="flex gap-4">
+          <Button
+            text={article.likes > 0 ? `${article.likes}` : "좋아요"}
+            type="LIKE"
+            spacing={article.liked ? "active" : ""}
+            onClick={handleLikes}
+          />
+          {currentUser && currentUser.userId === article.userId && (
+            <Button
+              text="수정"
+              type="SECONDARY"
+              size="MEDIUM"
+              onClick={() => navigate(`/posts/edit/${article.articleId}`)}
+            />
+          )}
+        </div>
       </div>
       <HtmlRenderer htmlContent={article.content} />
       <div className="pt-14">

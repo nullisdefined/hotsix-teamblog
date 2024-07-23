@@ -39,7 +39,7 @@ export interface IPostArticle {
 }
 
 export interface IUser {
-  id: number;
+  userId: number;
   nickname: string;
   email: string;
   introduce?: string;

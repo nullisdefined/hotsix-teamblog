@@ -47,7 +47,7 @@ const postAPI: PostAPI = {
   // 게시글 수정
   modifyArticle: async (id: number, data: IPostArticle) => {
     try {
-      const response = await axiosInstance.put(`/articles/${id}`, data);
+      const response = await axiosInstance.patch(`/articles/${id}`, data);
       return response.data;
     } catch (err) {
       console.error("Error modifying post:", err);

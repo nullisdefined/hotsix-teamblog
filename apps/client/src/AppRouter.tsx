@@ -18,6 +18,7 @@ const AppRouter = () => {
           <Route path="/join" element={<Join />} />
           <Route path="/posts/:id" element={<PostDetail />} />
           <Route path="/posts/create" element={<PostCreate />} />
+          <Route path="/posts/edit/:id" element={<PostEdit />} />
         </Routes>
       </BrowserRouter>
     </>

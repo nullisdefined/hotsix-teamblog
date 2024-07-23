@@ -1,7 +1,6 @@
 import React, { useState, ChangeEvent } from "react";
 import Editor from "../../components/Post/Editor/Editor";
 import Button from "../../components/Button/Button";
-import UploadFile from "../../components/Post/UploadFile/UploadFile";
 import "./Edit.css";
 import axios from "axios";
 
@@ -45,7 +44,7 @@ const PostEdit = () => {
     };
 
     try {
-      const token = localStorage.getItem("token"); // 토큰 가져오기
+      const token = localStorage.getItem("token");
       if (!token) {
         throw new Error("인증 토큰이 없습니다.");
       }
@@ -94,51 +93,45 @@ const PostEdit = () => {
   };
 
   return (
-    <div className="Container">
+    <div className="edit-container">
       <input
-        className="InputTitle my-4 p-3 text-lg"
+        className="input-title"
         type="text"
         placeholder="제목을 입력하세요"
         onChange={handleTitleChange}
         value={titleValue}
       />
       <textarea
-        className="InputDescription my-4 p-3"
+        className="input-description"
         placeholder="본문 요약을 입력하세요"
         onChange={handleDescriptionChange}
         value={description}
       />
       <input
-        className="InputThumb my-4 p-3"
+        className="input-thumb"
         type="text"
         placeholder="썸네일 URL을 입력하세요"
         onChange={handleThumbUrlChange}
         value={thumbUrl}
       />
       <Editor onChange={handleEditorChange} />
-      <div className="ButtonGroup pb-4 text-center">
+      <div className="button-group">
         <button
           onClick={() => setIsShow(true)}
-          className={isShow ? "active mr-2" : "mr-2"}
+          className={isShow ? "active" : ""}
         >
           전체 공개
         </button>
         <button
           onClick={() => setIsShow(false)}
-          className={isShow ? "" : "active"}
+          className={!isShow ? "active" : ""}
         >
           비공개
         </button>
       </div>
-      {error && <div className="Error">{error}</div>}
-      <div className="text-center py-6">
-        <Button
-          text="취소"
-          type="DISABLED"
-          size="LARGE"
-          link="/"
-          spacing="mr-4"
-        />
+      {error && <div className="error">{error}</div>}
+      <div className="action-buttons">
+        <Button text="취소" type="DISABLED" size="LARGE" link="/" />
         <Button
           text={isLoading ? "저장 중..." : "저장"}
           type="PRIMARY"

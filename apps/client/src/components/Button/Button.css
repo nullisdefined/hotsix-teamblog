@@ -3,28 +3,83 @@
   padding: 0.5em 1.5em;
   cursor: pointer;
   font-weight: bold;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .Button_PRIMARY {
   background-color: var(--color-primary);
   color: #fff;
 }
-.Button_FOCUSED {
-  background-color: #fff;
-  border: 1px solid var(--color-primary);
-  color: #000;
+
+.Button_PRIMARY:hover {
+  background-color: darken(var(--color-primary), 10%);
 }
-.Button_DISABLED {
-  background-color: var(--color-disable);
+
+.Button_SECONDARY {
+  background-color: #fff;
+  border: 2px solid var(--color-primary);
+  color: var(--color-primary);
+}
+
+.Button_SECONDARY:hover {
+  background-color: var(--color-primary);
   color: #fff;
 }
 
+.Button_FOCUSED {
+  background-color: #fff;
+  border: 2px solid var(--color-primary);
+  color: var(--color-primary);
+}
+
+.Button_FOCUSED:hover {
+  background-color: var(--color-primary);
+  color: #fff;
+}
+
+.Button_DISABLED {
+  background-color: var(--color-disable);
+  color: #fff;
+  cursor: not-allowed;
+}
+
 .Button_SMALL {
+  font-size: 0.9em;
+}
+
+.Button_MEDIUM {
   font-size: 1em;
 }
-.Button_MIDEUM {
+
+.Button_LARGE {
   font-size: 1.2em;
 }
-.Button_LARGE {
-  font-size: 1.5em;
+
+/* 좋아요 버튼 특별 스타일 */
+.Button_LIKE {
+  background-color: #fff;
+  border: 2px solid #ff4757;
+  color: #ff4757;
+  padding: 0.5em 1em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.Button_LIKE:hover {
+  background-color: #ff4757;
+  color: #fff;
+}
+
+.Button_LIKE:before {
+  content: '♥';
+  font-size: 1.2em;
+}
+
+.Button_LIKE.active {
+  background-color: #ff4757;
+  color: #fff;
 }
