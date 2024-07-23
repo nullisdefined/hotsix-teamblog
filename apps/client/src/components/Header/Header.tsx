@@ -19,9 +19,14 @@ const Header = () => {
 
   if (isLoginPage) return null;
 
-  const handleLogout = () => {
-    removeCookie("accessToken");
-    navigate(0);
+  const handleLogout = async () => {
+    try {
+      removeCookie("accessToken");
+      setIsLogin(false);
+      navigate("/");
+    } catch (error) {
+      console.error("로그아웃 중 오류 발생:", error);
+    }
   };
 
   return (
@@ -46,7 +51,7 @@ const Header = () => {
               <Link className="Join mr-2" to="/join">
                 회원가입
               </Link>
-              <Button text="로그인" type="SECONDARY" link="/login" />
+              <Button text="로그인" type="PRIMARY" link="/login" />
             </>
           )}
         </div>
