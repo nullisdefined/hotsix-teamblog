@@ -16,6 +16,7 @@ export interface IPost {
   content: string;
   createdAt: string;
   comments: IComment[];
+  commentCount: number;
   likes: number;
   status: boolean;
   liked: boolean;

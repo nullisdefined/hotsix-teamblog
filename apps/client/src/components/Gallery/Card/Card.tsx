@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { IPost } from "../../../types";
-import { BsFillChatSquareHeartFill } from "react-icons/bs";
+import { BsFillChatSquareHeartFill, BsFillHeartFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import "./Card.css";
 type TPostProps = {
@@ -8,22 +8,56 @@ type TPostProps = {
 };
 
 const Card: FC<TPostProps> = ({ post }) => {
+  console.log(post);
+  const firstImageMatch = post.content.match(/<img[^>]+src="([^">]+)"/);
+  const firstImageUrl = firstImageMatch ? firstImageMatch[1] : null;
+  const contentWithoutImages = post.content.replace(/<img[^>]*>/g, "");
+  console.log(post.likes);
   return (
     <div className="Card">
       <Link to={`/posts/${post.articleId}`}>
-        <div className="Image">
-          <img src={post.thumb} alt={post.title} />
-          <p className="Likes">
-            <BsFillChatSquareHeartFill />
-            <span>00</span>
-          </p>
+        <div
+          className="Image"
+          style={{
+            height: "150px",
+            backgroundColor: firstImageUrl ? "transparent" : "#f0f0f0",
+          }}
+        >
+          {firstImageUrl && (
+            <img
+              src={firstImageUrl}
+              alt={post.title}
+              style={{ width: "100%", height: "150px", objectFit: "cover" }}
+            />
+          )}
         </div>
-        <div className="Text">
-          <div className="Title">
-            <h3>{post.title}</h3>
-            <span>{post.createdAt}</span>
+        <div className="p-4">
+          <div className="mb-2">
+            {/* 제목 */}
+            <h3 className="text-xl font-bold">{post.title}</h3>
           </div>
-          <p className="Description">{post.content}</p>
+          <div className="flex justify-between text-sm text-gray-500 mb-4">
+            {/* 작성일 */}
+            <span>
+              {new Date(post.createdAt).toLocaleDateString("ko-KR", {
+                year: "2-digit",
+                month: "2-digit",
+                day: "2-digit",
+              })}
+            </span>
+            {/* 좋아요 및 댓글수 */}
+            <span className="flex items-center">
+              <BsFillHeartFill className="mr-1" />
+              {post.likes}
+              <BsFillChatSquareHeartFill className="ml-3 mr-1" />
+              {post.commentCount}
+            </span>
+          </div>
+          {/* 본문 */}
+          <p
+            className="text-gray-700"
+            dangerouslySetInnerHTML={{ __html: contentWithoutImages }}
+          ></p>
         </div>
       </Link>
     </div>

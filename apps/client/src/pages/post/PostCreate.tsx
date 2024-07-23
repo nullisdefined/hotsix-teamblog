@@ -54,6 +54,7 @@ const PostCreate: React.FC = () => {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
+          style={{ fontSize: "1em" }}
         />
         <textarea
           placeholder="설명"
@@ -67,6 +68,7 @@ const PostCreate: React.FC = () => {
           value={thumbUrl}
           onChange={(e) => setThumbUrl(e.target.value)}
           required
+          style={{ fontSize: "1em" }}
         />
         <Editor onChange={setContent} />
         <div className="public-toggle">

@@ -23,10 +23,10 @@ const Button: FC<TButtonProps> = ({
   buttonType = "button",
 }) => {
   return link ? (
-    <Link to={link}>
+    <Link to={link} className={`ButtonLink ${spacing || ""}`}>
       <button
         type={buttonType}
-        className={`Button Button_${type} Button_${size} ${spacing}`}
+        className={`Button Button_${type} Button_${size}`}
       >
         {text}
       </button>
@@ -35,7 +35,7 @@ const Button: FC<TButtonProps> = ({
     <button
       type={buttonType}
       onClick={onClick}
-      className={`Button Button_${type} Button_${size} ${spacing}`}
+      className={`Button Button_${type} Button_${size} ${spacing || ""}`}
     >
       {text}
     </button>

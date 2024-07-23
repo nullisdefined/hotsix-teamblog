@@ -72,23 +72,26 @@ const PostEdit: React.FC = () => {
       <form className="post-form" onSubmit={handleSubmit}>
         <input
           type="text"
-          placeholder="제목을 입력하세요"
+          placeholder="제목"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
+          style={{ fontSize: "1em" }}
         />
         <textarea
-          placeholder="본문 요약을 입력하세요"
+          placeholder="본문 요약"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           required
+          style={{ fontSize: "1em" }}
         />
         <input
           type="url"
-          placeholder="썸네일 URL을 입력하세요"
+          placeholder="썸네일 URL"
           value={thumbUrl}
           onChange={(e) => setThumbUrl(e.target.value)}
           required
+          style={{ fontSize: "1em" }}
         />
         <Editor onChange={setContent} initialValue={content} />
         <div className="public-toggle">

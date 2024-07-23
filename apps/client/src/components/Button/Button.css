@@ -1,12 +1,16 @@
 .Button {
-  border-radius: 50px;
-  padding: 0.5em 1.5em;
+  border-radius: 25px; /* Rounded corners */
+  padding: 0.75em 2em; /* More padding for a better look */
   cursor: pointer;
   font-weight: bold;
   transition: all 0.3s ease;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  border: none; /* Remove default border */
+  text-transform: uppercase; /* Uppercase text for better readability */
+  letter-spacing: 0.05em; /* Add some letter spacing */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
 .Button_PRIMARY {
@@ -15,7 +19,8 @@
 }
 
 .Button_PRIMARY:hover {
-  background-color: darken(var(--color-primary), 10%);
+  background-color: var(--color-primary-dark); /* Darker shade on hover */
+  color: #f0f0f0; /* Lighter text color on hover */
 }
 
 .Button_SECONDARY {
@@ -26,7 +31,7 @@
 
 .Button_SECONDARY:hover {
   background-color: var(--color-primary);
-  color: #fff;
+  color: #f0f0f0; /* Lighter text color on hover */
 }
 
 .Button_FOCUSED {
@@ -37,17 +42,18 @@
 
 .Button_FOCUSED:hover {
   background-color: var(--color-primary);
-  color: #fff;
+  color: #f0f0f0; /* Lighter text color on hover */
 }
 
 .Button_DISABLED {
   background-color: var(--color-disable);
   color: #fff;
-  cursor: pointer;
+  cursor: pointer; /* Change cursor to indicate it's disabled */
 }
 
 .Button_SMALL {
-  font-size: 0.9em;
+  font-size: 0.8em;
+  padding: 0.5em 1em;
 }
 
 .Button_MEDIUM {
@@ -56,9 +62,10 @@
 
 .Button_LARGE {
   font-size: 1.2em;
+  padding: 1em 2.5em;
 }
 
-/* 좋아요 버튼 특별 스타일 */
+/* Like button special styles */
 .Button_LIKE {
   background-color: #fff;
   border: 2px solid #ff4757;
@@ -71,7 +78,7 @@
 
 .Button_LIKE:hover {
   background-color: #ff4757;
-  color: #fff;
+  color: #f0f0f0; /* Lighter text color on hover */
 }
 
 .Button_LIKE:before {
@@ -82,4 +89,9 @@
 .Button_LIKE.active {
   background-color: #ff4757;
   color: #fff;
+}
+
+.ButtonLink {
+  display: inline-flex;
+  text-decoration: none;
 }

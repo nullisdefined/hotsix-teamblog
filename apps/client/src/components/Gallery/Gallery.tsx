@@ -17,7 +17,7 @@ const Gallery: React.FC<GalleryProps> = ({ posts }) => {
     <div className="Gallery">
       {posts.map((post) => (
         <Link key={post.articleId} to={`/posts/${post.articleId}`}>
-          <Card post={post} />
+          <Card key={post.articleId} post={post} />
         </Link>
       ))}
     </div>
