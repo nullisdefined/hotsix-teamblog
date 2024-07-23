@@ -1,8 +1,8 @@
-import { useEffect, useState, ChangeEvent } from "react";
+import React, { useEffect, useState, ChangeEvent, useCallback } from "react";
 import postAPI from "../../services/post";
 import likesAPI from "../../services/likes";
 import commentsAPI from "../../services/comments";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { IPost, IUser } from "../../types";
 import HtmlRenderer from "../../components/Post/HtmlRenderer";
 import Button from "../../components/Button/Button";
@@ -10,14 +10,13 @@ import axios from "axios";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
-import { useNavigate } from "react-router-dom";
 import userAPI from "../../services/users";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.tz.setDefault("Asia/Seoul");
 
-const PostDetail = () => {
+const PostDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [article, setArticle] = useState<IPost | null>(null);
   const [comment, setComment] = useState<string>("");
@@ -27,67 +26,72 @@ const PostDetail = () => {
 
   const navigate = useNavigate();
 
-  const postArticle = async () => {
+  const fetchArticle = useCallback(async () => {
+    if (!id) return;
     setLoading(true);
     setError(null);
-    if (id) {
-      try {
-        const response = await postAPI.getArticleDetail(Number(id));
-        const formattedArticle = {
-          ...response,
-          createdAt: dayjs(response.createdAt).tz().format("YYYY년 MM월 DD일"),
-        };
-        console.log("Fetched article:", formattedArticle);
-        setArticle(formattedArticle);
-      } catch (err) {
-        if (axios.isAxiosError(err)) {
-          setError(err.response?.data?.message || "An error occurred");
-        } else {
-          setError("An unexpected error occurred");
-        }
-      } finally {
-        setLoading(false);
+    try {
+      const response = await postAPI.getArticleDetail(Number(id));
+      const formattedArticle = {
+        ...response,
+        createdAt: dayjs(response.createdAt).tz().format("YYYY년 MM월 DD일"),
+      };
+      setArticle(formattedArticle);
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data?.message || "An error occurred");
+      } else {
+        setError("An unexpected error occurred");
       }
+    } finally {
+      setLoading(false);
     }
-  };
+  }, [id]);
 
   useEffect(() => {
-    const getUserId = async () => {
+    const getUserInfo = async () => {
       try {
         const { data } = await userAPI.getCurrentUser();
         setCurrentUser(data);
-        console.log(data);
       } catch (err) {
         console.error("Failed to fetch current user:", err);
       }
     };
-    getUserId();
+    getUserInfo();
+    fetchArticle();
+  }, [fetchArticle]);
 
-    postArticle();
-  }, [id]);
-
-  const handleLikes = async () => {
+  const handleLikes = useCallback(async () => {
+    if (!article) return;
     try {
-      await likesAPI.postLike(Number(id));
-      postArticle();
+      const result = await likesAPI.postLike(article.articleId);
+      setArticle((prev) => {
+        if (!prev) return null;
+        return {
+          ...prev,
+          likes: prev.liked ? prev.likes - 1 : prev.likes + 1,
+          liked: !prev.liked,
+        };
+      });
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        setError(err.response?.data?.message || "Failed to like the post");
+        setError(err.response?.data?.message || "Failed to toggle like");
       } else {
         setError("An unexpected error occurred");
       }
     }
-  };
+  }, [article]);
 
   const handleCommentChange = (e: ChangeEvent<HTMLInputElement>) => {
     setComment(e.target.value);
   };
 
   const handleComment = async () => {
+    if (!id) return;
     try {
       await commentsAPI.postComment(Number(id), comment);
-      setComment(""); // Clear comment input after posting
-      postArticle();
+      setComment("");
+      fetchArticle(); // Refresh the article to show the new comment
     } catch (err) {
       if (axios.isAxiosError(err)) {
         setError(err.response?.data?.message || "Failed to post comment");
@@ -96,6 +100,7 @@ const PostDetail = () => {
       }
     }
   };
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
   if (!article) return <div>Article not found</div>;
@@ -103,16 +108,16 @@ const PostDetail = () => {
   return (
     <div className="Container">
       <h1 className="font-black text-6xl pt-10">{article.title}</h1>
-      <div className="flex justify-between pt-10 pb-20">
-        <div className="">
+      <div className="flex justify-between items-center pt-10 pb-20">
+        <div className="flex-grow">
           <p className="font-bold text-xl">{article.nickname}</p>
           <p>{article.createdAt}</p>
         </div>
         <div className="flex gap-4">
           <Button
-            text={article.likes > 0 ? `${article.likes}` : "좋아요"}
+            text={`좋아요 ${article.likes}`}
             type="LIKE"
-            spacing={article.liked ? "active" : ""}
+            className={`Button_LIKE ${article.liked ? "active" : ""}`}
             onClick={handleLikes}
           />
           {currentUser && currentUser.userId === article.userId && (
@@ -132,7 +137,7 @@ const PostDetail = () => {
           ? article.comments.map((el, index) => (
               <div
                 key={index}
-                className="py-5 "
+                className="py-5"
                 style={{ borderTop: "1px solid rgba(0,0,0,0.3)" }}
               >
                 <div className="pb-3">
@@ -162,4 +167,4 @@ const PostDetail = () => {
   );
 };
 
-export default PostDetail;
+export default React.memo(PostDetail);

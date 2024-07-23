@@ -9,6 +9,7 @@ type TButtonProps = {
   size?: string;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   link?: string;
+  className?: string;
 };
 
 const Button: FC<TButtonProps> = ({
