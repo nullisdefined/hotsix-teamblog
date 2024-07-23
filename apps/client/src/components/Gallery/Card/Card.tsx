@@ -10,7 +10,7 @@ type TPostProps = {
 const Card: FC<TPostProps> = ({ post }) => {
   return (
     <div className="Card">
-      <Link to={`/posts/${post.id}`}>
+      <Link to={`/posts/${post.articleId}`}>
         <div className="Image">
           <img src={post.thumb} alt={post.title} />
           <p className="Likes">
@@ -23,7 +23,7 @@ const Card: FC<TPostProps> = ({ post }) => {
             <h3>{post.title}</h3>
             <span>{post.createdAt}</span>
           </div>
-          <p className="Description">{post.description}</p>
+          <p className="Description">{post.content}</p>
         </div>
       </Link>
     </div>

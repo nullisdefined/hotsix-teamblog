@@ -6,6 +6,7 @@ import postAPI from "../services/post";
 import { IPost, IPostsResponse, IUser } from "../types";
 import userAPI from "../services/users";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export const POSTS_PER_PAGE = 6;
 
@@ -32,7 +33,7 @@ function Main() {
         console.log("Posts data:", response);
         setPosts(response.data);
         setTotalPages(response.totalPages || 1);
-      } catch (err) {
+      } catch (err: any) {
         console.error("Error fetching data:", err);
         if (axios.isAxiosError(err) && err.response?.status === 401) {
           console.log("Unauthorized, redirecting to login...");

@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import Card from "./Card/Card";
 import { IPost } from "../../types";
 import "./Gallery.css";
@@ -15,7 +16,9 @@ const Gallery: React.FC<GalleryProps> = ({ posts }) => {
   return (
     <div className="Gallery">
       {posts.map((post) => (
-        <Card key={post.articleId} post={post} />
+        <Link key={post.articleId} to={`/posts/${post.articleId}`}>
+          <Card post={post} />
+        </Link>
       ))}
     </div>
   );

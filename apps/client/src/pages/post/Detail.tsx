@@ -6,30 +6,42 @@ import { useParams } from "react-router-dom";
 import { IPost } from "../../types";
 import HtmlRenderer from "../../components/Post/HtmlRenderer";
 import Button from "../../components/Button/Button";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.setDefault("Asia/Seoul");
 
 const PostDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [article, setArticle] = useState<IPost | null>(null);
   const [comment, setComment] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   const postArticle = async () => {
-    setComment("");
+    setLoading(true);
+    setError(null);
     if (id) {
       try {
         const response = await postAPI.getArticleDetail(Number(id));
-        response.createdAt = dayjs(response.createdAt).format(
-          "MMMM D, YYYY [at] h:mm A"
-        );
-        console.log(response);
-        setArticle(response);
+        const formattedArticle = {
+          ...response,
+          createdAt: dayjs(response.createdAt).tz().format("YYYY년 MM월 DD일"),
+        };
+        console.log("Fetched article:", formattedArticle);
+        setArticle(formattedArticle);
       } catch (err) {
         if (axios.isAxiosError(err)) {
-          console.log("ERR", err.response?.data);
+          setError(err.response?.data?.message || "An error occurred");
         } else {
-          console.log("ERR", err);
+          setError("An unexpected error occurred");
         }
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -44,9 +56,9 @@ const PostDetail = () => {
       postArticle();
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        console.log("ERR", err.response?.data);
+        setError(err.response?.data?.message || "Failed to like the post");
       } else {
-        console.log("ERR", err);
+        setError("An unexpected error occurred");
       }
     }
   };
@@ -54,20 +66,23 @@ const PostDetail = () => {
   const handleCommentChange = (e: ChangeEvent<HTMLInputElement>) => {
     setComment(e.target.value);
   };
+
   const handleComment = async () => {
     try {
       await commentsAPI.postComment(Number(id), comment);
+      setComment(""); // Clear comment input after posting
       postArticle();
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        console.log("ERR", err.response?.data);
+        setError(err.response?.data?.message || "Failed to post comment");
       } else {
-        console.log("ERR", err);
+        setError("An unexpected error occurred");
       }
     }
   };
-
-  if (!article) return <div>Loading...</div>;
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (!article) return <div>Article not found</div>;
 
   return (
     <div className="Container">
@@ -94,8 +109,10 @@ const PostDetail = () => {
                 style={{ borderTop: "1px solid rgba(0,0,0,0.3)" }}
               >
                 <div className="pb-3">
-                  <div className="text-xl font-bold">{el.nickname}</div>
-                  <div>{dayjs(el.createdAt).format("YYYY년 MM월 DD일")}</div>
+                  <div className="text-xl font-bold">{el.user.nickname}</div>
+                  <div>
+                    {dayjs(el.createdAt).tz().format("YYYY년 MM월 DD일 HH:mm")}
+                  </div>
                 </div>
                 <p>{el.comment}</p>
               </div>
@@ -106,6 +123,7 @@ const PostDetail = () => {
             type="text"
             className="bg-slate-100 w-full p-7"
             onChange={handleCommentChange}
+            value={comment}
             placeholder="댓글을 작성하세요"
           />
           <div className="text-right pt-5">
