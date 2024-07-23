@@ -51,6 +51,17 @@
   cursor: pointer; /* Change cursor to indicate it's disabled */
 }
 
+.Button_DANGER {
+  background-color: #ff0000ca; /* Red color */
+  color: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.Button_DANGER:hover {
+  background-color: #b03434; /* Darker red shade on hover */
+  color: #f0f0f0; /* Lighter text color on hover */
+}
+
 .Button_SMALL {
   font-size: 0.8em;
   padding: 0.5em 1em;

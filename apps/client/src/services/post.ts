@@ -6,6 +6,7 @@ interface PostAPI {
   getArticleDetail: (id: number) => Promise<IPost>;
   postArticle: (data: IPostArticle) => Promise<IPostArticle>;
   modifyArticle: (id: number, data: IPostArticle) => Promise<IPostArticle>;
+  deleteArticle: (id: number) => Promise<void>;
 }
 
 const postAPI: PostAPI = {
@@ -51,6 +52,16 @@ const postAPI: PostAPI = {
       return response.data;
     } catch (err) {
       console.error("Error modifying post:", err);
+      throw err;
+    }
+  },
+
+  deleteArticle: async (id: number) => {
+    try {
+      const response = await axiosInstance.delete(`/articles/${id}`);
+      return response.data;
+    } catch (err) {
+      console.error("Error deleting post:", err);
       throw err;
     }
   },

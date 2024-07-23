@@ -101,6 +101,22 @@ const PostDetail: React.FC = () => {
     }
   };
 
+  const handleDelete = async () => {
+    if (!id || !currentUser) return;
+    if (!window.confirm("정말로 이 게시글을 삭제하시겠습니까?")) return;
+
+    try {
+      await postAPI.deleteArticle(Number(id));
+      navigate("/"); // Redirect to home page after successful deletion
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data?.message || "Failed to delete article");
+      } else {
+        setError("An unexpected error occurred");
+      }
+    }
+  };
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
   if (!article) return <div>Article not found</div>;
@@ -121,12 +137,20 @@ const PostDetail: React.FC = () => {
             onClick={handleLikes}
           />
           {currentUser && currentUser.userId === article.userId && (
-            <Button
-              text="수정"
-              type="SECONDARY"
-              size="MEDIUM"
-              onClick={() => navigate(`/posts/edit/${article.articleId}`)}
-            />
+            <>
+              <Button
+                text="수정"
+                type="SECONDARY"
+                size="SMALL"
+                onClick={() => navigate(`/posts/edit/${article.articleId}`)}
+              />
+              <Button
+                text="삭제"
+                type="DANGER"
+                size="SMALL"
+                onClick={handleDelete}
+              />
+            </>
           )}
         </div>
       </div>
