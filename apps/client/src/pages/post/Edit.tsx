@@ -78,21 +78,6 @@ const PostEdit: React.FC = () => {
           required
           style={{ fontSize: "1em" }}
         />
-        <textarea
-          placeholder="본문 요약"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          required
-          style={{ fontSize: "1em" }}
-        />
-        <input
-          type="url"
-          placeholder="썸네일 URL"
-          value={thumbUrl}
-          onChange={(e) => setThumbUrl(e.target.value)}
-          required
-          style={{ fontSize: "1em" }}
-        />
         <Editor onChange={setContent} initialValue={content} />
         <div className="public-toggle">
           <label className="checkbox-container mt-5">

@@ -13,6 +13,13 @@ const Card: FC<TPostProps> = ({ post }) => {
   const firstImageUrl = firstImageMatch ? firstImageMatch[1] : null;
   const contentWithoutImages = post.content.replace(/<img[^>]*>/g, "");
   console.log(post.likes);
+
+  const truncateText = (text: string, maxLength: number) => {
+    return text.length > maxLength
+      ? text.substring(0, maxLength) + "..."
+      : text;
+  };
+
   return (
     <div className="Card">
       <Link to={`/posts/${post.articleId}`}>
@@ -34,7 +41,9 @@ const Card: FC<TPostProps> = ({ post }) => {
         <div className="p-4">
           <div className="mb-2">
             {/* 제목 */}
-            <h3 className="text-xl font-bold">{post.title}</h3>
+            <h3 className="text-xl font-bold">
+              {truncateText(post.title, 37)}
+            </h3>
           </div>
           <div className="flex justify-between text-sm text-gray-500 mb-4">
             {/* 작성일 */}
@@ -56,7 +65,12 @@ const Card: FC<TPostProps> = ({ post }) => {
           {/* 본문 */}
           <p
             className="text-gray-700"
-            dangerouslySetInnerHTML={{ __html: contentWithoutImages }}
+            dangerouslySetInnerHTML={{
+              __html: truncateText(contentWithoutImages, 100).replace(
+                /\n/g,
+                "<br />"
+              ),
+            }}
           ></p>
         </div>
       </Link>
