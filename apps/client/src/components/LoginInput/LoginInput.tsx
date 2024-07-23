@@ -9,6 +9,7 @@ const LoginInput = () => {
   const navigate = useNavigate();
   const [id, setId] = useState("");
   const [pwd, setPwd] = useState("");
+  const [error, setError] = useState(""); // 오류 메시지 상태 추가
 
   const onChangeId = (e: ChangeEvent<HTMLInputElement>) => {
     setId(e.target.value);
@@ -40,8 +41,13 @@ const LoginInput = () => {
         // httpOnly: true
       });
       navigate("/");
-    } catch (err) {
+    } catch (err: any) {
       console.log("ERR", err);
+      if (err.response && err.response.status === 401) {
+        setError("이메일 또는 비밀번호가 올바르지 않습니다."); // 오류 메시지 설정
+      } else {
+        setError("로그인 중 오류가 발생했습니다. 다시 시도해주세요."); // 일반 오류 메시지 설정
+      }
     }
   };
 
@@ -55,6 +61,7 @@ const LoginInput = () => {
           type="password"
           onChange={onChangePwd}
         />
+        {error && <div className="error">{error}</div>} {/* 오류 메시지 표시 */}
         <button className="loginButton" type="submit" onClick={handleSubmit}>
           로그인
         </button>
