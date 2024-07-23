@@ -5,7 +5,7 @@ import Pagination from "../components/Pagination/Pagination";
 import postAPI from "../services/post";
 import { IPost, IPostsResponse, IUser } from "../types";
 import userAPI from "../services/users";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios, { AxiosError } from "axios";
 import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
 import ErrorMessage from "../components/ErrorMessage/ErrorMessage";
@@ -14,12 +14,17 @@ export const POSTS_PER_PAGE = 6;
 
 function Main() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [posts, setPosts] = useState<IPost[]>([]);
   const [user, setUser] = useState<IUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+
+  const currentPage = parseInt(
+    new URLSearchParams(location.search).get("page") || "1",
+    10
+  );
 
   const fetchData = useCallback(async () => {
     try {
@@ -57,9 +62,12 @@ function Main() {
     fetchData();
   }, [fetchData]);
 
-  const handlePageChange = useCallback((newPage: number) => {
-    setCurrentPage(newPage);
-  }, []);
+  const handlePageChange = useCallback(
+    (newPage: number) => {
+      navigate(`?page=${newPage}`);
+    },
+    [navigate]
+  );
 
   const memoizedProfile = useMemo(
     () =>
