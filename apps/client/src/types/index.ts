@@ -46,4 +46,5 @@ export interface IUser {
   email: string;
   introduce?: string;
   gitUrl?: string;
+  profileImage?: string;
 }

@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "../../config/axios";
 import { useNavigate } from "react-router-dom";
 import "./JoinInput.css";
+import { DEFAULT_PROFILE_IMAGE } from "../Profile/Profile";
 
 const JoinInput = () => {
   const navigate = useNavigate();
@@ -17,6 +18,10 @@ const JoinInput = () => {
   const [nicknameMessageColor, setNicknameMessageColor] = useState("blue");
   const [passwordMessage, setPasswordMessage] = useState("");
   const [passwordMessageColor, setPasswordMessageColor] = useState("red");
+  const [profileImage, setProfileImage] = useState<File | null>(null);
+  const [profileImagePreview, setProfileImagePreview] = useState<string | null>(
+    null
+  );
 
   const validatePassword = (password: string) => {
     const passwordRegex = /^(?=.*[a-z])(?=.*\d{2,})(?!.*\s).{8,50}$/;
@@ -37,6 +42,33 @@ const JoinInput = () => {
     }
   };
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setProfileImage(file);
+      setProfileImagePreview(URL.createObjectURL(file));
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      try {
+        const response = await axios.post("/upload", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        if (response.status === 201) {
+          setProfileImagePreview(response.data.url);
+        }
+      } catch (err: any) {
+        console.error("Image upload failed", err);
+        setError(
+          err.response?.data?.message || "이미지 업로드에 실패했습니다."
+        );
+      }
+    }
+  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setError("");
@@ -50,14 +82,20 @@ const JoinInput = () => {
       email,
       password,
       nickname,
-      profileImage: "https://storage.googleapis.com/hotsix-bucket/test.PNG",
+      profileImage: profileImagePreview || DEFAULT_PROFILE_IMAGE,
       gitUrl: gitLink,
       introduce: intro,
     };
-    const response = await axios.post("/auth/signup", data);
-    console.log("SUCCESS", response.data);
-    alert("회원가입 처리되었습니다.");
-    navigate("/login");
+
+    try {
+      const response = await axios.post("/auth/signup", data);
+      console.log("SUCCESS", response.data);
+      alert("회원가입 처리되었습니다.");
+      navigate("/login");
+    } catch (err: any) {
+      console.error("Signup failed", err);
+      setError(err.response?.data?.message || "회원가입에 실패했습니다.");
+    }
   };
 
   const checkEmailDuplication = async () => {
@@ -118,7 +156,9 @@ const JoinInput = () => {
     <form onSubmit={handleSubmit}>
       <div className="JoinInput">
         <div className="email">
-          <p>이메일</p>
+          <p>
+            이메일 <span style={{ color: "red", fontSize: "small" }}>*</span>
+          </p>
           <div style={{ display: "flex" }}>
             <input
               className="emailInput"
@@ -138,11 +178,12 @@ const JoinInput = () => {
             <div className="message" style={{ color: emailMessageColor }}>
               {emailMessage}
             </div>
-          )}{" "}
-          {/* 이메일 중복 확인 메시지 표시 */}
+          )}
         </div>
         <div className="pwd">
-          <p>비밀번호</p>
+          <p>
+            비밀번호 <span style={{ color: "red", fontSize: "small" }}>*</span>
+          </p>
           <input
             className="pwdInput"
             type="password"
@@ -154,10 +195,11 @@ const JoinInput = () => {
               {passwordMessage}
             </div>
           )}
-          {/* 비밀번호 유효성 메시지 표시 */}
         </div>
         <div className="nickname">
-          <p>닉네임</p>
+          <p>
+            닉네임 <span style={{ color: "red", fontSize: "small" }}>*</span>
+          </p>
           <div style={{ display: "flex" }}>
             <input
               className="nicknameInput"
@@ -175,16 +217,18 @@ const JoinInput = () => {
             <div className="message" style={{ color: nicknameMessageColor }}>
               {nicknameMessage}
             </div>
-          )}{" "}
-          {/* 닉네임 중복 확인 메시지 표시 */}
+          )}
         </div>
         <div className="profileImg">
           <p>프로필 이미지</p>
-          <div style={{ display: "flex", justifyContent: "space-around" }}>
-            <img src="https://picsum.photos/id/16/200/300" />
-            <img src="https://picsum.photos/id/17/200/300" />
-            <img src="https://picsum.photos/id/29/200/300" />
-          </div>
+          <input type="file" accept="image/*" onChange={handleImageUpload} />
+          {profileImagePreview && (
+            <img
+              src={profileImagePreview}
+              alt="Profile preview"
+              style={{ width: "200px", height: "200px", objectFit: "cover" }}
+            />
+          )}
         </div>
         <div className="gitLink">
           <p>Github 링크</p>
@@ -197,8 +241,7 @@ const JoinInput = () => {
           <p>소개</p>
           <textarea rows={5} onChange={(e) => setIntro(e.target.value)} />
         </div>
-        {error && <div className="error">{error}</div>}{" "}
-        {/* 일반 오류 메시지 표시 */}
+        {error && <div className="error">{error}</div>}
         <button className="joinBtn" type="submit">
           회원 가입
         </button>

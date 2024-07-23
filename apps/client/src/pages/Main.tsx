@@ -69,14 +69,21 @@ function Main() {
     [navigate]
   );
 
+  const handleLogout = useCallback(() => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  }, [navigate]);
+
   const memoizedProfile = useMemo(
     () =>
       user && (
         <Profile
+          onLogout={handleLogout}
           nickname={user.nickname}
           description={user.introduce || ""}
           email={user.email}
           gitUrl={user.gitUrl || ""}
+          img={user.profileImage}
         />
       ),
     [user]

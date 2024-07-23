@@ -41,7 +41,17 @@
   margin-right: 5px;
 }
 .Text {
+  margin-left: 20px;
   padding: 1em;
+}
+
+.Text h2 {
+  margin-bottom: 0.1em;
+  font-size: 1.7em;
+}
+
+.Text p {
+  font-style: italic;
 }
 .Title h3 {
   font-size: 1.5em;

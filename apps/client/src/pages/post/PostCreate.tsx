@@ -72,7 +72,7 @@ const PostCreate: React.FC = () => {
         />
         <Editor onChange={setContent} />
         <div className="public-toggle">
-          <label className="checkbox-container">
+          <label className="checkbox-container mt-5">
             <div className="font-bold">공개글</div>
             <input
               type="checkbox"
