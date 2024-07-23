@@ -1,76 +1,63 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Editor from "../../components/Post/Editor/Editor";
 import Button from "../../components/Button/Button";
-import "./Edit.css";
-import axios from "axios";
+import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
+import { IPostArticle } from "../../types";
+import postAPI from "../../services/post";
+import "./PostForm.css";
 
-const PostEdit = () => {
-  const [titleValue, setTitleValue] = useState<string>("");
-  const [editorValue, setEditorValue] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
-  const [thumbUrl, setThumbUrl] = useState<string>("");
-  const [isShow, setIsShow] = useState<boolean>(true);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+const PostEdit: React.FC = () => {
+  const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [description, setDescription] = useState("");
+  const [thumbUrl, setThumbUrl] = useState("");
+  const [isPublic, setIsPublic] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setTitleValue(e.target.value);
-  };
+  useEffect(() => {
+    const fetchArticle = async () => {
+      if (!id) return;
+      setIsLoading(true);
+      try {
+        const article = await postAPI.getArticleDetail(Number(id));
+        setTitle(article.title);
+        setContent(article.content);
+        setDescription(article.description);
+        setThumbUrl(article.thumb);
+        setIsPublic(article.status);
+      } catch (err) {
+        setError("게시글을 불러오는 데 실패했습니다.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchArticle();
+  }, [id]);
 
-  const handleEditorChange = (value: string) => {
-    setEditorValue(value);
-  };
-
-  const handleDescriptionChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setDescription(e.target.value);
-  };
-
-  const handleThumbUrlChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setThumbUrl(e.target.value);
-  };
-
-  const handleClickPost = async () => {
-    if (!validateForm()) return;
-
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!id) return;
     setIsLoading(true);
     setError(null);
 
-    const data = {
+    const postData: IPostArticle = {
       thumb: thumbUrl,
-      title: titleValue,
+      title: title,
       description: description,
-      content: editorValue,
-      status: isShow,
+      content: content,
+      status: isPublic,
     };
 
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        throw new Error("인증 토큰이 없습니다.");
-      }
-
-      const response = await axios.post("/articles", data, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.status === 201) {
-        console.log("게시글이 성공적으로 생성되었습니다.");
-        // 성공 후 처리 (예: 홈으로 리다이렉트)
-      }
+      await postAPI.modifyArticle(Number(id), postData);
+      navigate(`/posts/${id}`);
     } catch (err) {
-      if (axios.isAxiosError(err)) {
-        if (err.response?.status === 401) {
-          setError("인증에 실패했습니다. 다시 로그인해주세요.");
-        } else if (err.response?.status === 500) {
-          setError("서버 오류가 발생했습니다. 나중에 다시 시도해주세요.");
-        } else {
-          setError(
-            err.response?.data?.message || "게시글 작성 중 오류가 발생했습니다."
-          );
-        }
+      if (err instanceof Error) {
+        setError(err.message || "게시글 수정 중 오류가 발생했습니다.");
       } else {
         setError("알 수 없는 오류가 발생했습니다.");
       }
@@ -79,66 +66,61 @@ const PostEdit = () => {
     }
   };
 
-  const validateForm = (): boolean => {
-    if (
-      titleValue.trim() === "" ||
-      editorValue.trim() === "" ||
-      description.trim() === "" ||
-      thumbUrl.trim() === ""
-    ) {
-      setError("모든 필드를 입력해주세요.");
-      return false;
-    }
-    return true;
-  };
-
   return (
-    <div className="edit-container">
-      <input
-        className="input-title"
-        type="text"
-        placeholder="제목을 입력하세요"
-        onChange={handleTitleChange}
-        value={titleValue}
-      />
-      <textarea
-        className="input-description"
-        placeholder="본문 요약을 입력하세요"
-        onChange={handleDescriptionChange}
-        value={description}
-      />
-      <input
-        className="input-thumb"
-        type="text"
-        placeholder="썸네일 URL을 입력하세요"
-        onChange={handleThumbUrlChange}
-        value={thumbUrl}
-      />
-      <Editor onChange={handleEditorChange} />
-      <div className="button-group">
-        <button
-          onClick={() => setIsShow(true)}
-          className={isShow ? "active" : ""}
-        >
-          전체 공개
-        </button>
-        <button
-          onClick={() => setIsShow(false)}
-          className={!isShow ? "active" : ""}
-        >
-          비공개
-        </button>
-      </div>
-      {error && <div className="error">{error}</div>}
-      <div className="action-buttons">
-        <Button text="취소" type="DISABLED" size="LARGE" link="/" />
-        <Button
-          text={isLoading ? "저장 중..." : "저장"}
-          type="PRIMARY"
-          size="LARGE"
-          onClick={handleClickPost}
+    <div className="post-form-container">
+      <h1>게시글 수정</h1>
+      <form className="post-form" onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="제목을 입력하세요"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          required
         />
-      </div>
+        <textarea
+          placeholder="본문 요약을 입력하세요"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          required
+        />
+        <input
+          type="url"
+          placeholder="썸네일 URL을 입력하세요"
+          value={thumbUrl}
+          onChange={(e) => setThumbUrl(e.target.value)}
+          required
+        />
+        <Editor onChange={setContent} initialValue={content} />
+        <div className="public-toggle">
+          <label className="checkbox-container mt-5">
+            <div className="font-bold">공개글</div>
+            <input
+              type="checkbox"
+              checked={isPublic}
+              onChange={(e) => setIsPublic(e.target.checked)}
+            />
+            <span className="checkmark"></span>
+          </label>
+        </div>
+        {error && <div className="error-message">{error}</div>}
+        <div className="action-buttons">
+          <Button
+            text="취소"
+            type="DISABLED"
+            size="MEDIUM"
+            onClick={() => navigate(`/posts/${id}`)}
+            buttonType="button"
+          />
+          <Button
+            text={isLoading ? "저장 중..." : "저장"}
+            type="PRIMARY"
+            size="MEDIUM"
+            onClick={handleSubmit}
+            buttonType="submit"
+          />
+        </div>
+      </form>
+      {isLoading && <LoadingSpinner />}
     </div>
   );
 };

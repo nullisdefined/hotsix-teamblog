@@ -43,7 +43,7 @@
 .Button_DISABLED {
   background-color: var(--color-disable);
   color: #fff;
-  cursor: not-allowed;
+  cursor: pointer;
 }
 
 .Button_SMALL {

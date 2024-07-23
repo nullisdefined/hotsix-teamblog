@@ -10,6 +10,7 @@ export interface IPost {
   userId: number;
   thumb: string;
   title: string;
+  description: string;
   nickname: string;
   profileImg: string;
   content: string;

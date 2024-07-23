@@ -10,6 +10,7 @@ type TButtonProps = {
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   link?: string;
   className?: string;
+  buttonType?: "button" | "submit" | "reset";
 };
 
 const Button: FC<TButtonProps> = ({
@@ -19,15 +20,20 @@ const Button: FC<TButtonProps> = ({
   size = "SMALL",
   onClick,
   link,
+  buttonType = "button",
 }) => {
   return link ? (
     <Link to={link}>
-      <button className={`Button Button_${type} Button_${size} ${spacing}`}>
+      <button
+        type={buttonType}
+        className={`Button Button_${type} Button_${size} ${spacing}`}
+      >
         {text}
       </button>
     </Link>
   ) : (
     <button
+      type={buttonType}
       onClick={onClick}
       className={`Button Button_${type} Button_${size} ${spacing}`}
     >

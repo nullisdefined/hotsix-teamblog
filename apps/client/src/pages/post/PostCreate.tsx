@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import Button from "../../components/Button/Button";
 import Editor from "../../components/Post/Editor/Editor";
-import "./PostCreate.css";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 import { IPostArticle } from "../../types";
 import postAPI from "../../services/post";
+import "./PostForm.css";
 
 const PostCreate: React.FC = () => {
   const navigate = useNavigate();
@@ -46,9 +45,9 @@ const PostCreate: React.FC = () => {
   };
 
   return (
-    <div className="post-create-container">
+    <div className="post-form-container">
       <h1>새 게시글 작성</h1>
-      <form onSubmit={handleSubmit}>
+      <form className="post-form" onSubmit={handleSubmit}>
         <input
           type="text"
           placeholder="제목"
@@ -62,7 +61,6 @@ const PostCreate: React.FC = () => {
           onChange={(e) => setDescription(e.target.value)}
           required
         />
-        <Editor onChange={setContent} />
         <input
           type="url"
           placeholder="썸네일 URL"
@@ -70,29 +68,33 @@ const PostCreate: React.FC = () => {
           onChange={(e) => setThumbUrl(e.target.value)}
           required
         />
+        <Editor onChange={setContent} />
         <div className="public-toggle">
-          <label>
+          <label className="checkbox-container">
+            <div className="font-bold">공개글</div>
             <input
               type="checkbox"
               checked={isPublic}
               onChange={(e) => setIsPublic(e.target.checked)}
             />
-            공개
+            <span className="checkmark"></span>
           </label>
         </div>
         {error && <div className="error-message">{error}</div>}
-        <div className="button-group">
+        <div className="action-buttons">
           <Button
             text="취소"
             type="DISABLED"
             size="MEDIUM"
             onClick={() => navigate("/")}
+            buttonType="button"
           />
           <Button
             text={isLoading ? "저장 중..." : "저장"}
             type="PRIMARY"
             size="MEDIUM"
             onClick={handleSubmit}
+            buttonType="submit"
           />
         </div>
       </form>

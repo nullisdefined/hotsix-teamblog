@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "froala-editor/css/froala_editor.pkgd.min.css";
 import "froala-editor/css/froala_style.min.css";
 import FroalaEditor from "froala-editor";
@@ -9,10 +9,16 @@ import "./Editor.css";
 
 interface EditorProps {
   onChange: (value: string) => void;
+  initialValue?: string;
 }
 
-const Editor: React.FC<EditorProps> = ({ onChange }) => {
-  const [content, setContent] = useState<string>("");
+const Editor: React.FC<EditorProps> = ({ onChange, initialValue = "" }) => {
+  const [content, setContent] = useState<string>(initialValue);
+
+  useEffect(() => {
+    setContent(initialValue);
+  }, [initialValue]);
+
   const handleModelChange = (model: string) => {
     setContent(model);
     onChange(model);
