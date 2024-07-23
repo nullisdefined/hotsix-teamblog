@@ -41,7 +41,7 @@ const Editor: React.FC<EditorProps> = ({ onChange }) => {
               // headers: {
               //   'Content-Type': 'multipart/form-data',
               // },
-            }
+            },
           )
           .then((response) => {
             const imageUrl = response.data.link; // 서버가 반환하는 이미지 URL

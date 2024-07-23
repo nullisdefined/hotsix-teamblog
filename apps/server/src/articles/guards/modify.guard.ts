@@ -2,7 +2,7 @@ import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@
 import { ArticlesService } from '../articles.service';
 
 @Injectable()
-export class OwnerGuard implements CanActivate {
+export class ModifyGuard implements CanActivate {
   constructor(private articlesService: ArticlesService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {

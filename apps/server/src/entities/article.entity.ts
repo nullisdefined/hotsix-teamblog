@@ -9,7 +9,6 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { User } from './user.entity';
-import { Photo } from './photo.entity';
 import { Comment } from './comment.entity';
 import { Like } from './like.entity';
 
@@ -45,9 +44,6 @@ export class Article {
   @ManyToOne(() => User, (user) => user.articles)
   @JoinColumn({ name: 'userId' })
   user: User;
-
-  @OneToMany(() => Photo, (photo) => photo.article)
-  photos: Photo[];
 
   @OneToMany(() => Comment, (comment) => comment.article)
   comments: Comment[];

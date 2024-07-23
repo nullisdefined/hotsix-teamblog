@@ -7,6 +7,7 @@ import { LikesService } from 'src/likes/likes.service';
 import { CommentsService } from 'src/comments/comments.service';
 import { ArticleDetailCommentType, DetailResponse, ResponseMessage } from 'src/types/type';
 import { Comment } from 'src/entities/comment.entity';
+import { MainArticleList } from './dto/mainArticleList.dto';
 
 @Injectable()
 export class ArticlesService {
@@ -20,10 +21,7 @@ export class ArticlesService {
 
   async getDetail(articleId: number): Promise<DetailResponse> {
     // article, user.nickname, photos정보 가져오기
-    const [article]: Article[] = await this.articleRepository.find({
-      relations: ['user', 'photos'],
-      where: { articleId },
-    });
+    const article: Article = await this.findOne(articleId);
 
     if (!article) {
       throw new NotFoundException('Article not found');
@@ -40,18 +38,10 @@ export class ArticlesService {
     // 댓글데이터 response 형식으로 변환
     const typedComments: ArticleDetailCommentType[] = this.commentsservice.changeToResponseType(comments);
 
-    // photos정보 response 형식으로 변환
-    const typedPhotos = article.photos.map((photo) => photo.fileName);
-
     return {
-      title: article.title,
-      nickname: article.user.nickname,
-      profileImg: typedPhotos,
-      content: article.content,
-      createdAt: article.createdAt,
+      article,
       comments: typedComments,
       likes,
-      status: article.status,
     };
   }
 
@@ -97,7 +87,37 @@ export class ArticlesService {
     };
   }
 
+  async articleList(currentPage: number = 1): Promise<MainArticleList> {
+    const pageSize = 6;
+
+    const skip = (currentPage - 1) * pageSize;
+    const articles: Article[] = await this.articleRepository.find({
+      order: {
+        updatedAt: 'DESC',
+      },
+      take: 6,
+      skip,
+    });
+
+    const totalArticles = await this.totalArticles();
+    const totalPages = Math.round(totalArticles / pageSize);
+
+    return {
+      articles,
+      pagination: {
+        totalArticles,
+        currentPage,
+        totalPages,
+        pageSize,
+      },
+    };
+  }
+
   async findOne(articleId: number): Promise<Article> {
     return await this.articleRepository.findOne({ where: { articleId } });
+  }
+
+  async totalArticles() {
+    return await this.articleRepository.count();
   }
 }

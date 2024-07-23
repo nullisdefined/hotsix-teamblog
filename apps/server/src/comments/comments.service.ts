@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CommentDto } from './dto/comment.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOneOptions, Repository } from 'typeorm';
@@ -34,6 +34,10 @@ export class CommentsService {
   async update(commentId: number, commentDto: CommentDto): Promise<ResponseMessage> {
     const comment: Comment = await this.findOne(commentId);
 
+    if (!comment) {
+      throw new ForbiddenException('Comment not found');
+    }
+
     // DB에 update
     comment.comment = commentDto.comment;
     await this.commentRepository.save(comment);
@@ -45,6 +49,10 @@ export class CommentsService {
 
   async delete(commentId: number): Promise<ResponseMessage> {
     const comment: Comment = await this.findOne(commentId);
+
+    if (!comment) {
+      throw new ForbiddenException('Comment not found');
+    }
 
     // DB에 delete
     await this.commentRepository.remove(comment);

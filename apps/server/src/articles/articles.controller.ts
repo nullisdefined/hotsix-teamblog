@@ -2,15 +2,16 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards } fro
 import { ArticlesService } from './articles.service';
 import { ArticleDto } from './dto/article.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { OwnerGuard } from './guards/owner.guard';
+import { ModifyGuard } from './guards/modify.guard';
 import { DetailResponse, ResponseMessage } from 'src/types/type';
+import { ShowGuard } from './guards/show.guard';
 
 @Controller('articles')
 export class ArticlesController {
   constructor(private readonly articlesService: ArticlesService) {}
 
   @Get(':id')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), ShowGuard)
   async getArticlesDetail(@Param('id') id: string): Promise<DetailResponse> {
     return await this.articlesService.getDetail(+id);
   }
@@ -22,13 +23,13 @@ export class ArticlesController {
   }
 
   @Patch(':id')
-  @UseGuards(AuthGuard('jwt'), OwnerGuard)
+  @UseGuards(AuthGuard('jwt'), ModifyGuard)
   async updateArticles(@Param('id') id: string, @Body() articleDto: ArticleDto): Promise<ResponseMessage> {
     return await this.articlesService.update(+id, articleDto);
   }
 
   @Delete(':id')
-  @UseGuards(AuthGuard('jwt'), OwnerGuard)
+  @UseGuards(AuthGuard('jwt'), ModifyGuard)
   async deleteArticles(@Param('id') id: string): Promise<ResponseMessage> {
     return await this.articlesService.delete(+id);
   }

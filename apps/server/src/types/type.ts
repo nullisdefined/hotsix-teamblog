@@ -1,3 +1,5 @@
+import { Article } from 'src/entities/article.entity';
+
 export type ArticleDetailCommentType = {
   nickname: string;
   comment: string;
@@ -5,14 +7,9 @@ export type ArticleDetailCommentType = {
 };
 
 export type DetailResponse = {
-  title: string;
-  nickname: string;
-  profileImg: string[];
-  content: string;
-  createdAt: Date;
+  article: Article;
   comments: ArticleDetailCommentType[];
   likes: number;
-  status: string;
 };
 
 export type ResponseMessage = {

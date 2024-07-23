@@ -24,8 +24,8 @@ const UploadFile: React.FC<UploadFileProps> = ({ onChange }) => {
         acceptedFiles.map((file) =>
           Object.assign(file, {
             preview: URL.createObjectURL(file),
-          })
-        )
+          }),
+        ),
       );
     },
   });

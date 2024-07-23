@@ -2,7 +2,7 @@ import { Controller, Post, Body, Patch, Param, Delete, Req, UseGuards } from '@n
 import { CommentsService } from './comments.service';
 import { CommentDto } from './dto/comment.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { OwnerGuard } from './guards/owner.guard';
+import { ModifyGuard } from './guards/modify.guard';
 import { ResponseMessage } from 'src/types/type';
 
 @Controller('comments')
@@ -16,13 +16,13 @@ export class CommentsController {
   }
 
   @Patch(':id')
-  @UseGuards(AuthGuard('jwt'), OwnerGuard)
+  @UseGuards(AuthGuard('jwt'), ModifyGuard)
   async updateComment(@Param('id') id: string, @Body() commentDto: CommentDto): Promise<ResponseMessage> {
     return await this.commentsService.update(+id, commentDto);
   }
 
   @Delete(':id')
-  @UseGuards(AuthGuard('jwt'), OwnerGuard)
+  @UseGuards(AuthGuard('jwt'), ModifyGuard)
   async deleteComment(@Param('id') id: string): Promise<ResponseMessage> {
     return await this.commentsService.delete(+id);
   }

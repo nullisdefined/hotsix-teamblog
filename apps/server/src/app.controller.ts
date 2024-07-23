@@ -1,13 +1,13 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Controller, Get, Query } from '@nestjs/common';
+import { ArticlesService } from './articles/articles.service';
 
 @Controller('')
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly articlesService: ArticlesService) {}
 
   @Get()
-  getHello(): string {
-    // console.log(`${process.env.NODE_ENV}`);
-    return 'Hello World!';
+  async FirstArticleList(@Query('page') page: string) {
+    const pageNumber = page ? parseInt(page) : 1;
+    return await this.articlesService.articleList(pageNumber);
   }
 }
