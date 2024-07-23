@@ -31,11 +31,11 @@ export interface IComment {
   };
 }
 export interface IPostArticle {
+  thumb: string;
   title: string;
+  description: string;
   content: string;
   status: boolean;
-  description?: string;
-  thumb?: File;
 }
 
 export interface IUser {

@@ -5,6 +5,8 @@ import Button from "../../components/Button/Button";
 import Editor from "../../components/Post/Editor/Editor";
 import "./PostCreate.css";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
+import { IPostArticle } from "../../types";
+import postAPI from "../../services/post";
 
 const PostCreate: React.FC = () => {
   const navigate = useNavigate();
@@ -21,35 +23,20 @@ const PostCreate: React.FC = () => {
     setIsLoading(true);
     setError(null);
 
-    const postData = {
+    const postData: IPostArticle = {
       thumb: thumbUrl,
-      title,
-      description,
-      content,
+      title: title,
+      description: description,
+      content: content,
       status: isPublic,
     };
 
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        throw new Error("인증 토큰이 없습니다.");
-      }
-
-      const response = await axios.post("/articles", postData, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.status === 201) {
-        navigate("/");
-      }
+      await postAPI.postArticle(postData);
+      navigate("/");
     } catch (err) {
-      if (axios.isAxiosError(err)) {
-        setError(
-          err.response?.data?.message || "게시글 작성 중 오류가 발생했습니다."
-        );
+      if (err instanceof Error) {
+        setError(err.message || "게시글 작성 중 오류가 발생했습니다.");
       } else {
         setError("알 수 없는 오류가 발생했습니다.");
       }
