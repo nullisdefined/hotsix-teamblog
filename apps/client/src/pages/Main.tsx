@@ -1,67 +1,81 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Profile from "../components/Profile/Profile";
 import Gallery from "../components/Gallery/Gallery";
+import Pagination from "../components/Pagination/Pagination";
 import postAPI from "../services/post";
-import axios from "axios";
-import { IPost } from "../types";
+import { IPost, IPostsResponse, IUser } from "../types";
+import userAPI from "../services/users";
+import { useNavigate } from "react-router-dom";
+
+export const POSTS_PER_PAGE = 6;
 
 function Main() {
+  const navigate = useNavigate();
+  const [posts, setPosts] = useState<IPost[]>([]);
+  const [user, setUser] = useState<IUser | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
   useEffect(() => {
-    const postArticle = async () => {
+    const fetchData = async () => {
       try {
-        const response = await postAPI.getArticles();
-        console.log("SUCCESS", response);
+        setLoading(true);
+        const userResponse = await userAPI.getCurrentUser();
+        setUser(userResponse.data);
+
+        const response: IPostsResponse = await postAPI.getArticles(
+          currentPage,
+          POSTS_PER_PAGE
+        );
+        console.log("Posts data:", response);
+        setPosts(response.data);
+        setTotalPages(response.totalPages || 1);
       } catch (err) {
-        if (axios.isAxiosError(err)) {
-          console.log("ERR", err.response?.data);
-        } else {
-          console.log("ERR", err);
+        console.error("Error fetching data:", err);
+        if (axios.isAxiosError(err) && err.response?.status === 401) {
+          console.log("Unauthorized, redirecting to login...");
+          navigate("/login");
+          return;
         }
+        setError("데이터를 불러오는 데 실패했습니다.");
+      } finally {
+        setLoading(false);
       }
     };
 
-    postArticle();
-  }, []);
+    fetchData();
+  }, [currentPage]);
 
-  const posts: IPost[] = [
-    {
-      id: 1,
-      nickname: "userName1",
-      thumb: "https://picsum.photos/id/88/300/250",
-      title: "First Post",
-      description: "Content of the first post",
-      createdAt: "2024-06-28T12:34:56.789Z",
-      updatedAt: "2024-06-28T12:34:56.789Z",
-      status: true,
-      likes: 0,
-      content: "",
-      comments: [],
-      showStatus: true,
-    },
-    {
-      id: 2,
-      nickname: "userName2",
-      thumb: "https://picsum.photos/id/192/300/250",
-      title: "Second Post",
-      description: "Content of the second post",
-      createdAt: "2024-06-28T12:34:56.789Z",
-      updatedAt: "2024-06-28T12:34:56.789Z",
-      status: true,
-      likes: 0,
-      content: "",
-      comments: [],
-      showStatus: true,
-    },
-  ];
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   return (
     <div className="Container">
-      <Profile
-        nickname="김유저"
-        description="개발자입니다."
-        email="user@gmail.com"
-        gitUrl="https://www.github.com/user"
-      ></Profile>
-      <Gallery posts={posts}></Gallery>
+      {user && (
+        <Profile
+          nickname={user.nickname}
+          description={user.introduce || ""}
+          email={user.email}
+          gitUrl={user.gitUrl || ""}
+        />
+      )}
+      <Gallery posts={posts} />
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 }

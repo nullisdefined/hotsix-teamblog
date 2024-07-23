@@ -72,3 +72,14 @@
     margin-left: 5px;
     cursor: pointer;
 }
+
+.passwordMessage {
+  color: blue;
+}
+.message {
+  color: blue;
+}
+
+.message.red {
+  color: red;
+}

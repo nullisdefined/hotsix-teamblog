@@ -1,8 +1,8 @@
 import axios from "../config/axios";
-import { IPost, IPostArticle } from "../types";
+import { IPost, IPostArticle, IPostsResponse } from "../types";
 
 interface PostAPI {
-  getArticles: () => Promise<IPost[]>;
+  getArticles: (page: number, limit: number) => Promise<IPostsResponse>;
 
   getArticleDetail: (id: number) => Promise<IPost>;
 
@@ -13,24 +13,36 @@ interface PostAPI {
 
 const postAPI: PostAPI = {
   // 게시글 전체보기
-  getArticles: async () => {
+  getArticles: async (page = 1, limit = 6) => {
     try {
-      const response = await axios.get("/");
+      const response = await axios.get("/articles", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        params: { page, limit },
+      });
+      console.log("response", response);
       return response.data;
-    } catch (err) {
-      console.error("Error fetching posts:", err);
-      return Promise.reject(err);
+    } catch (error) {
+      console.error("Error fetching articles:", error);
+      throw error;
     }
   },
 
   // 게시글 상세보기
   getArticleDetail: async (id: number) => {
     try {
-      const response = await axios.get(`/articles/${id}`);
-      return response.data;
+      const response = await axios.get(`/articles/${id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      return response.data as IPost;
     } catch (err) {
       console.error("Error fetching article details:", err);
-      return Promise.reject(err);
+      throw err;
     }
   },
 

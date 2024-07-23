@@ -1,17 +1,21 @@
-import { FC } from "react";
+import React from "react";
 import Card from "./Card/Card";
 import { IPost } from "../../types";
 import "./Gallery.css";
 
-type TGalleryProps = {
+interface GalleryProps {
   posts: IPost[];
-};
+}
 
-const Gallery: FC<TGalleryProps> = ({ posts }) => {
+const Gallery: React.FC<GalleryProps> = ({ posts }) => {
+  if (!posts || posts.length === 0) {
+    return <div>No posts available</div>;
+  }
+
   return (
     <div className="Gallery">
       {posts.map((post) => (
-        <Card key={post.id} post={post}></Card>
+        <Card key={post.articleId} post={post} />
       ))}
     </div>
   );

@@ -1,4 +1,31 @@
+@media (max-width: 1024px) {
+  .Gallery {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .Gallery {
+    grid-template-columns: 1fr;
+  }
+}
+
 .Gallery {
-  display: flex;
-  padding-top: 5em;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+}
+
+.Gallery .Card {
+  will-change: transform;
+  transition: transform 0.3s ease-in-out, border 0.3s ease-in-out;
+  border: 1px solid transparent;
+}
+
+.Gallery .Card:hover {
+  transform: scale(1.02);
+  border: 1px solid rgba(0, 0, 0, 0.2);
 }
