@@ -31,3 +31,14 @@
   background: #fff;
   color: #000;
 }
+
+.InputDescription, .InputThumb {
+  width: 100%;
+  background-color: var(--color-background);
+}
+
+.Error {
+  color: red;
+  text-align: center;
+  margin-top: 1em;
+}
