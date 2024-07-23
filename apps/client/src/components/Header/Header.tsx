@@ -21,7 +21,7 @@ const Header = () => {
 
   const handleLogout = () => {
     removeCookie("accessToken");
-    navigate(0); // 새로고침
+    navigate(0);
   };
 
   return (
@@ -31,17 +31,23 @@ const Header = () => {
           Hotsix
         </Link>
         <div>
-          <Link className="Join" to="/join">
-            회원가입
-          </Link>
           {isLogin ? (
-            <Button
-              text="로그아웃"
-              type="PRIMARY"
-              onClick={handleLogout}
-            ></Button>
+            <>
+              <Button
+                text="게시글 작성"
+                type="PRIMARY"
+                link="/posts/create"
+                spacing="mr-2"
+              />
+              <Button text="로그아웃" type="SECONDARY" onClick={handleLogout} />
+            </>
           ) : (
-            <Button text="로그인" type="PRIMARY" link="/login"></Button>
+            <>
+              <Link className="Join mr-2" to="/join">
+                회원가입
+              </Link>
+              <Button text="로그인" type="SECONDARY" link="/login" />
+            </>
           )}
         </div>
       </div>

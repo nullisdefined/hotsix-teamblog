@@ -54,7 +54,11 @@ const postAPI: PostAPI = {
     });
 
     try {
-      const response = await axios.post("/articles", formData);
+      const response = await axios.post("/articles", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       return response.data;
     } catch (err) {
       console.error("Error creating post:", err);
