@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useRef, useState } from "react";
 import "./JoinInput.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -9,10 +9,13 @@ const JoinInput = () => {
 
     const [email, setEmail] = useState("");
     const [pwd, setPwd] = useState("");
+    const [name, setName] = useState("");
     const [nickname, setNickname] = useState("");
     const [img, setImg] = useState(1);
     const [link, setLink] = useState("");
     const [introduction, setIntroduction] = useState("");
+
+    const ref = useRef(null);
 
     const onChangeEmail = (e: ChangeEvent<HTMLInputElement>) => {
         setEmail(e.target.value);
@@ -20,6 +23,10 @@ const JoinInput = () => {
 
     const onChangePwd = (e: ChangeEvent<HTMLInputElement>) => {
         setPwd(e.target.value);
+    }
+
+    const onChangeName = (e: ChangeEvent<HTMLInputElement>) => {
+        setName(e.target.value);
     }
 
     const onChangeNickname = (e: ChangeEvent<HTMLInputElement>) => {
@@ -35,7 +42,6 @@ const JoinInput = () => {
     }
 
     const clickImg1 = () => {
-        
         setImg(1);
     }
 
@@ -55,6 +61,7 @@ const JoinInput = () => {
             {
                 "email": email,
                 "pwd": pwd,
+                "name": name,
                 "nickname": nickname,
                 "img": img,
                 "link": link,
@@ -114,6 +121,7 @@ const JoinInput = () => {
     }
 
     return (
+        
         <div className="JoinInput">
             <div className="email">
                 <p>이메일</p>
@@ -127,6 +135,11 @@ const JoinInput = () => {
                 <p>비밀번호</p>
                 <input className="pwdInput" type="password" placeholder="8~16자리/영문 대소문자, 숫자, 특수문자 조합" onChange={onChangePwd}/>
             </div>
+
+            <div className="pwd">
+                <p>이름</p>
+                <input className="nameInput" type="text" placeholder="이름" onChange={onChangeName}/>
+            </div>
             
             <div className="nickname">
                 <p>닉네임</p>
@@ -139,9 +152,9 @@ const JoinInput = () => {
             <div className="profileImg">
                 <p>프로필 이미지</p>
                 <div style={{display: "flex", justifyContent: "space-around"}}>
-                    <img src="https://picsum.photos/id/16/200/300" onClick={clickImg1}/>
-                    <img src="https://picsum.photos/id/17/200/300" onClick={clickImg2}/>
-                    <img src="https://picsum.photos/id/29/200/300" onClick={clickImg3}/>
+                    <img src="https://picsum.photos/id/16/200/300" onClick={clickImg1} ref={ref}/>
+                    <img src="https://picsum.photos/id/17/200/300" onClick={clickImg2} ref={ref}/>
+                    <img src="https://picsum.photos/id/29/200/300" onClick={clickImg3} ref={ref}/>
                 </div>
             </div>
             
