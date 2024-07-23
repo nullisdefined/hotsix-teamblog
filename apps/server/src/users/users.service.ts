@@ -77,7 +77,7 @@ export class UsersService {
     }
   }
 
-  async getUserInfo(userId: number): Promise<User> {
+  async getUserInfo(userId: number): Promise<Partial<User>> {
     const user = await this.findByFields({
       where: { userId },
     });
@@ -85,7 +85,6 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException('존재하지 않는 사용자입니다.');
     }
-
     return user;
   }
 }

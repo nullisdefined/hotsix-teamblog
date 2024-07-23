@@ -13,15 +13,17 @@ export class ArticlesController {
   @Get()
   @UseGuards(AuthGuard('jwt'))
   async getAllArticles(
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 10,
+    @Query('page') page: string = '1',
+    @Query('limit') limit: string = '6',
   ): Promise<{
     data: Article[];
     totalCount: number;
     currentPage: number;
     totalPages: number;
   }> {
-    return await this.articlesService.findAll(page, limit);
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+    return await this.articlesService.findAll(pageNumber, limitNumber);
   }
 
   @Get(':id')

@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { ArticleDto } from './dto/article.dto';
 import { Article } from 'src/entities/article.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -91,17 +91,38 @@ export class ArticlesService {
   async findAll(
     page: number = 1,
     limit: number = 10,
-  ): Promise<{ data: Article[]; totalCount: number; currentPage: number; totalPages: number }> {
-    const [articles, totalCount] = await this.articleRepository.findAndCount({
-      skip: (page - 1) * limit,
-      take: limit,
-    });
+  ): Promise<{ data: any[]; totalCount: number; currentPage: number; totalPages: number }> {
+    const pageNumber = Number(page);
+    const limitNumber = Number(limit);
+
+    if (isNaN(pageNumber) || isNaN(limitNumber)) {
+      throw new BadRequestException('Invalid page or limit value');
+    }
+
+    const [articles, totalCount] = await this.articleRepository
+      .createQueryBuilder('article')
+      .leftJoinAndSelect('article.user', 'user')
+      .leftJoinAndSelect('article.likes', 'likes')
+      .leftJoinAndSelect('article.comments', 'comments')
+      .select(['article', 'user.userId', 'user.nickname', 'user.profileImage', 'likes', 'comments'])
+      .orderBy('article.createdAt', 'DESC')
+      .skip((pageNumber - 1) * limitNumber)
+      .take(limitNumber)
+      .getManyAndCount();
+
+    const articlesWithDetails = articles.map((article) => ({
+      ...article,
+      nickname: article.user.nickname,
+      profileImg: article.user.profileImage,
+      likes: article.likes.length,
+      commentCount: article.comments.length,
+    }));
 
     return {
-      data: articles,
+      data: articlesWithDetails,
       totalCount,
-      currentPage: page,
-      totalPages: Math.ceil(totalCount / limit),
+      currentPage: pageNumber,
+      totalPages: Math.ceil(totalCount / limitNumber),
     };
   }
 }
