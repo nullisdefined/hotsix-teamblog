@@ -11,7 +11,7 @@ const Gallery: FC<TGalleryProps> = ({ posts }) => {
   return (
     <div className="Gallery">
       {posts.map((post) => (
-        <Card key={post.id} post={post}></Card>
+        <Card key={post.articleId} post={post}></Card>
       ))}
     </div>
   );
