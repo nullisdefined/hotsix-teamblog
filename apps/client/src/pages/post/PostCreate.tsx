@@ -67,22 +67,18 @@ const PostCreate: React.FC = () => {
 
   return (
     <div className="post-form-container">
-      <h1>새 게시글 작성</h1>
       <form className="post-form" onSubmit={handleSubmit}>
-        <div className="title-input-container">
+        <div className="title-input-container pt-50">
           <input
             type="text"
-            placeholder="제목 (100자 이내)"
+            placeholder="제목을 입력하세요. (100자 이내)"
             value={title}
             onChange={handleTitleChange}
             required
-            style={{ fontSize: "1em", width: "100%" }}
+            style={{ fontSize: "1.5em", width: "100%" }}
             maxLength={MAX_TITLE_LENGTH}
           />
-          <span
-            className="title-char-count"
-            style={{ float: "right", marginBottom: "15px" }}
-          >
+          <span className="title-char-count" style={{ float: "right" }}>
             {title.length}/{MAX_TITLE_LENGTH}
           </span>
         </div>
