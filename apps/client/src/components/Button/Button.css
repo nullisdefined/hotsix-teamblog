@@ -20,7 +20,7 @@
 
 .Button_PRIMARY:hover {
   background-color: var(--color-primary-dark); /* Darker shade on hover */
-  color: #f0f0f0; /* Lighter text color on hover */
+  color: #000; /* Lighter text color on hover */
 }
 
 .Button_SECONDARY {
@@ -93,7 +93,7 @@
 }
 
 .Button_LIKE:before {
-  content: '♥';
+  content: "♥";
   font-size: 1.2em;
 }
 

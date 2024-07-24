@@ -14,18 +14,25 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
-  padding: 20px;
-  background-color: #f9f9f9;
   border-radius: 10px;
 }
 
 .Gallery .Card {
   will-change: transform;
-  transition: transform 0.3s ease-in-out, border 0.3s ease-in-out;
+  transition:
+    transform 0.3s ease-in-out,
+    border 0.3s ease-in-out;
   border: 1px solid transparent;
 }
 
 .Gallery .Card:hover {
   transform: scale(1.02);
   border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.Gallery .Card a {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: inherit;
 }
