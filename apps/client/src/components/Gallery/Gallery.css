@@ -1,4 +1,5 @@
 .Gallery {
   display: flex;
   padding-top: 5em;
+  flex-wrap: wrap;
 }
