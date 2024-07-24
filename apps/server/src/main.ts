@@ -33,5 +33,6 @@ async function bootstrap() {
 
   await app.listen(configService.get('PORT'), '0.0.0.0');
   console.log(`Application is running on: ${await app.getUrl()}`);
+  console.log(`Database name: ${configService.get('DB_NAME')}`);
 }
 bootstrap();

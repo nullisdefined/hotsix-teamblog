@@ -10,6 +10,7 @@ import {
   Post,
   Patch,
   Query,
+  Put,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -58,7 +59,7 @@ export class UsersController {
     return { isDuplicate };
   }
 
-  @Patch('/update')
+  @Put('/update')
   @UseGuards(AuthGuard())
   @HttpCode(HttpStatus.OK)
   async updateUser(@Req() req, @Body() updateUserDto: UpdateUserDto): Promise<void> {
