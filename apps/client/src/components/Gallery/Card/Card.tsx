@@ -46,8 +46,11 @@ const Card: FC<TPostProps> = ({ post }) => {
                   alignItems: "center",
                 }}
               >
-                <p className="text-6xl font-bold text-gray">
-                  {truncateText(post.title, 37)}
+                <p
+                  className="text-6xl font-bold text-gray p-10"
+                  style={{ wordBreak: "break-all" }}
+                >
+                  {truncateText(post.title, 16)}
                 </p>
               </div>
             )}
@@ -55,7 +58,7 @@ const Card: FC<TPostProps> = ({ post }) => {
           <div className="TextContent">
             <div className="Title">
               <h3 className="text-xl font-bold">
-                {truncateText(post.title, 37)}
+                {truncateText(post.title, 30)}
               </h3>
             </div>
             <div className="Description">

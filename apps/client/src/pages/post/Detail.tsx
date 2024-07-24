@@ -122,8 +122,13 @@ const PostDetail: React.FC = () => {
   if (!article) return <div>Article not found</div>;
 
   return (
-    <div className="Container">
-      <h1 className="font-black text-6xl pt-10">{article.title}</h1>
+    <div className="Container" style={{ maxWidth: "900px", margin: "0 auto" }}>
+      <h1
+        className="font-black text-6xl pt-10"
+        style={{ wordBreak: "break-all" }}
+      >
+        {article.title}
+      </h1>
       <div className="flex justify-between items-center pt-10 pb-20">
         <div className="flex-grow">
           <p className="font-bold text-xl">{article.nickname}</p>
