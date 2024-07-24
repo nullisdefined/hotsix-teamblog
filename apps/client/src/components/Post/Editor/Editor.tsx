@@ -19,8 +19,7 @@ const Editor: React.FC<EditorProps> = ({ onChange }) => {
     console.log("model", content);
   };
 
-  const imageUploadURL = "http://localhost:8888/test"; // 이미지 업로드 엔드포인트
-  let num = 1;
+  const imageUploadURL = `http://${window.location.hostname}:${import.meta.env.VITE_APP_PORT}/api/upload`; // 이미지 업로드 엔드포인트
   const config = {
     placeholderText: "내용을 입력하세요.",
     imageUploadURL: imageUploadURL,
@@ -32,20 +31,15 @@ const Editor: React.FC<EditorProps> = ({ onChange }) => {
       "image.beforeUpload": function (this: FroalaEditor, images: File[]) {
         const data = new FormData();
         data.append("file", images[0]);
-
+        console.log(images[0].name);
         axios
-          .post(
-            imageUploadURL,
-            { name: `editor_${num}` },
-            {
-              // headers: {
-              //   'Content-Type': 'multipart/form-data',
-              // },
-            }
-          )
+          .post(imageUploadURL, data, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
           .then((response) => {
-            const imageUrl = response.data.link; // 서버가 반환하는 이미지 URL
-            num++;
+            const imageUrl = response.data.url; // 서버가 반환하는 이미지 URL
             this.image.insert(imageUrl, false, {}, this.image.get());
           })
           .catch((error) => {

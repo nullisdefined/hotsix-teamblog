@@ -9,7 +9,7 @@ import axios, { AxiosError } from "axios";
 const PostEdit = () => {
   const [titleValue, setTitleValue] = useState<string>("");
   const [editorValue, setEditorValue] = useState<string>("");
-  const [filesValue, setfilesValue] = useState<File[]>([]);
+  const [filesValue, setfilesValue] = useState<string>("");
   const [isShow, setIsShow] = useState<boolean>(true);
 
   const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -18,8 +18,22 @@ const PostEdit = () => {
   const handleEditorChange = (value: string) => {
     setEditorValue(value);
   };
+  const imageUploadURL = `http://${window.location.hostname}:${import.meta.env.VITE_APP_PORT}/api/upload`;
   const handleUploadFileChange = (value: File[]) => {
-    setfilesValue(value);
+    const data = new FormData();
+    data.append("file", value[0]);
+    axios
+      .post(imageUploadURL, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        setfilesValue(response.data.url);
+      })
+      .catch((error) => {
+        console.error("Error uploading image:", error);
+      });
   };
 
   const handleClickPost = async () => {
@@ -28,7 +42,7 @@ const PostEdit = () => {
       content: editorValue,
       status: isShow,
       description: "des",
-      thumb: filesValue[0],
+      thumb: filesValue,
     };
     try {
       const response = await postAPI.postArticle(data);
