@@ -25,7 +25,7 @@ const postAPI: PostAPI = {
 
   getUserArticles: async (page: number = 1, limit: number = 6) => {
     try {
-      const response = await axiosInstance.get("/articles/user", {
+      const response = await axiosInstance.get(`/articles/user`, {
         params: { page, limit },
       });
       return response.data;

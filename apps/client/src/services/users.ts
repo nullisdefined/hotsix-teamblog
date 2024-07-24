@@ -101,6 +101,16 @@ const userAPI = {
       },
     });
   },
+
+  getUserById: async (userId: number) => {
+    try {
+      const response = await axios.get(`/users`);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      throw error;
+    }
+  },
 };
 
 export default userAPI;

@@ -87,7 +87,7 @@ const PostDetail: React.FC = () => {
   };
 
   const handleComment = async () => {
-    if (!id) return;
+    if (!id || !comment.trim()) return;
     try {
       await commentsAPI.postComment(Number(id), comment);
       setComment("");
@@ -131,8 +131,17 @@ const PostDetail: React.FC = () => {
       </h1>
       <div className="flex justify-between items-center pt-10 pb-20">
         <div className="flex-grow">
-          <p className="font-bold text-xl">{article.nickname}</p>
-          <p>{article.createdAt}</p>
+          <div className="flex items-center">
+            <img
+              src={article.profileImg}
+              alt="프로필 사진"
+              className="w-10 h-10 rounded-full mr-3"
+            />
+            <div>
+              <p className="font-bold text-xl">{article.nickname}</p>
+              <p>{article.createdAt}</p>
+            </div>
+          </div>
         </div>
         <div className="flex gap-4">
           <Button
@@ -161,28 +170,10 @@ const PostDetail: React.FC = () => {
       </div>
       <HtmlRenderer htmlContent={article.content} />
       <div className="pt-14">
-        <h3 className="font-bold">{article.comments.length}개의 댓글</h3>
-        {article.comments.length > 0
-          ? article.comments.map((el, index) => (
-              <div
-                key={index}
-                className="py-5"
-                style={{ borderTop: "1px solid rgba(0,0,0,0.3)" }}
-              >
-                <div className="pb-3">
-                  <div className="text-xl font-bold">{el.user.nickname}</div>
-                  <div>
-                    {dayjs(el.createdAt).tz().format("YYYY년 MM월 DD일 HH:mm")}
-                  </div>
-                </div>
-                <p>{el.comment}</p>
-              </div>
-            ))
-          : null}
         <div className="pb-20">
           <input
             type="text"
-            className="bg-slate-100 w-full p-7"
+            className="bg-slate-100 w-full p-7 mb-4"
             onChange={handleCommentChange}
             value={comment}
             placeholder="댓글을 작성하세요"
@@ -191,6 +182,35 @@ const PostDetail: React.FC = () => {
             <Button text="댓글 등록" type="PRIMARY" onClick={handleComment} />
           </div>
         </div>
+        <h3 className="font-bold">{article.comments.length}개의 댓글</h3>
+        {article.comments.length > 0
+          ? article.comments.map((el, index) => (
+              <div
+                key={index}
+                className="py-5"
+                style={{ borderTop: "1px solid rgba(0,0,0,0.3)" }}
+              >
+                <div className="pb-3 flex items-center justify-between">
+                  <div className="flex items-center">
+                    <img
+                      src={el.user.profileImage}
+                      alt="프로필 사진"
+                      className="w-10 h-10 rounded-full mr-3 object-cover"
+                    />
+                    <div>
+                      <div className="text-xl font-bold">
+                        {el.user.nickname}
+                      </div>
+                      <p className="bg-gray-100 p-3 rounded-lg">{el.comment}</p>
+                    </div>
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    {dayjs(el.createdAt).tz().format("YYYY년 MM월 DD일 HH:mm")}
+                  </div>
+                </div>
+              </div>
+            ))
+          : null}
       </div>
     </div>
   );
