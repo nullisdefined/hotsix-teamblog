@@ -7,6 +7,7 @@ interface PostAPI {
   postArticle: (data: IPostArticle) => Promise<IPostArticle>;
   modifyArticle: (id: number, data: IPostArticle) => Promise<IPostArticle>;
   deleteArticle: (id: number) => Promise<void>;
+  getUserArticles: (page: number, limit: number) => Promise<IPostsResponse>;
 }
 
 const postAPI: PostAPI = {
@@ -62,6 +63,21 @@ const postAPI: PostAPI = {
       return response.data;
     } catch (err) {
       console.error("Error deleting post:", err);
+      throw err;
+    }
+  },
+
+  getUserArticles: async (
+    page: number = 1,
+    limit: number = 6
+  ): Promise<IPostsResponse> => {
+    try {
+      const response = await axiosInstance.get("/articles/user", {
+        params: { page, limit },
+      });
+      return response.data;
+    } catch (err) {
+      console.error("Error fetching user articles:", err);
       throw err;
     }
   },

@@ -1,8 +1,8 @@
 export interface IPostsResponse {
   data: IPost[];
-  totalCount?: number;
-  currentPage?: number;
-  totalPages?: number;
+  totalCount: number;
+  currentPage: number;
+  totalPages: number;
 }
 
 export interface IPost {

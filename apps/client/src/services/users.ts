@@ -22,6 +22,14 @@ const userAPI = {
       params: { userId },
     });
   },
+  updateUser: async (userData: any) => {
+    return axios.put("/users/update", userData, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+  },
 };
 
 export default userAPI;

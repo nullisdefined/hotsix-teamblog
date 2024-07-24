@@ -38,6 +38,9 @@ const Header = () => {
         <div>
           {isLogin ? (
             <>
+              <Link to="/mypage" className="Join mr-2">
+                마이페이지
+              </Link>
               <Button
                 text="게시글 작성"
                 type="PRIMARY"
