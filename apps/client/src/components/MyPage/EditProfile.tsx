@@ -191,7 +191,7 @@ const EditProfile: React.FC = () => {
             <img
               src={previewUrl || "/default-profile.png"}
               alt="Profile"
-              className="w-20 h-20 rounded-full mr-4 object-cover"
+              className="w-32 h-32 rounded-full mr-4 object-cover"
             />
             <input
               type="file"
@@ -200,16 +200,18 @@ const EditProfile: React.FC = () => {
               ref={fileInputRef}
               className="hidden"
             />
-            <Button
-              text="사진 삭제"
-              type="DANGER"
-              onClick={handleImageDelete}
-            />
-            <Button
-              text="사진 변경"
-              type="SECONDARY"
-              onClick={() => fileInputRef.current?.click()}
-            />
+            <div className="flex space-x-2">
+              <Button
+                text="사진 삭제"
+                type="DANGER"
+                onClick={handleImageDelete}
+              />
+              <Button
+                text="사진 변경"
+                type="SECONDARY"
+                onClick={() => fileInputRef.current?.click()}
+              />
+            </div>
           </div>
         </div>
         <div className="mb-4">
@@ -220,7 +222,7 @@ const EditProfile: React.FC = () => {
             id="email"
             type="email"
             value={email}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-zinc-600 leading-tight focus:outline-none focus:shadow-outline opacity-50"
             readOnly
           />
         </div>
@@ -274,7 +276,9 @@ const EditProfile: React.FC = () => {
             onChange={(e) => setIntroduce(e.target.value)}
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             rows={4}
+            maxLength={50}
           />
+          <p className="text-sm mt-1 text-gray-500">{introduce.length}/50</p>
         </div>
         <div className="flex items-center justify-between mb-4">
           <Button

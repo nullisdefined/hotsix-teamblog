@@ -7,6 +7,7 @@ import Button from "../Button/Button";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
+import { BsFillPersonFill, BsFillEnvelopeFill, BsGithub } from "react-icons/bs";
 
 const MyPage: React.FC = () => {
   const [user, setUser] = useState<IUser | null>(null);
@@ -69,29 +70,46 @@ const MyPage: React.FC = () => {
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">My Page</h1>
       <div className="bg-white shadow-md rounded-lg p-6 mb-8">
-        <h2 className="text-2xl font-semibold mb-4">내 정보</h2>
+        <h2 className="text-2xl font-semibold mb-4">
+          <BsFillPersonFill
+            className="inline-block mr-2"
+            style={{ fontSize: "1.5em" }}
+          />
+          {user.nickname}
+        </h2>
         <div className="flex items-center mb-4">
           <img
-            src={user.profileImage || "/default-profile.png"}
+            src={user.profileImage}
             alt="프로필 사진"
-            className="w-16 h-16 rounded-full mr-4"
+            className="w-32 h-32 rounded-full mr-4"
           />
           <div>
             <p className="mb-2">
-              <strong>닉네임:</strong> {user.nickname}
-            </p>
-            <p className="mb-2">
+              <BsFillEnvelopeFill
+                className="inline-block mr-2"
+                style={{ fontSize: "1.5em" }}
+              />
               <strong>이메일:</strong> {user.email}
             </p>
             <p className="mb-2">
-              <strong>GitHub:</strong> {user.gitUrl || ""}
+              <BsGithub
+                className="inline-block mr-2"
+                style={{ fontSize: "1.5em" }}
+              />
+              <strong>GitHub:</strong>{" "}
+              <a
+                href={user.gitUrl}
+                className="text-gray-700 underline hover:text-gray-900"
+              >
+                {user.gitUrl || ""}
+              </a>
             </p>
             <p className="mb-2">
               <strong>소개:</strong> {user.introduce || ""}
             </p>
           </div>
         </div>
-        <div className="mt-4">
+        <div className="mt-5 mx-4">
           <Button
             text="프로필 수정"
             type="SECONDARY"
