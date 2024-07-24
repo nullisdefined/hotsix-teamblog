@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import {
   BsEmojiWinkFill,
   BsGithub,
@@ -26,11 +26,20 @@ const Profile: FC<TProfileProps> = ({
   img,
   gitUrl,
 }) => {
+  const [imgError, setImgError] = useState<boolean>(false);
   return (
     <div className="Profile">
       <div className="Title">
         <div className="Thumb">
-          <img src={img || DEFAULT_PROFILE_IMAGE} alt={nickname} />
+          {imgError ? (
+            <BsEmojiWinkFill />
+          ) : (
+            <img
+              src={img || DEFAULT_PROFILE_IMAGE}
+              alt={nickname}
+              onError={() => setImgError(true)}
+            />
+          )}
         </div>
         <div className="Text">
           <h2>{nickname}</h2>

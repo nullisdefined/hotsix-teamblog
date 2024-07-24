@@ -26,16 +26,30 @@ const Card: FC<TPostProps> = ({ post }) => {
           <div
             className="Image"
             style={{
-              height: "150px",
+              height: "250px",
               backgroundColor: firstImageUrl ? "transparent" : "#f0f0f0",
             }}
           >
-            {firstImageUrl && (
+            {firstImageUrl ? (
               <img
                 src={firstImageUrl}
                 alt={post.title}
-                style={{ width: "100%", height: "150px", objectFit: "cover" }}
+                style={{ width: "100%", height: "250px", objectFit: "cover" }}
               />
+            ) : (
+              <div
+                style={{
+                  width: "100%",
+                  height: "250px",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <p className="text-6xl font-bold text-gray">
+                  {truncateText(post.title, 37)}
+                </p>
+              </div>
             )}
           </div>
           <div className="TextContent">
