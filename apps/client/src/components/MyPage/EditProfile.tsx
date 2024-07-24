@@ -6,6 +6,7 @@ import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import axios from "../../config/axios";
 import { DEFAULT_PROFILE_IMAGE } from "../Profile/Profile";
+import { BsEmojiWinkFill } from "react-icons/bs";
 
 const EditProfile: React.FC = () => {
   const [user, setUser] = useState<any>(null);
@@ -25,6 +26,7 @@ const EditProfile: React.FC = () => {
   const [newPassword, setNewPassword] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+  const [imgError, setImgError] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -179,20 +181,27 @@ const EditProfile: React.FC = () => {
   if (error) return <ErrorMessage message={error} />;
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">프로필 수정</h1>
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white shadow-md rounded-lg p-6"
-      >
-        <div className="mb-4">
-          <label className="block text-sm font-bold mb-2">프로필 사진:</label>
-          <div className="flex items-center">
-            <img
-              src={previewUrl || "/default-profile.png"}
-              alt="Profile"
-              className="w-20 h-20 rounded-full mr-4 object-cover"
-            />
+    <div
+      className="container mx-auto px-4 py-10"
+      style={{ maxWidth: "900px", margin: "0 auto" }}
+    >
+      <h1 className="text-3xl font-bold mb-6 mt-16">프로필 수정</h1>
+      <form onSubmit={handleSubmit} className="bg-white rounded-lg">
+        <div className="my-10 flex">
+          <label className="block text-sm font-bold text-lg w-1/6">
+            프로필 사진
+          </label>
+          <div className="flex items-start">
+            {imgError ? (
+              <BsEmojiWinkFill size="100" className="mr-10" color="#764fe1" />
+            ) : (
+              <img
+                src={previewUrl || "/default-profile.png"}
+                alt="프로필 사진"
+                onError={() => setImgError(true)}
+                className="w-20 h-20 rounded-full mr-10 object-cover"
+              />
+            )}
             <input
               type="file"
               accept="image/*"
@@ -200,11 +209,13 @@ const EditProfile: React.FC = () => {
               ref={fileInputRef}
               className="hidden"
             />
-            <Button
-              text="사진 삭제"
-              type="DANGER"
-              onClick={handleImageDelete}
-            />
+            <div className="pr-2">
+              <Button
+                text="사진 삭제"
+                type="DANGER"
+                onClick={handleImageDelete}
+              />
+            </div>
             <Button
               text="사진 변경"
               type="SECONDARY"
@@ -212,23 +223,34 @@ const EditProfile: React.FC = () => {
             />
           </div>
         </div>
-        <div className="mb-4">
-          <label htmlFor="email" className="block text-sm font-bold mb-2">
-            이메일:
+        <div className="mb-10 flex">
+          <label
+            htmlFor="email"
+            className="block w-1/6 text-lg font-bold mb-2 w-1/6"
+          >
+            이메일
           </label>
           <input
             id="email"
             type="email"
             value={email}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            readOnly
+            className="appearance-none rounded w-5/6 p-3 leading-tight focus:outline-none focus:shadow-outline"
+            style={{
+              border: "1px solid rgba(0,0,0,0.3)",
+              color: "rgba(0,0,0,0.6)",
+              fontSize: "1.2em",
+            }}
+            disabled
           />
         </div>
-        <div className="mb-4">
-          <label htmlFor="nickname" className="block text-sm font-bold mb-2">
-            닉네임:
+        <div className="mb-10 flex">
+          <label
+            htmlFor="nickname"
+            className="block w-1/6 text-lg font-bold mb-2"
+          >
+            닉네임
           </label>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center justify-between space-x-2 w-5/6">
             <input
               id="nickname"
               type="text"
@@ -237,7 +259,11 @@ const EditProfile: React.FC = () => {
                 setNickname(e.target.value);
                 setIsNicknameChecked(false);
               }}
-              className="shadow appearance-none border rounded w-11/12 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              className="appearance-none rounded w-10/12 p-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              style={{
+                border: "1px solid rgba(0,0,0,0.5)",
+                fontSize: "1.2em",
+              }}
               required
             />
             <Button
@@ -252,28 +278,42 @@ const EditProfile: React.FC = () => {
             </p>
           )}
         </div>
-        <div className="mb-4">
-          <label htmlFor="gitUrl" className="block text-sm font-bold mb-2">
-            GitHub URL:
+        <div className="mb-10 flex">
+          <label
+            htmlFor="gitUrl"
+            className="block text-lg w-1/6 font-bold mb-2"
+          >
+            GitHub URL
           </label>
           <input
             id="gitUrl"
             type="url"
             value={gitUrl}
             onChange={(e) => setGitUrl(e.target.value)}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="appearance-none border rounded w-5/6 p-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            style={{
+              border: "1px solid rgba(0,0,0,0.5)",
+              fontSize: "1.2em",
+            }}
           />
         </div>
-        <div className="mb-4">
-          <label htmlFor="introduce" className="block text-sm font-bold mb-2">
+        <div className="mb-10 flex">
+          <label
+            htmlFor="introduce"
+            className="block text-lg w-1/6 font-bold mb-2"
+          >
             소개:
           </label>
           <textarea
             id="introduce"
             value={introduce}
             onChange={(e) => setIntroduce(e.target.value)}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="appearance-none border rounded w-5/6 p p-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             rows={4}
+            style={{
+              border: "1px solid rgba(0,0,0,0.5)",
+              fontSize: "1.2em",
+            }}
           />
         </div>
         <div className="flex items-center justify-between mb-4">
@@ -301,7 +341,7 @@ const EditProfile: React.FC = () => {
               type="text"
               value={verificationCode}
               onChange={(e) => setVerificationCode(e.target.value)}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
             />
           </div>
@@ -317,7 +357,7 @@ const EditProfile: React.FC = () => {
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
             />
           </div>

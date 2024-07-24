@@ -52,12 +52,14 @@
 }
 
 .Button_DANGER {
+  border: 2px solid #ff0000ca;
   background-color: #ff0000ca; /* Red color */
   color: #fff;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
 .Button_DANGER:hover {
+  border: 2px solid #b03434;
   background-color: #b03434; /* Darker red shade on hover */
   color: #f0f0f0; /* Lighter text color on hover */
 }

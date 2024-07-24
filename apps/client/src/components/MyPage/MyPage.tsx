@@ -7,6 +7,7 @@ import Button from "../Button/Button";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
+import { BsEmojiWinkFill } from "react-icons/bs";
 
 const MyPage: React.FC = () => {
   const [user, setUser] = useState<IUser | null>(null);
@@ -16,6 +17,7 @@ const MyPage: React.FC = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
+  const [imgError, setImgError] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,11 +26,11 @@ const MyPage: React.FC = () => {
         const userData = await userAPI.getCurrentUser();
         setUser(userData.data);
 
-        if (userData.data.userId) {
-          const postsData: IPostsResponse = await postAPI.getUserArticles(1, 6);
-          setPosts(postsData.data);
-          setTotalPages(postsData.totalPages);
-        }
+        // if (userData.data.userId) {
+        //   const postsData: IPostsResponse = await postAPI.getUserArticles(1, 6);
+        //   setPosts(postsData.data);
+        //   setTotalPages(postsData.totalPages);
+        // }
       } catch (err) {
         setError("데이터를 불러오는데 실패했습니다.");
         console.error(err);
@@ -66,37 +68,53 @@ const MyPage: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">My Page</h1>
-      <div className="bg-white shadow-md rounded-lg p-6 mb-8">
-        <h2 className="text-2xl font-semibold mb-4">내 정보</h2>
-        <div className="flex items-center mb-4">
-          <img
-            src={user.profileImage || "/default-profile.png"}
-            alt="프로필 사진"
-            className="w-16 h-16 rounded-full mr-4"
-          />
+    <div
+      className="container"
+      style={{ margin: "0 auto", maxWidth: "900px", paddingTop: "100px" }}
+    >
+      <div
+        className="bg-white rounded-lg p-6 mb-8"
+        style={{ border: "1px solid rgba(0,0,0,0.2)" }}
+      >
+        <h2 className="text-2xl font-semibold mb-4 flex justify-between">
+          내 정보
           <div>
-            <p className="mb-2">
-              <strong>닉네임:</strong> {user.nickname}
+            <Button
+              text="프로필 수정"
+              type="SECONDARY"
+              onClick={() => navigate("/edit-profile")}
+            />
+          </div>
+        </h2>
+        <div className="flex items-center mb-4">
+          {imgError ? (
+            <BsEmojiWinkFill size="100" color="#764fe1" />
+          ) : (
+            <img
+              src={user.profileImage || "/default-profile.png"}
+              alt="프로필 사진"
+              onError={() => setImgError(true)}
+              className="w-20 h-20 rounded-full mr-4"
+            />
+          )}
+          <div className="pl-10">
+            <p className="mb-2 flex">
+              <p className="w-20">닉네임</p>
+              <span className="font-bold">{user.nickname}</span>
             </p>
-            <p className="mb-2">
-              <strong>이메일:</strong> {user.email}
+            <p className="mb-2 flex">
+              <p className="w-20">이메일</p>
+              <span className="font-bold">{user.email}</span>
             </p>
-            <p className="mb-2">
-              <strong>GitHub:</strong> {user.gitUrl || ""}
+            <p className="mb-2 flex">
+              <p className="w-20">깃허브</p>
+              <span className="font-bold">{user.gitUrl || ""}</span>
             </p>
-            <p className="mb-2">
-              <strong>소개:</strong> {user.introduce || ""}
+            <p className="mb-2 flex">
+              <p className="w-20">소개</p>
+              <span className="font-bold">{user.introduce || ""}</span>
             </p>
           </div>
-        </div>
-        <div className="mt-4">
-          <Button
-            text="프로필 수정"
-            type="SECONDARY"
-            onClick={() => navigate("/edit-profile")}
-          />
         </div>
       </div>
       <div className="MyPostsSection">

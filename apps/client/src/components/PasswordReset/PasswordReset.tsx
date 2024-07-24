@@ -59,14 +59,14 @@ const PasswordReset: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">비밀번호 재설정</h1>
-      <form
-        onSubmit={handlePasswordReset}
-        className="bg-white shadow-md rounded-lg p-6"
-      >
-        <div className="mb-4">
-          <label htmlFor="email" className="block text-sm font-bold mb-2">
+    <div
+      className="container mx-auto px-4 py-8"
+      style={{ maxWidth: "900px", margin: "0 auto" }}
+    >
+      <h1 className="text-3xl font-bold mb-6 mt-20">비밀번호 재설정</h1>
+      <form onSubmit={handlePasswordReset} className="bg-white rounded-lg">
+        <div className="mb-10 flex">
+          <label htmlFor="email" className="block text-lg w-1/6 font-bold mb-2">
             이메일:
           </label>
           <input
@@ -74,9 +74,13 @@ const PasswordReset: React.FC = () => {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="shadow appearance-none border rounded w-5/6 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             required
             disabled={isEmailDisabled}
+            style={{
+              border: "1px solid rgba(0,0,0,0.5)",
+              fontSize: "1.2em",
+            }}
           />
         </div>
         <Button
@@ -86,52 +90,64 @@ const PasswordReset: React.FC = () => {
         />
         {isEmailSent && (
           <>
-            <div className="mb-4 mt-3">
+            <div className="mb-4 mt-10 flex">
               <label
                 htmlFor="verificationCode"
-                className="block text-sm font-bold mb-2"
+                className="block text-lg w-1/6 font-bold mb-2"
               >
-                인증 코드:
+                인증 코드
               </label>
               <input
                 id="verificationCode"
                 type="text"
                 value={verificationCode}
                 onChange={(e) => setVerificationCode(e.target.value)}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow appearance-none border rounded w-5/6 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 required
+                style={{
+                  border: "1px solid rgba(0,0,0,0.5)",
+                  fontSize: "1.2em",
+                }}
               />
             </div>
-            <div className="mb-4">
+            <div className="mb-10 flex">
               <label
                 htmlFor="newPassword"
-                className="block text-sm font-bold mb-2"
+                className="block text-lg w-1/6 font-bold mb-2"
               >
-                새 비밀번호:
+                새 비밀번호
               </label>
               <input
                 id="newPassword"
                 type="password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow appearance-none border rounded w-5/6 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 required
+                style={{
+                  border: "1px solid rgba(0,0,0,0.5)",
+                  fontSize: "1.2em",
+                }}
               />
             </div>
-            <div className="mb-4">
+            <div className="mb-10 flex">
               <label
                 htmlFor="confirmPassword"
-                className="block text-sm font-bold mb-2"
+                className="block text-lg w-1/6 font-bold mb-2"
               >
-                새 비밀번호 확인:
+                새 비밀번호 확인
               </label>
               <input
                 id="confirmPassword"
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow appearance-none border rounded w-5/6 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 required
+                style={{
+                  border: "1px solid rgba(0,0,0,0.5)",
+                  fontSize: "1.2em",
+                }}
               />
             </div>
             <Button text="비밀번호 변경" type="PRIMARY" buttonType="submit" />
