@@ -5,6 +5,7 @@ import Button from "../Button/Button";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import axios from "../../config/axios";
+import { DEFAULT_PROFILE_IMAGE } from "../Profile/Profile";
 
 const EditProfile: React.FC = () => {
   const [user, setUser] = useState<any>(null);
@@ -69,6 +70,11 @@ const EditProfile: React.FC = () => {
         );
       }
     }
+  };
+
+  const handleImageDelete = () => {
+    setPreviewUrl(DEFAULT_PROFILE_IMAGE);
+    // setProfileImage(DEFAULT_PROFILE_IMAGE);
   };
 
   const checkNicknameDuplication = async () => {
@@ -149,6 +155,10 @@ const EditProfile: React.FC = () => {
     }
   };
 
+  const handlePasswordChangeRedirect = () => {
+    navigate("/password-reset", { state: { email } });
+  };
+
   const handleDeleteAccount = async () => {
     if (
       window.confirm(
@@ -189,6 +199,11 @@ const EditProfile: React.FC = () => {
               onChange={handleImageChange}
               ref={fileInputRef}
               className="hidden"
+            />
+            <Button
+              text="사진 삭제"
+              type="DANGER"
+              onClick={handleImageDelete}
             />
             <Button
               text="사진 변경"
@@ -265,7 +280,7 @@ const EditProfile: React.FC = () => {
           <Button
             text="비밀번호 변경하기"
             type="SECONDARY"
-            onClick={handlePasswordResetRequest}
+            onClick={handlePasswordChangeRedirect}
           />
           <Button text="프로필 업데이트" type="PRIMARY" buttonType="submit" />
         </div>

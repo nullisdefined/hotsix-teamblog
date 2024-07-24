@@ -9,7 +9,7 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({ message }) => {
   return (
     <div className="error-message-container">
       <div className="error-message">
-        <h2>오류가 발생했습니다</h2>
+        <h2>ERROR</h2>
         <p>{message}</p>
       </div>
     </div>

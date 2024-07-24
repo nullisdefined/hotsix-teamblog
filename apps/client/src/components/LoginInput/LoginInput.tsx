@@ -2,7 +2,7 @@ import { ChangeEvent, useState } from "react";
 import "./LoginInput.css";
 import axios from "../../config/axios";
 import { setCookie } from "../../utils/cookies";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 
 const LoginInput = () => {
@@ -65,7 +65,7 @@ const LoginInput = () => {
         <button className="loginButton" type="submit" onClick={handleSubmit}>
           로그인
         </button>
-        <a href="/">비밀번호를 잊으셨나요?</a>
+        <Link to="/password-reset">비밀번호를 잊으셨나요?</Link>
       </div>
     </form>
   );

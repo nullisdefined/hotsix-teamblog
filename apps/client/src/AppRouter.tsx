@@ -8,6 +8,7 @@ import PostEdit from "./pages/post/Edit";
 import PostCreate from "./pages/post/PostCreate";
 import MyPage from "./components/MyPage/MyPage";
 import EditProfile from "./components/MyPage/EditProfile";
+import PasswordReset from "./components/PasswordReset/PasswordReset";
 
 const AppRouter = () => {
   return (
@@ -23,6 +24,7 @@ const AppRouter = () => {
           <Route path="/posts/edit/:id" element={<PostEdit />} />
           <Route path="/mypage" element={<MyPage />} />
           <Route path="/edit-profile" element={<EditProfile />} />
+          <Route path="/password-reset" element={<PasswordReset />} />
         </Routes>
       </BrowserRouter>
     </>
