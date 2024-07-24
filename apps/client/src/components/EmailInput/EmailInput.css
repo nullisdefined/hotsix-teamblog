@@ -1,0 +1,31 @@
+.EmailInput {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.EmailInput .text {
+    margin-top: 80px;
+    margin-bottom: 10px;
+}
+
+.EmailInput .email {
+    width: 350px;
+    padding: 15px;
+    font-size: 18px;
+    border-radius: 5px;
+    border: none;
+    background-color: rgb(230, 230, 230);
+}
+
+.EmailInput .emailCheckBtn {
+    padding: 10px;
+    color: white;
+    border: none;
+    font-size: 20px;
+    border-radius: 30px;
+    margin-top: 15px;
+    margin-bottom: 0px;
+    cursor: pointer;
+    background-color: #764fe1;
+}

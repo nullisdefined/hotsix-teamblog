@@ -5,6 +5,8 @@ import Login from "./pages/Login";
 import Join from "./pages/Join";
 import PostDetail from "./pages/post/Detail";
 import PostEdit from "./pages/post/Edit";
+import EmailCheck from "./pages/pwdReset/EmailCheck";
+import PwdReset from "./pages/pwdReset/PwdReset";
 
 const AppRouter = () => {
   return (
@@ -17,6 +19,8 @@ const AppRouter = () => {
           <Route path="/join" element={<Join />} />
           <Route path="/posts/:id" element={<PostDetail />} />
           <Route path="/posts/edit" element={<PostEdit />} />
+          <Route path="/emailcheck" element={<EmailCheck />} />
+          <Route path="/pwdreset" element={<PwdReset />} />
         </Routes>
       </BrowserRouter>
     </>

@@ -57,7 +57,7 @@ const LoginInput = () => {
         <button className="loginButton" type="submit" onClick={Login}>
           로그인
         </button>
-        <a href="/">비밀번호를 잊으셨나요?</a>
+        <a href="/emailCheck">비밀번호를 잊으셨나요?</a>
       </div>
     </>
   );
