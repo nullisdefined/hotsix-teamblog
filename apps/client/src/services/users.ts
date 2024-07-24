@@ -5,7 +5,7 @@ interface UpdateUserData {
   nickname?: string;
   gitUrl?: string;
   introduce?: string;
-  profileImage?: File;
+  profileImage?: string;
 }
 
 export function getAccessTokenFromCookie(): string | null {

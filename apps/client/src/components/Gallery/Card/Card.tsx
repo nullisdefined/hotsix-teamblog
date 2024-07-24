@@ -74,6 +74,18 @@ const Card: FC<TPostProps> = ({ post }) => {
           </div>
         </div>
         <div className="CardFooter">
+          <div className="UserInfo">
+            {post.profileImg ? (
+              <img
+                src={post.profileImg}
+                alt={`${post.nickname}'s profile`}
+                className="ProfileImage"
+              />
+            ) : (
+              <div className="DefaultProfileImage"></div>
+            )}
+            <span className="Nickname">{post.nickname}</span>
+          </div>
           <span className="Date">
             {new Date(post.createdAt).toLocaleDateString("ko-KR", {
               year: "2-digit",
@@ -81,7 +93,6 @@ const Card: FC<TPostProps> = ({ post }) => {
               day: "2-digit",
             })}
           </span>
-          <span className="Nickname">{post.nickname}</span>
           <span className="Interactions">
             <BsFillHeartFill className="mr-1" />
             {post.likes}

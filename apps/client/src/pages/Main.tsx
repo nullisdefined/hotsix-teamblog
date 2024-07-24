@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
-import Profile from "../components/Profile/Profile";
+import Profile, { DEFAULT_PROFILE_IMAGE } from "../components/Profile/Profile";
 import Gallery from "../components/Gallery/Gallery";
 import Pagination from "../components/Pagination/Pagination";
 import postAPI from "../services/post";
@@ -83,7 +83,7 @@ function Main() {
           description={user.introduce || ""}
           email={user.email}
           gitUrl={user.gitUrl || ""}
-          img={user.profileImage}
+          img={user.profileImage || DEFAULT_PROFILE_IMAGE}
         />
       ),
     [user]
