@@ -32,7 +32,7 @@ const LoginInput = () => {
         password: pwd,
       };
       const response = await axios.post("/auth/signin", data);
-      console.log("SUCCESS", response.data);
+      // console.log("SUCCESS", response.data);
       const accessToken = response.data.accessToken;
       setCookie("accessToken", accessToken, {
         path: "/",
@@ -42,7 +42,7 @@ const LoginInput = () => {
       });
       navigate("/");
     } catch (err: any) {
-      console.log("ERR", err);
+      // console.log("ERR", err);
       if (err.response && err.response.status === 401) {
         setError("이메일 또는 비밀번호가 올바르지 않습니다."); // 오류 메시지 설정
       } else {

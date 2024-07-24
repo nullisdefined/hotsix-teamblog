@@ -89,7 +89,7 @@ const JoinInput = () => {
 
     try {
       const response = await axios.post("/auth/signup", data);
-      console.log("SUCCESS", response.data);
+      // console.log("SUCCESS", response.data);
       alert("회원가입 처리되었습니다.");
       navigate("/login");
     } catch (err: any) {
@@ -133,7 +133,7 @@ const JoinInput = () => {
         }
       }
       setEmailMessageColor("red");
-      console.log("ERR", err);
+      // console.log("ERR", err);
     }
   };
 

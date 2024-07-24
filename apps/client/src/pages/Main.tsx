@@ -36,14 +36,14 @@ function Main() {
         currentPage,
         POSTS_PER_PAGE
       );
-      console.log("Posts data:", response);
+      // console.log("Posts data:", response);
       setPosts(response.data);
       setTotalPages(response.totalPages || 1);
     } catch (err) {
       console.error("Error fetching data:", err);
       if (axios.isAxiosError(err)) {
         if (err.response?.status === 401) {
-          console.log("Unauthorized, redirecting to login...");
+          // console.log("Unauthorized, redirecting to login...");
           navigate("/login");
           return;
         }
