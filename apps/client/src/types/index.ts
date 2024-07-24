@@ -1,16 +1,13 @@
 export interface IPost {
-  id: number;
-  nickname: string;
+  articleId: number;
+  content: string;
+  createdAt: string;
+  description: string;
+  status: boolean;
   thumb: string;
   title: string;
-  likes: number;
-  description: string;
-  content: string;
-  comments: IComments[];
-  createdAt: string;
   updatedAt: string;
-  status: boolean;
-  showStatus: boolean;
+  userId: number;
 }
 
 export interface IComments {
@@ -24,5 +21,5 @@ export interface IPostArticle {
   content: string;
   status: boolean;
   description?: string;
-  thumb?: File;
+  thumb?: string;
 }
