@@ -13,6 +13,8 @@ import { UploadModule } from './upload/upload.module';
 import { ArticlesModule } from './articles/articles.module';
 import { CommentsModule } from './comments/comments.module';
 import { LikesModule } from './likes/likes.module';
+import { ArticlesService } from './articles/articles.service';
+import { Article } from './entities/article.entity';
 
 @Module({
   imports: [
@@ -29,6 +31,7 @@ import { LikesModule } from './likes/likes.module';
       rootPath: process.env.NODE_ENV === 'production' ? '/app/public' : join(__dirname, '../..', 'client', 'dist'),
     }),
     TypeOrmModule.forRoot(typeORMConfig),
+    TypeOrmModule.forFeature([Article]),
     MailerModule.forRoot({
       transport: {
         host: 'smtp.gmail.com',
@@ -51,6 +54,6 @@ import { LikesModule } from './likes/likes.module';
     UploadModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ArticlesService],
 })
 export class AppModule {}

@@ -23,42 +23,28 @@ export class AuthController {
   @Post('/signup')
   @HttpCode(HttpStatus.CREATED)
   async signup(@Body() userDto: UserDto): Promise<UserDto> {
-    try {
-      return await this.authService.signup(userDto);
-    } catch (error) {
-      throw new BadRequestException(error.message);
-    }
+    return await this.authService.signup(userDto);
   }
 
   @Post('/signin')
   @HttpCode(HttpStatus.OK)
-  async signin(@Body() credentialDto: CredentialDto, @Res() res: Response): Promise<void> {
-    try {
-      const jwt = await this.authService.signin(credentialDto);
-      res.setHeader('Authorization', 'Bearer ' + jwt.accessToken);
-      res.json(jwt);
-    } catch (error) {
-      throw new UnauthorizedException(error.message);
-    }
+  async signin(@Body() credentialDto: CredentialDto, @Res() res: Response): Promise<boolean> {
+    const jwt = await this.authService.signin(credentialDto);
+    res.setHeader('Authorization', 'Bearer ' + jwt.accessToken);
+    res.json(jwt);
+    return true;
   }
 
   @Post('/password-reset')
   @HttpCode(HttpStatus.OK)
-  async requestPasswordReset(@Body() requestPasswordResetDto: RequestPasswordResetDto): Promise<void> {
-    try {
-      await this.authService.requestPasswordReset(requestPasswordResetDto);
-    } catch (error) {
-      throw new BadRequestException(error.message);
-    }
+  async requestPasswordReset(@Body() requestPasswordResetDto: RequestPasswordResetDto): Promise<boolean> {
+    await this.authService.requestPasswordReset(requestPasswordResetDto);
+    return true;
   }
 
   @Patch('/password-reset')
   @HttpCode(HttpStatus.OK)
   async resetPasswordWithCode(@Body() resetPasswordWithCodeDto: ResetPasswordWithCodeDto): Promise<void> {
-    try {
-      await this.authService.resetPasswordWithCode(resetPasswordWithCodeDto);
-    } catch (error) {
-      throw new BadRequestException(error.message);
-    }
+    await this.authService.resetPasswordWithCode(resetPasswordWithCodeDto);
   }
 }

@@ -34,7 +34,7 @@ export class Article {
   content: string;
 
   @Column()
-  status: string;
+  status: boolean;
 
   @CreateDateColumn()
   createdAt: Date;

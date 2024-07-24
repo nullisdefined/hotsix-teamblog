@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { ArticleDto } from './dto/article.dto';
 import { Article } from 'src/entities/article.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -11,17 +11,16 @@ import { Comment } from 'src/entities/comment.entity';
 @Injectable()
 export class ArticlesService {
   constructor(
-    private likesservice: LikesService,
+    private likesService: LikesService,
     @Inject(forwardRef(() => CommentsService))
-    private commentsservice: CommentsService,
+    private commentsService: CommentsService,
   ) {}
 
   @InjectRepository(Article) private articleRepository: Repository<Article>;
 
-  async getDetail(articleId: number): Promise<DetailResponse> {
-    // article, user.nickname, photos정보 가져오기
-    const [article]: Article[] = await this.articleRepository.find({
-      relations: ['user', 'photos'],
+  async getArticle(articleId: number, userId: number): Promise<any> {
+    const article: Article = await this.articleRepository.findOne({
+      relations: ['user'],
       where: { articleId },
     });
 
@@ -29,57 +28,46 @@ export class ArticlesService {
       throw new NotFoundException('Article not found');
     }
 
-    //좋아요 수와 댓글정보 가져오기
-    const likes: number = await this.likesservice.getLikesCount({ where: { articleId } });
-    const comments: Comment[] = await this.commentsservice.findByFields({
-      select: ['comment', 'createdAt'],
+    const likes: number = await this.likesService.getLikesCount({ where: { articleId } });
+    const comments: Comment[] = await this.commentsService.findByFields({
+      select: ['commentId', 'userId', 'comment', 'createdAt'],
       relations: ['user'],
       where: { articleId },
     });
 
-    // 댓글데이터 response 형식으로 변환
-    const typedComments: ArticleDetailCommentType[] = this.commentsservice.changeToResponseType(comments);
-
-    // photos정보 response 형식으로 변환
-    const typedPhotos = article.photos.map((photo) => photo.fileName);
+    const typedComments: ArticleDetailCommentType[] = this.commentsService.changeToResponseType(comments);
+    const isliked: boolean = await this.likesService.checkIfUserLiked(userId, articleId);
 
     return {
+      articleId: article.articleId,
+      userId: article.userId,
+      thumb: article.thumb,
       title: article.title,
       nickname: article.user.nickname,
-      profileImg: typedPhotos,
+      profileImg: article.user.profileImage,
       content: article.content,
       createdAt: article.createdAt,
       comments: typedComments,
       likes,
       status: article.status,
+      liked: isliked,
     };
   }
 
-  async create(articleDto: ArticleDto, userId: number): Promise<ResponseMessage> {
-    // DB에 insert
+  async create(articleDto: ArticleDto, userId: number): Promise<void> {
     const typedArticle: Article = this.articleRepository.create({ ...articleDto, userId: userId });
     await this.articleRepository.save(typedArticle);
-
-    return {
-      message: '게시글 생성 완료',
-    };
   }
 
-  async update(articleId: number, articleDto: ArticleDto): Promise<ResponseMessage> {
-    // 개시글 존재 여부 확인
+  async update(articleId: number, articleDto: ArticleDto): Promise<void> {
     let article: Article = await this.findOne(articleId);
 
     if (!article) {
       throw new NotFoundException('Article not found');
     }
 
-    // DB에 update
     article = { ...article, ...articleDto };
     await this.articleRepository.save(article);
-
-    return {
-      message: '게시글 수정 완료',
-    };
   }
 
   async delete(articleId: number): Promise<ResponseMessage> {
@@ -89,7 +77,6 @@ export class ArticlesService {
       throw new NotFoundException('Article not found');
     }
 
-    // DB에 delete
     await this.articleRepository.remove(article);
 
     return {
@@ -99,5 +86,43 @@ export class ArticlesService {
 
   async findOne(articleId: number): Promise<Article> {
     return await this.articleRepository.findOne({ where: { articleId } });
+  }
+
+  async findAll(
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<{ data: any[]; totalCount: number; currentPage: number; totalPages: number }> {
+    const pageNumber = Number(page);
+    const limitNumber = Number(limit);
+
+    if (isNaN(pageNumber) || isNaN(limitNumber)) {
+      throw new BadRequestException('Invalid page or limit value');
+    }
+
+    const [articles, totalCount] = await this.articleRepository
+      .createQueryBuilder('article')
+      .leftJoinAndSelect('article.user', 'user')
+      .leftJoinAndSelect('article.likes', 'likes')
+      .leftJoinAndSelect('article.comments', 'comments')
+      .select(['article', 'user.userId', 'user.nickname', 'user.profileImage', 'likes', 'comments'])
+      .orderBy('article.createdAt', 'DESC')
+      .skip((pageNumber - 1) * limitNumber)
+      .take(limitNumber)
+      .getManyAndCount();
+
+    const articlesWithDetails = articles.map((article) => ({
+      ...article,
+      nickname: article.user.nickname,
+      profileImg: article.user.profileImage,
+      likes: article.likes.length,
+      commentCount: article.comments.length,
+    }));
+
+    return {
+      data: articlesWithDetails,
+      totalCount,
+      currentPage: pageNumber,
+      totalPages: Math.ceil(totalCount / limitNumber),
+    };
   }
 }

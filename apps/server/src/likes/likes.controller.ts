@@ -9,13 +9,15 @@ export class LikesController {
 
   @Post(':id')
   @UseGuards(AuthGuard('jwt'))
-  async addLike(@Param('id') id: string, @Req() req): Promise<ResponseMessage> {
-    return await this.likesService.add(+id, req.user.userId);
+  async addLike(@Param('id') id: number, @Req() req): Promise<boolean> {
+    await this.likesService.add(id, req.user.userId);
+    return true;
   }
 
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'))
-  async deleteLike(@Param('id') id: string, @Req() req): Promise<ResponseMessage> {
-    return await this.likesService.delete(+id, req.user.userId);
+  async deleteLike(@Param('id') id: number, @Req() req): Promise<boolean> {
+    await this.likesService.delete(id, req.user.userId);
+    return true;
   }
 }

@@ -11,19 +11,22 @@ export class CommentsController {
 
   @Post(':id')
   @UseGuards(AuthGuard('jwt'))
-  async createComment(@Param('id') id: string, @Body() commentDto: CommentDto, @Req() req): Promise<ResponseMessage> {
-    return await this.commentsService.create(+id, commentDto, req.user.userId);
+  async createComment(@Param('id') id: number, @Body() commentDto: CommentDto, @Req() req): Promise<boolean> {
+    await this.commentsService.create(id, commentDto, req.user.userId);
+    return true;
   }
 
   @Patch(':id')
   @UseGuards(AuthGuard('jwt'), OwnerGuard)
-  async updateComment(@Param('id') id: string, @Body() commentDto: CommentDto): Promise<ResponseMessage> {
-    return await this.commentsService.update(+id, commentDto);
+  async updateComment(@Param('id') id: number, @Body() commentDto: CommentDto): Promise<boolean> {
+    await this.commentsService.update(id, commentDto);
+    return true;
   }
 
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'), OwnerGuard)
-  async deleteComment(@Param('id') id: string): Promise<ResponseMessage> {
-    return await this.commentsService.delete(+id);
+  async deleteComment(@Param('id') id: number): Promise<boolean> {
+    await this.commentsService.delete(id);
+    return true;
   }
 }

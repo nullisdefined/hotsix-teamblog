@@ -1,6 +1,14 @@
 import { FC } from "react";
-import { BsEmojiWinkFill, BsGithub, BsEnvelopeAtFill } from "react-icons/bs";
+import {
+  BsEmojiWinkFill,
+  BsGithub,
+  BsEnvelopeAtFill,
+  BsBoxArrowRight,
+} from "react-icons/bs";
 import "./Profile.css";
+
+export const DEFAULT_PROFILE_IMAGE =
+  "https://storage.googleapis.com/hotsix-bucket/1721775303458-default_profile.png";
 
 type TProfileProps = {
   nickname: string;
@@ -8,6 +16,7 @@ type TProfileProps = {
   email: string;
   img?: string;
   gitUrl?: string;
+  onLogout: () => void;
 };
 
 const Profile: FC<TProfileProps> = ({
@@ -21,22 +30,22 @@ const Profile: FC<TProfileProps> = ({
     <div className="Profile">
       <div className="Title">
         <div className="Thumb">
-          {img ? <img src={img} alt={nickname} /> : <BsEmojiWinkFill />}
+          <img src={img || DEFAULT_PROFILE_IMAGE} alt={nickname} />
         </div>
         <div className="Text">
           <h2>{nickname}</h2>
           <p>{description}</p>
         </div>
       </div>
-      <div className="Icons">
-        <a href={`mailto:${email}`}>
-          <BsEnvelopeAtFill size="24" />
+      <div className="Icons" style={{ display: "flex", gap: "0px" }}>
+        <a href={`mailto:${email}`} className="icon-hover">
+          <BsEnvelopeAtFill size="40" />
         </a>
-        {gitUrl ? (
-          <a href={gitUrl}>
-            <BsGithub size="24" />
+        {gitUrl && (
+          <a href={gitUrl} className="icon-hover">
+            <BsGithub size="40" />
           </a>
-        ) : null}
+        )}
       </div>
     </div>
   );

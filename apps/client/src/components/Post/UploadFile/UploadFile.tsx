@@ -18,7 +18,7 @@ const UploadFile: React.FC<UploadFileProps> = ({ onChange }) => {
     },
     onDrop: (acceptedFiles) => {
       // 파일 여기
-      console.log("acceptedFiles", acceptedFiles);
+      // console.log("acceptedFiles", acceptedFiles);
       onChange(acceptedFiles);
       setFiles(
         acceptedFiles.map((file) =>
