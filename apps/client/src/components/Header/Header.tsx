@@ -11,11 +11,9 @@ const Header = () => {
   const [isLogin, setIsLogin] = useState(false);
 
   useEffect(() => {
-    location.pathname === "/login"
-      ? setIsLoginPage(true)
-      : setIsLoginPage(false);
-    getCookie("accessToken") ? setIsLogin(true) : setIsLogin(false);
-  }, [location.pathname, setIsLoginPage, setIsLogin]);
+    setIsLoginPage(location.pathname === "/login");
+    setIsLogin(!!getCookie("accessToken"));
+  }, [location.pathname]);
 
   if (isLoginPage) return null;
 
@@ -23,7 +21,15 @@ const Header = () => {
     try {
       removeCookie("accessToken");
       setIsLogin(false);
-      navigate("/");
+
+      // 로그아웃 후 처리
+      if (location.pathname === "/" || location.pathname === "/login") {
+        // 홈페이지나 로그인 페이지에 있을 경우 새로고침
+        window.location.reload();
+      } else {
+        // 다른 페이지에 있을 경우 로그인 페이지로 이동
+        navigate("/login");
+      }
     } catch (error) {
       console.error("로그아웃 중 오류 발생:", error);
     }
