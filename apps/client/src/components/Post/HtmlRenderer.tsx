@@ -19,12 +19,6 @@ const HtmlRenderer: React.FC<Props> = ({ htmlContent }) => {
         hljs.highlightElement(block as HTMLElement);
       });
 
-      // 순서 없는 리스트 스타일 적용
-      const ulElements = containerRef.current.querySelectorAll("ul");
-      ulElements.forEach((ul) => {
-        ul.classList.add("md-list", "md-list-disc");
-      });
-
       // 순서 있는 리스트 스타일 적용
       const olElements = containerRef.current.querySelectorAll("ol");
       olElements.forEach((ol) => {
@@ -35,6 +29,35 @@ const HtmlRenderer: React.FC<Props> = ({ htmlContent }) => {
       const tableElements = containerRef.current.querySelectorAll("table");
       tableElements.forEach((table) => {
         table.classList.add("md-table");
+      });
+
+      // 코드 복사 버튼 추가
+      const preElements = containerRef.current.querySelectorAll("pre");
+      preElements.forEach((pre) => {
+        const container = document.createElement("div");
+        container.className = "code-block-container";
+        pre.parentNode!.insertBefore(container, pre);
+        container.appendChild(pre);
+
+        const copyButton = document.createElement("button");
+        copyButton.textContent = "Copy";
+        copyButton.className = "copy-button";
+        container.appendChild(copyButton);
+
+        copyButton.addEventListener("click", () => {
+          const code = pre.textContent || "";
+          navigator.clipboard
+            .writeText(code)
+            .then(() => {
+              copyButton.textContent = "Copied!";
+              setTimeout(() => {
+                copyButton.textContent = "Copy";
+              }, 2000);
+            })
+            .catch((err) => {
+              console.error("Failed to copy: ", err);
+            });
+        });
       });
     }
   }, [htmlContent]);
