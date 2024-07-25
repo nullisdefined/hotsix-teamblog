@@ -21,10 +21,7 @@ const LoginInput = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    const expirationInMinutes = parseInt(
-      import.meta.env.VITE_APP_JWT_EXPIRATION_TIME,
-      10
-    );
+    const expirationInMinutes = parseInt("30", 10);
     const expiryDate = dayjs().add(expirationInMinutes, "minute").toDate();
     try {
       const data = {
