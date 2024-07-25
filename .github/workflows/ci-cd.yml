@@ -54,7 +54,7 @@ jobs:
             -e SMTP_PORT=${{ secrets.SMTP_PORT }} \
             -e SERVER_URL=${{ secrets.SERVER_URL }} \
             -e JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} \
-            -e JWT_SECRET_EXPIRATION_TIME=${{ secrets.JWT_EXPIRATION_TIME }} \
+            -e JWT_EXPIRATION_TIME=${{ secrets.JWT_EXPIRATION_TIME }} \
             -e DB_HOST=${{ secrets.DB_HOST }} \
             -e DB_PORT=${{ secrets.DB_PORT }} \
             -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
