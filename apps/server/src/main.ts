@@ -35,7 +35,7 @@ async function bootstrap() {
   const port = configService.get('PORT');
   await app.listen(port, '0.0.0.0');
 
-  const serverUrl = configService.get('SERVER_HOST') || `http://localhost:${port}`;
+  const serverUrl = configService.get('SERVER_URL') || `http://localhost:${port}`;
   console.log(`Application is running on: ${serverUrl}`);
   console.log(`Database name: ${configService.get('DB_NAME')}`);
 }
