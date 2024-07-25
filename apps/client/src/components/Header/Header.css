@@ -34,7 +34,6 @@
 .Logo:hover {
   color: rgb(135, 67, 230);
   text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2), 0 0 10px rgba(200, 162, 255, 0.5);
-  
 }
 
 .Header_buttons {
@@ -81,29 +80,44 @@
   color: #007bff;
 }
 
+.Menu_toggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  cursor: pointer;
+}
+
 @media (max-width: 768px) {
   .Header {
     padding: 0.5em 10px;
   }
 
   .Header_wrapper {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-wrap: wrap;
   }
 
   .Logo {
     margin-bottom: 0.5em;
   }
 
+  .Menu_toggle {
+    display: block;
+  }
+
   .Header_buttons {
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    margin-top: 0.5em;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    display: none;
+  }
+
+  .Header_buttons.open {
+    display: flex;
   }
 
   .Header_button {
-    margin-top: 0.5em;
-    margin-left: 0;
-    margin-right: 0.5rem;
+    margin: 0.5em 0;
+    width: 100%;
   }
 }

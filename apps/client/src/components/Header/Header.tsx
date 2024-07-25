@@ -8,6 +8,7 @@ const Header = () => {
   const location = useLocation();
   const [isLoginPage, setIsLoginPage] = useState(true);
   const [isLogin, setIsLogin] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     setIsLoginPage(location.pathname === "/login");
@@ -31,34 +32,60 @@ const Header = () => {
     }
   };
 
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
   return (
     <header className="Header">
       <div className="Header_wrapper">
         <Link to="/" className="Logo">
           Hotsix
         </Link>
-        <div className="Header_buttons">
+        <button className="Menu_toggle" onClick={toggleMenu}>
+          ☰
+        </button>
+        <div className={`Header_buttons ${isMenuOpen ? "open" : ""}`}>
           {isLogin ? (
             <>
-              <Link to="/mypage" className="Header_button SECONDARY">
+              <Link
+                to="/mypage"
+                className="Header_button SECONDARY"
+                onClick={toggleMenu}
+              >
                 마이페이지
               </Link>
-              <Link to="/posts/create" className="Header_button PRIMARY">
+              <Link
+                to="/posts/create"
+                className="Header_button PRIMARY"
+                onClick={toggleMenu}
+              >
                 게시글 작성
               </Link>
               <button
                 className="Header_button SECONDARY"
-                onClick={handleLogout}
+                onClick={() => {
+                  handleLogout();
+                  toggleMenu();
+                }}
               >
                 로그아웃
               </button>
             </>
           ) : (
             <>
-              <Link to="/join" className="Header_button SECONDARY">
+              <Link
+                to="/join"
+                className="Header_button SECONDARY"
+                onClick={toggleMenu}
+              >
                 회원가입
               </Link>
-              <Link to="/login" className="Header_button PRIMARY">
+              <Link
+                to="/login"
+                className="Header_button PRIMARY"
+                onClick={toggleMenu}
+              >
                 로그인
               </Link>
             </>
