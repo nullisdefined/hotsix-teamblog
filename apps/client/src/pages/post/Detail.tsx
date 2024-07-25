@@ -117,6 +117,21 @@ const PostDetail: React.FC = () => {
     }
   };
 
+  const handleDeleteComment = async (commentId: number) => {
+    if (!window.confirm("정말로 이 댓글을 삭제하시겠습니까?")) return;
+
+    try {
+      await commentsAPI.removeComment(commentId);
+      fetchArticle(); // 댓글 삭제 후 게시글 새로고침
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data?.message || "Failed to delete comment");
+      } else {
+        setError("An unexpected error occurred");
+      }
+    }
+  };
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
   if (!article) return <div>Article not found</div>;
@@ -204,8 +219,20 @@ const PostDetail: React.FC = () => {
                       <p className="bg-gray-100 p-3 rounded-lg">{el.comment}</p>
                     </div>
                   </div>
-                  <div className="text-sm text-gray-500">
-                    {dayjs(el.createdAt).tz().format("YYYY년 MM월 DD일 HH:mm")}
+                  <div className="flex items-center">
+                    <div className="text-sm text-gray-500 mr-3">
+                      {dayjs(el.createdAt)
+                        .tz()
+                        .format("YYYY년 MM월 DD일 HH:mm")}
+                    </div>
+                    {currentUser && currentUser.userId === el.user.userId && (
+                      <Button
+                        text="삭제"
+                        type="DANGER"
+                        size="SMALL"
+                        onClick={() => handleDeleteComment(el.commentId)}
+                      />
+                    )}
                   </div>
                 </div>
               </div>
