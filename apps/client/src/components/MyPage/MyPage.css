@@ -1,7 +1,10 @@
+@import '../Gallery/Gallery.css';
+
 .MyPageContainer {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
+  padding-top: 7rem;
 }
 
 .MyPageTitle {
@@ -36,12 +39,6 @@
   font-size: 1.5rem;
   font-weight: semibold;
   margin-bottom: 1rem;
-}
-
-.PostsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 2rem;
 }
 
 .Pagination {

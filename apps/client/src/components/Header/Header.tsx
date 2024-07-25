@@ -1,5 +1,4 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import Button from "../Button/Button";
 import "./Header.css";
 import { useState, useEffect } from "react";
 import { getCookie, removeCookie } from "../../utils/cookies";
@@ -22,12 +21,9 @@ const Header = () => {
       removeCookie("accessToken");
       setIsLogin(false);
 
-      // 로그아웃 후 처리
       if (location.pathname === "/" || location.pathname === "/login") {
-        // 홈페이지나 로그인 페이지에 있을 경우 새로고침
         window.location.reload();
       } else {
-        // 다른 페이지에 있을 경우 로그인 페이지로 이동
         navigate("/login");
       }
     } catch (error) {
@@ -41,26 +37,30 @@ const Header = () => {
         <Link to="/" className="Logo">
           Hotsix
         </Link>
-        <div>
+        <div className="Header_buttons">
           {isLogin ? (
             <>
-              <Link to="/mypage" className="Join mr-2">
+              <Link to="/mypage" className="Header_button SECONDARY">
                 마이페이지
               </Link>
-              <Button
-                text="게시글 작성"
-                type="PRIMARY"
-                link="/posts/create"
-                spacing="mr-2"
-              />
-              <Button text="로그아웃" type="SECONDARY" onClick={handleLogout} />
+              <Link to="/posts/create" className="Header_button PRIMARY">
+                게시글 작성
+              </Link>
+              <button
+                className="Header_button SECONDARY"
+                onClick={handleLogout}
+              >
+                로그아웃
+              </button>
             </>
           ) : (
             <>
-              <Link className="Join mr-2" to="/join">
+              <Link to="/join" className="Header_button SECONDARY">
                 회원가입
               </Link>
-              <Button text="로그인" type="PRIMARY" link="/login" />
+              <Link to="/login" className="Header_button PRIMARY">
+                로그인
+              </Link>
             </>
           )}
         </div>

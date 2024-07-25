@@ -104,6 +104,7 @@ export class ArticlesService {
       .leftJoinAndSelect('article.user', 'user')
       .leftJoinAndSelect('article.likes', 'likes')
       .leftJoinAndSelect('article.comments', 'comments')
+      .where('article.status = :status', { status: 1 }) // 여기서 공개 글만 필터링
       .select(['article', 'user.userId', 'user.nickname', 'user.profileImage', 'likes', 'comments'])
       .orderBy('article.createdAt', 'DESC')
       .skip((pageNumber - 1) * limitNumber)

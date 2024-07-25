@@ -68,7 +68,7 @@ const PostEdit: React.FC = () => {
 
   return (
     <div className="post-form-container">
-      <h1>게시글 수정</h1>
+      <h1 className="mb-4 font-bold">게시글 수정</h1>
       <form className="post-form" onSubmit={handleSubmit}>
         <input
           type="text"

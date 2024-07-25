@@ -12,36 +12,68 @@ const Pagination: React.FC<PaginationProps> = ({
   totalPages,
   onPageChange,
 }) => {
-  const pageNumbers = [];
+  const getPageNumbers = () => {
+    const pageNumbers = [];
+    const totalButtons = 5; // 표시할 버튼의 총 개수
+    const sideButtons = Math.floor((totalButtons - 1) / 2); // 현재 페이지 양쪽에 표시할 버튼 개수
 
-  for (let i = 1; i <= totalPages; i++) {
-    pageNumbers.push(i);
-  }
+    let startPage = Math.max(currentPage - sideButtons, 1);
+    let endPage = Math.min(startPage + totalButtons - 1, totalPages);
+
+    if (endPage - startPage + 1 < totalButtons) {
+      startPage = Math.max(endPage - totalButtons + 1, 1);
+    }
+
+    if (startPage > 1) {
+      pageNumbers.push(1);
+      if (startPage > 2) {
+        pageNumbers.push("...");
+      }
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(i);
+    }
+
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) {
+        pageNumbers.push("...");
+      }
+      pageNumbers.push(totalPages);
+    }
+
+    return pageNumbers;
+  };
 
   return (
-    <nav className="pagination">
-      <ul>
-        {currentPage > 1 && (
-          <li>
-            <button onClick={() => onPageChange(currentPage - 1)}>
-              &laquo; Prev
-            </button>
-          </li>
-        )}
-        {pageNumbers.map((number) => (
-          <li key={number} className={currentPage === number ? "active" : ""}>
-            <button onClick={() => onPageChange(number)}>{number}</button>
-          </li>
-        ))}
-        {currentPage < totalPages && (
-          <li>
-            <button onClick={() => onPageChange(currentPage + 1)}>
-              Next &raquo;
-            </button>
-          </li>
-        )}
-      </ul>
-    </nav>
+    <div className="Pagination">
+      <button
+        className="PaginationButton"
+        onClick={() => onPageChange(currentPage - 1)}
+        disabled={currentPage === 1}
+      >
+        이전
+      </button>
+      {getPageNumbers().map((page, index) => (
+        <button
+          key={index}
+          onClick={() => typeof page === "number" && onPageChange(page)}
+          className={`PaginationButton ${
+            currentPage === page ? "Active" : ""
+          } ${typeof page !== "number" ? "Ellipsis" : ""}`}
+          disabled={typeof page !== "number"}
+        >
+          {page}
+        </button>
+      ))}
+      <button
+        className="PaginationButton"
+        onClick={() => onPageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+      >
+        다음
+      </button>
+    </div>
   );
 };
 

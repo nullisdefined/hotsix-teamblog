@@ -25,59 +25,58 @@
 
 .Logo {
   font-size: 2em;
-  font-family: "Pretendard-Black";
+  font-family: "Pretendard-Black", sans-serif;
   color: #333;
   text-decoration: none;
-  transition: color 0.3s ease;
+  transition: color 0.3s ease, transform 0.3s ease, text-shadow 0.3s ease;
 }
 
 .Logo:hover {
-  color: #007bff;
+  color: rgb(135, 67, 230);
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2), 0 0 10px rgba(200, 162, 255, 0.5);
+  
 }
 
-.Join {
-  margin-right: 1em;
-  text-decoration: none;
-  color: #333;
-  font-weight: 500;
-  transition: color 0.3s ease;
+.Header_buttons {
+  display: flex;
+  align-items: center;
 }
 
-.Join:hover {
-  color: #007bff;
-}
-
-.mr-2 {
-  margin-right: 0.5rem;
-}
-
-/* Button 스타일 오버라이드 */
-.Header button {
+.Header_button {
   padding: 0.5rem 1rem;
-  font-size: 1rem;
+  margin-left: 0.5rem;
+  font-size: 0.9rem;
   font-weight: 500;
   border-radius: 4px;
   transition: all 0.3s ease;
   border: none;
   cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.Header button.PRIMARY {
+.Header_button:first-child {
+  margin-left: 0;
+}
+
+.Header_button.PRIMARY {
   background-color: #007bff;
   color: #ffffff;
 }
 
-.Header button.PRIMARY:hover {
+.Header_button.PRIMARY:hover {
   background-color: #0056b3;
 }
 
-.Header button.SECONDARY {
+.Header_button.SECONDARY {
   background-color: #f8f9fa;
   color: #333;
   border: 1px solid #ddd;
 }
 
-.Header button.SECONDARY:hover {
+.Header_button.SECONDARY:hover {
   background-color: #e2e6ea;
   color: #007bff;
 }
@@ -96,7 +95,15 @@
     margin-bottom: 0.5em;
   }
 
-  .Join, .Header button {
+  .Header_buttons {
+    flex-wrap: wrap;
+    justify-content: flex-start;
     margin-top: 0.5em;
+  }
+
+  .Header_button {
+    margin-top: 0.5em;
+    margin-left: 0;
+    margin-right: 0.5rem;
   }
 }
