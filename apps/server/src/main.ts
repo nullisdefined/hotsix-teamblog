@@ -11,8 +11,9 @@ async function bootstrap() {
 
   const app = await NestFactory.create(AppModule);
 
-  // CORS 설정 추가
   const configService = app.get(ConfigService);
+
+  // CORS 설정 추가
   const corsOptions = {
     origin: configService.get('CORS_ORIGIN') || '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
@@ -31,8 +32,11 @@ async function bootstrap() {
     }),
   );
 
-  await app.listen(configService.get('PORT'), '0.0.0.0');
-  console.log(`Application is running on: ${await app.getUrl()}`);
+  const port = configService.get('PORT');
+  await app.listen(port, '0.0.0.0');
+
+  const serverUrl = configService.get('SERVER_HOST') || `http://localhost:${port}`;
+  console.log(`Application is running on: ${serverUrl}`);
   console.log(`Database name: ${configService.get('DB_NAME')}`);
 }
 bootstrap();
