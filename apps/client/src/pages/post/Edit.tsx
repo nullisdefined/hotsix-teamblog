@@ -81,7 +81,7 @@ const PostEdit: React.FC = () => {
         <Editor onChange={setContent} initialValue={content} />
         <div className="public-toggle">
           <label className="checkbox-container mt-5">
-            <div className="font-bold">공개글</div>
+            <div className="font-bold">팀 공개글로 작성</div>
             <input
               type="checkbox"
               checked={isPublic}
