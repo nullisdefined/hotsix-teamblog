@@ -15,12 +15,10 @@ export const typeORMConfig: TypeOrmModuleOptions = {
   entities: [User, Article, Comment, Photo, Like],
   synchronize: false,
   extra: {
-    connectionLimit: 20,
+    connectionLimit: 50,
     acquireTimeout: 30000,
     connectTimeout: 30000,
     waitForConnections: true,
     queueLimit: 0,
   },
-  logging: true,
-  logger: 'advanced-console',
 };
