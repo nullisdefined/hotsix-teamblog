@@ -7,6 +7,8 @@ import Button from "../Button/Button";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
+import { BsFillPersonFill, BsFillEnvelopeFill, BsGithub } from "react-icons/bs";
+import "./MyPage.css";
 
 const MyPage: React.FC = () => {
   const [user, setUser] = useState<IUser | null>(null);
@@ -66,32 +68,40 @@ const MyPage: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">My Page</h1>
-      <div className="bg-white shadow-md rounded-lg p-6 mb-8">
-        <h2 className="text-2xl font-semibold mb-4">내 정보</h2>
+    <div className="MyPageContainer">
+      <h1 className="MyPageTitle">마이페이지</h1>
+      <div className="UserInfoCard">
+        <h2 className="UserInfoTitle">
+          <BsFillPersonFill className="inline-block mr-2" />
+          {user.nickname}
+        </h2>
         <div className="flex items-center mb-4">
           <img
-            src={user.profileImage || "/default-profile.png"}
+            src={user.profileImage}
             alt="프로필 사진"
-            className="w-16 h-16 rounded-full mr-4"
+            className="w-32 h-32 rounded-full mr-4"
           />
           <div>
             <p className="mb-2">
-              <strong>닉네임:</strong> {user.nickname}
-            </p>
-            <p className="mb-2">
+              <BsFillEnvelopeFill className="inline-block mr-2" />
               <strong>이메일:</strong> {user.email}
             </p>
             <p className="mb-2">
-              <strong>GitHub:</strong> {user.gitUrl || ""}
+              <BsGithub className="inline-block mr-2" />
+              <strong>GitHub:</strong>{" "}
+              <a
+                href={user.gitUrl}
+                className="text-gray-700 underline hover:text-gray-900"
+              >
+                {user.gitUrl || ""}
+              </a>
             </p>
             <p className="mb-2">
               <strong>소개:</strong> {user.introduce || ""}
             </p>
           </div>
         </div>
-        <div className="mt-4">
+        <div className="EditProfileButton">
           <Button
             text="프로필 수정"
             type="SECONDARY"
@@ -100,24 +110,22 @@ const MyPage: React.FC = () => {
         </div>
       </div>
       <div className="MyPostsSection">
-        <h2 className="text-2xl font-semibold mb-4">내 게시글</h2>
+        <h2 className="MyPostsTitle">내 게시글</h2>
         {posts.length > 0 ? (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="Gallery">
               {posts.map((post) => (
                 <Card key={post.articleId} post={post} />
               ))}
             </div>
-            <div className="flex justify-center mt-6">
+            <div className="Pagination">
               {Array.from({ length: totalPages }, (_, i) => i + 1).map(
                 (page) => (
                   <button
                     key={page}
                     onClick={() => handlePageChange(page)}
-                    className={`mx-1 px-3 py-1 rounded ${
-                      currentPage === page
-                        ? "bg-blue-500 text-white"
-                        : "bg-gray-200"
+                    className={`PaginationButton ${
+                      currentPage === page ? "Active" : ""
                     }`}
                   >
                     {page}
@@ -127,9 +135,7 @@ const MyPage: React.FC = () => {
             </div>
           </>
         ) : (
-          <p className="text-center text-gray-500 italic">
-            아직 작성한 게시글이 없습니다.
-          </p>
+          <p className="NoPostsMessage">아직 작성한 게시글이 없습니다.</p>
         )}
       </div>
     </div>

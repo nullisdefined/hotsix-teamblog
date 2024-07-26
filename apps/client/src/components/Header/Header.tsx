@@ -1,5 +1,4 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import Button from "../Button/Button";
 import "./Header.css";
 import { useState, useEffect } from "react";
 import { getCookie, removeCookie } from "../../utils/cookies";
@@ -9,13 +8,12 @@ const Header = () => {
   const location = useLocation();
   const [isLoginPage, setIsLoginPage] = useState(true);
   const [isLogin, setIsLogin] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
-    location.pathname === "/login"
-      ? setIsLoginPage(true)
-      : setIsLoginPage(false);
-    getCookie("accessToken") ? setIsLogin(true) : setIsLogin(false);
-  }, [location.pathname, setIsLoginPage, setIsLogin]);
+    setIsLoginPage(location.pathname === "/login");
+    setIsLogin(!!getCookie("accessToken"));
+  }, [location.pathname]);
 
   if (isLoginPage) return null;
 
@@ -23,10 +21,19 @@ const Header = () => {
     try {
       removeCookie("accessToken");
       setIsLogin(false);
-      navigate("/");
+
+      if (location.pathname === "/" || location.pathname === "/login") {
+        window.location.reload();
+      } else {
+        navigate("/login");
+      }
     } catch (error) {
       console.error("로그아웃 중 오류 발생:", error);
     }
+  };
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
   };
 
   return (
@@ -35,26 +42,52 @@ const Header = () => {
         <Link to="/" className="Logo">
           Hotsix
         </Link>
-        <div>
+        <button className="Menu_toggle" onClick={toggleMenu}>
+          ☰
+        </button>
+        <div className={`Header_buttons ${isMenuOpen ? "open" : ""}`}>
           {isLogin ? (
             <>
-              <Link to="/mypage" className="Join mr-2">
+              <Link
+                to="/mypage"
+                className="Header_button SECONDARY"
+                onClick={toggleMenu}
+              >
                 마이페이지
               </Link>
-              <Button
-                text="게시글 작성"
-                type="PRIMARY"
-                link="/posts/create"
-                spacing="mr-2"
-              />
-              <Button text="로그아웃" type="SECONDARY" onClick={handleLogout} />
+              <Link
+                to="/posts/create"
+                className="Header_button PRIMARY"
+                onClick={toggleMenu}
+              >
+                게시글 작성
+              </Link>
+              <button
+                className="Header_button SECONDARY"
+                onClick={() => {
+                  handleLogout();
+                  toggleMenu();
+                }}
+              >
+                로그아웃
+              </button>
             </>
           ) : (
             <>
-              <Link className="Join mr-2" to="/join">
+              <Link
+                to="/join"
+                className="Header_button SECONDARY"
+                onClick={toggleMenu}
+              >
                 회원가입
               </Link>
-              <Button text="로그인" type="PRIMARY" link="/login" />
+              <Link
+                to="/login"
+                className="Header_button PRIMARY"
+                onClick={toggleMenu}
+              >
+                로그인
+              </Link>
             </>
           )}
         </div>

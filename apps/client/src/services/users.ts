@@ -5,7 +5,18 @@ interface UpdateUserData {
   nickname?: string;
   gitUrl?: string;
   introduce?: string;
-  profileImage?: File;
+  profileImage?: string;
+}
+
+export function getAccessTokenFromCookie(): string | null {
+  const cookies = document.cookie.split(";");
+  for (let cookie of cookies) {
+    const [name, value] = cookie.trim().split("=");
+    if (name === "accessToken") {
+      return decodeURIComponent(value);
+    }
+  }
+  return null;
 }
 
 const userAPI = {
@@ -16,7 +27,7 @@ const userAPI = {
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${getAccessTokenFromCookie()}`,
         },
       }
     );
@@ -25,7 +36,7 @@ const userAPI = {
     return axios.get("/users", {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${getAccessTokenFromCookie()}`,
       },
       params: { userId },
     });
@@ -40,7 +51,7 @@ const userAPI = {
       const response = await axios.put("/users/update", userData, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${getAccessTokenFromCookie()}`,
         },
       });
       return response.data;
@@ -86,9 +97,19 @@ const userAPI = {
   deleteAccount: async () => {
     return axios.delete("/users", {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${getAccessTokenFromCookie()}`,
       },
     });
+  },
+
+  getUserById: async (userId: number) => {
+    try {
+      const response = await axios.get(`/users`);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      throw error;
+    }
   },
 };
 

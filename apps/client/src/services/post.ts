@@ -11,7 +11,6 @@ interface PostAPI {
 }
 
 const postAPI: PostAPI = {
-  // 게시글 전체보기
   getArticles: async (page = 1, limit = 6) => {
     try {
       const response = await axiosInstance.get("/articles", {
@@ -24,7 +23,18 @@ const postAPI: PostAPI = {
     }
   },
 
-  // 게시글 상세보기
+  getUserArticles: async (page: number = 1, limit: number = 6) => {
+    try {
+      const response = await axiosInstance.get(`/articles/user`, {
+        params: { page, limit },
+      });
+      return response.data;
+    } catch (err) {
+      console.error("Error fetching user articles:", err);
+      throw err;
+    }
+  },
+
   getArticleDetail: async (id: number) => {
     try {
       const response = await axiosInstance.get(`/articles/${id}`);
@@ -35,7 +45,6 @@ const postAPI: PostAPI = {
     }
   },
 
-  // 게시글 생성
   postArticle: async (data: IPostArticle) => {
     try {
       const response = await axiosInstance.post("/articles", data);
@@ -46,7 +55,6 @@ const postAPI: PostAPI = {
     }
   },
 
-  // 게시글 수정
   modifyArticle: async (id: number, data: IPostArticle) => {
     try {
       const response = await axiosInstance.patch(`/articles/${id}`, data);
@@ -63,21 +71,6 @@ const postAPI: PostAPI = {
       return response.data;
     } catch (err) {
       console.error("Error deleting post:", err);
-      throw err;
-    }
-  },
-
-  getUserArticles: async (
-    page: number = 1,
-    limit: number = 6
-  ): Promise<IPostsResponse> => {
-    try {
-      const response = await axiosInstance.get("/articles/user", {
-        params: { page, limit },
-      });
-      return response.data;
-    } catch (err) {
-      console.error("Error fetching user articles:", err);
       throw err;
     }
   },

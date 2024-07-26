@@ -68,7 +68,7 @@ const PostEdit: React.FC = () => {
 
   return (
     <div className="post-form-container">
-      <h1>게시글 수정</h1>
+      <h1 className="mb-4 font-bold">게시글 수정</h1>
       <form className="post-form" onSubmit={handleSubmit}>
         <input
           type="text"
@@ -81,7 +81,7 @@ const PostEdit: React.FC = () => {
         <Editor onChange={setContent} initialValue={content} />
         <div className="public-toggle">
           <label className="checkbox-container mt-5">
-            <div className="font-bold">공개글</div>
+            <div className="font-bold">팀 공개글로 작성</div>
             <input
               type="checkbox"
               checked={isPublic}

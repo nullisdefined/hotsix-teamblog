@@ -6,6 +6,7 @@ import {
   UploadedFile,
   UseGuards,
   UseInterceptors,
+  Logger,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';
@@ -16,11 +17,10 @@ const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
 @Controller('upload')
 export class UploadController {
+  private logger = new Logger(UploadController.name);
+
   constructor(private readonly uploadService: UploadService) {}
 
-  /**
-   * 구글 스토리지에 파일 업로드 -> URL 반환
-   */
   @Post()
   // @UseGuards(AuthGuard())
   @UseInterceptors(
@@ -40,11 +40,14 @@ export class UploadController {
       throw new BadRequestException('파일이 제공되지 않았습니다.');
     }
 
+    this.logger.log(`Received file upload request: ${file.originalname}`);
+
     try {
       const url = await this.uploadService.uploadFile(file);
+      this.logger.log(`File uploaded successfully: ${url}`);
       return { url };
     } catch (error) {
-      console.error('파일 업로드 실패: ', error);
+      this.logger.error(`File upload failed: ${file.originalname}`, error.stack);
       if (error instanceof BadRequestException) {
         throw error;
       } else {

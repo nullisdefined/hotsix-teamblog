@@ -87,7 +87,7 @@ const PostDetail: React.FC = () => {
   };
 
   const handleComment = async () => {
-    if (!id) return;
+    if (!id || !comment.trim()) return;
     try {
       await commentsAPI.postComment(Number(id), comment);
       setComment("");
@@ -117,17 +117,46 @@ const PostDetail: React.FC = () => {
     }
   };
 
+  const handleDeleteComment = async (commentId: number) => {
+    if (!window.confirm("정말로 이 댓글을 삭제하시겠습니까?")) return;
+
+    try {
+      await commentsAPI.removeComment(commentId);
+      fetchArticle(); // 댓글 삭제 후 게시글 새로고침
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data?.message || "Failed to delete comment");
+      } else {
+        setError("An unexpected error occurred");
+      }
+    }
+  };
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
   if (!article) return <div>Article not found</div>;
 
   return (
-    <div className="Container">
-      <h1 className="font-black text-6xl pt-10">{article.title}</h1>
+    <div className="Container" style={{ maxWidth: "900px", margin: "0 auto" }}>
+      <h1
+        className="font-black text-6xl pt-10"
+        style={{ wordBreak: "break-all" }}
+      >
+        {article.title}
+      </h1>
       <div className="flex justify-between items-center pt-10 pb-20">
         <div className="flex-grow">
-          <p className="font-bold text-xl">{article.nickname}</p>
-          <p>{article.createdAt}</p>
+          <div className="flex items-center">
+            <img
+              src={article.profileImg}
+              alt="프로필 사진"
+              className="w-10 h-10 rounded-full mr-3"
+            />
+            <div>
+              <p className="font-bold text-xl">{article.nickname}</p>
+              <p>{article.createdAt}</p>
+            </div>
+          </div>
         </div>
         <div className="flex gap-4">
           <Button
@@ -156,28 +185,10 @@ const PostDetail: React.FC = () => {
       </div>
       <HtmlRenderer htmlContent={article.content} />
       <div className="pt-14">
-        <h3 className="font-bold">{article.comments.length}개의 댓글</h3>
-        {article.comments.length > 0
-          ? article.comments.map((el, index) => (
-              <div
-                key={index}
-                className="py-5"
-                style={{ borderTop: "1px solid rgba(0,0,0,0.3)" }}
-              >
-                <div className="pb-3">
-                  <div className="text-xl font-bold">{el.user.nickname}</div>
-                  <div>
-                    {dayjs(el.createdAt).tz().format("YYYY년 MM월 DD일 HH:mm")}
-                  </div>
-                </div>
-                <p>{el.comment}</p>
-              </div>
-            ))
-          : null}
         <div className="pb-20">
           <input
             type="text"
-            className="bg-slate-100 w-full p-7"
+            className="bg-slate-100 w-full p-7 mb-4"
             onChange={handleCommentChange}
             value={comment}
             placeholder="댓글을 작성하세요"
@@ -186,6 +197,47 @@ const PostDetail: React.FC = () => {
             <Button text="댓글 등록" type="PRIMARY" onClick={handleComment} />
           </div>
         </div>
+        <h3 className="font-bold">{article.comments.length}개의 댓글</h3>
+        {article.comments.length > 0
+          ? article.comments.map((el, index) => (
+              <div
+                key={index}
+                className="py-5"
+                style={{ borderTop: "1px solid rgba(0,0,0,0.3)" }}
+              >
+                <div className="pb-3 flex items-center justify-between">
+                  <div className="flex items-center">
+                    <img
+                      src={el.user.profileImage}
+                      alt="프로필 사진"
+                      className="w-10 h-10 rounded-full mr-3 object-cover"
+                    />
+                    <div>
+                      <div className="text-xl font-bold">
+                        {el.user.nickname}
+                      </div>
+                      <p className="bg-gray-100 p-3 rounded-lg">{el.comment}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="text-sm text-gray-500 mr-3">
+                      {dayjs(el.createdAt)
+                        .tz()
+                        .format("YYYY년 MM월 DD일 HH:mm")}
+                    </div>
+                    {currentUser && currentUser.userId === el.user.userId && (
+                      <Button
+                        text="삭제"
+                        type="DANGER"
+                        size="SMALL"
+                        onClick={() => handleDeleteComment(el.commentId)}
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))
+          : null}
       </div>
     </div>
   );

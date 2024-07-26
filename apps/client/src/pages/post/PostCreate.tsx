@@ -66,58 +66,56 @@ const PostCreate: React.FC = () => {
   };
 
   return (
-    <div className="post-form-container">
-      <h1>새 게시글 작성</h1>
-      <form className="post-form" onSubmit={handleSubmit}>
-        <div className="title-input-container">
-          <input
-            type="text"
-            placeholder="제목 (100자 이내)"
-            value={title}
-            onChange={handleTitleChange}
-            required
-            style={{ fontSize: "1em", width: "100%" }}
-            maxLength={MAX_TITLE_LENGTH}
-          />
-          <span
-            className="title-char-count"
-            style={{ float: "right", marginBottom: "15px" }}
-          >
-            {title.length}/{MAX_TITLE_LENGTH}
-          </span>
-        </div>
-        <Editor onChange={setContent} />
-        <div className="public-toggle">
-          <label className="checkbox-container mt-5">
-            <div className="font-bold">공개글</div>
+    <>
+      <div className="post-form-container">
+        <form className="post-form" onSubmit={handleSubmit}>
+          <div className="title-input-container pt-50">
             <input
-              type="checkbox"
-              checked={isPublic}
-              onChange={(e) => setIsPublic(e.target.checked)}
+              type="text"
+              placeholder="제목을 입력하세요. (100자 이내)"
+              value={title}
+              onChange={handleTitleChange}
+              required
+              style={{ fontSize: "1.5em", width: "100%" }}
+              maxLength={MAX_TITLE_LENGTH}
             />
-            <span className="checkmark"></span>
-          </label>
-        </div>
-        {error && <div className="error-message">{error}</div>}
-        <div className="action-buttons">
-          <Button
-            text="취소"
-            type="DISABLED"
-            size="MEDIUM"
-            onClick={() => navigate("/")}
-            buttonType="button"
-          />
-          <Button
-            text={isLoading ? "저장 중..." : "저장"}
-            type="PRIMARY"
-            size="MEDIUM"
-            onClick={handleSubmit}
-            buttonType="submit"
-          />
-        </div>
-      </form>
-      {isLoading && <LoadingSpinner />}
-    </div>
+            <span className="title-char-count" style={{ float: "right" }}>
+              {title.length}/{MAX_TITLE_LENGTH}
+            </span>
+          </div>
+          <Editor onChange={setContent} />
+          <div className="public-toggle">
+            <label className="checkbox-container mt-5">
+              <div className="font-bold">팀 공개글로 작성</div>
+              <input
+                type="checkbox"
+                checked={isPublic}
+                onChange={(e) => setIsPublic(e.target.checked)}
+              />
+              <span className="checkmark"></span>
+            </label>
+          </div>
+          {error && <div className="error-message">{error}</div>}
+          <div className="action-buttons">
+            <Button
+              text="취소"
+              type="DISABLED"
+              size="MEDIUM"
+              onClick={() => navigate("/")}
+              buttonType="button"
+            />
+            <Button
+              text={isLoading ? "저장 중..." : "저장"}
+              type="PRIMARY"
+              size="MEDIUM"
+              onClick={handleSubmit}
+              buttonType="submit"
+            />
+          </div>
+        </form>
+        {isLoading && <LoadingSpinner />}
+      </div>
+    </>
   );
 };
 

@@ -26,22 +26,39 @@ const Card: FC<TPostProps> = ({ post }) => {
           <div
             className="Image"
             style={{
-              height: "150px",
+              height: "250px",
               backgroundColor: firstImageUrl ? "transparent" : "#f0f0f0",
             }}
           >
-            {firstImageUrl && (
+            {firstImageUrl ? (
               <img
                 src={firstImageUrl}
                 alt={post.title}
-                style={{ width: "100%", height: "150px", objectFit: "cover" }}
+                style={{ width: "100%", height: "250px", objectFit: "cover" }}
               />
+            ) : (
+              <div
+                style={{
+                  width: "100%",
+                  height: "250px",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <p
+                  className="text-6xl font-bold text-gray p-10"
+                  style={{ wordBreak: "break-all" }}
+                >
+                  {truncateText(post.title, 16)}
+                </p>
+              </div>
             )}
           </div>
           <div className="TextContent">
             <div className="Title">
               <h3 className="text-xl font-bold">
-                {truncateText(post.title, 37)}
+                {truncateText(post.title, 30)}
               </h3>
             </div>
             <div className="Description">
@@ -57,6 +74,18 @@ const Card: FC<TPostProps> = ({ post }) => {
           </div>
         </div>
         <div className="CardFooter">
+          <div className="UserInfo">
+            {post.profileImg ? (
+              <img
+                src={post.profileImg}
+                alt={`${post.nickname}'s profile`}
+                className="ProfileImage"
+              />
+            ) : (
+              <div className="DefaultProfileImage"></div>
+            )}
+            <span className="Nickname">{post.nickname}</span>
+          </div>
           <span className="Date">
             {new Date(post.createdAt).toLocaleDateString("ko-KR", {
               year: "2-digit",
@@ -64,7 +93,6 @@ const Card: FC<TPostProps> = ({ post }) => {
               day: "2-digit",
             })}
           </span>
-          <span className="Nickname">{post.nickname}</span>
           <span className="Interactions">
             <BsFillHeartFill className="mr-1" />
             {post.likes}

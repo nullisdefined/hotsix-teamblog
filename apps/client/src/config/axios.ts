@@ -1,9 +1,12 @@
 import axios from "axios";
 import { getCookie } from "../utils/cookies";
 
-// DEV PRODUCTION MODE 설정 필요
+const isProduction = process.env.NODE_ENV === "production";
+const baseURL = isProduction
+  ? "/api" // 프로덕션에서는 같은 도메인의 /api로 요청
+  : `http://${window.location.hostname}:3001/api`;
 const axiosInstance = axios.create({
-  baseURL: `http://${window.location.hostname}:${import.meta.env.VITE_APP_PORT}/api`,
+  baseURL: baseURL,
   // timeout: 10000,
   headers: {
     "Content-Type": "application/json",
