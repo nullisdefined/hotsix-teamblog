@@ -10,18 +10,43 @@ import { Article } from 'src/entities/article.entity';
 export class ArticlesController {
   constructor(private readonly articlesService: ArticlesService) {}
 
-  @Get()
+  @Get('user')
   @UseGuards(AuthGuard('jwt'))
-  async getAllArticles(
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 10,
+  async getUserArticles(
+    @Req() req,
+    @Query('page') page: string = '1',
+    @Query('limit') limit: string = '6',
   ): Promise<{
     data: Article[];
     totalCount: number;
     currentPage: number;
     totalPages: number;
   }> {
-    return await this.articlesService.findAll(page, limit);
+    const userId = req.user?.userId;
+
+    if (!userId) {
+      throw new Error('User ID is not available');
+    }
+
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+    return await this.articlesService.findAllByUser(userId, pageNumber, limitNumber);
+  }
+
+  @Get()
+  @UseGuards(AuthGuard('jwt'))
+  async getAllArticles(
+    @Query('page') page: string = '1',
+    @Query('limit') limit: string = '6',
+  ): Promise<{
+    data: Article[];
+    totalCount: number;
+    currentPage: number;
+    totalPages: number;
+  }> {
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+    return await this.articlesService.findAll(pageNumber, limitNumber);
   }
 
   @Get(':id')

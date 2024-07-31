@@ -1,30 +1,108 @@
 .Button {
-  border-radius: 50px;
-  padding: 0.5em 1.5em;
+  border-radius: 25px; /* Rounded corners */
+  padding: 0.75em 2em; /* More padding for a better look */
   cursor: pointer;
   font-weight: bold;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none; /* Remove default border */
+  text-transform: uppercase; /* Uppercase text for better readability */
+  letter-spacing: 0.05em; /* Add some letter spacing */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
 .Button_PRIMARY {
   background-color: var(--color-primary);
   color: #fff;
 }
+
+.Button_PRIMARY:hover {
+  background-color: var(--color-primary-dark); /* Darker shade on hover */
+  color: #000; /* Lighter text color on hover */
+}
+
+.Button_SECONDARY {
+  background-color: #fff;
+  border: 2px solid var(--color-primary);
+  color: var(--color-primary);
+}
+
+.Button_SECONDARY:hover {
+  background-color: var(--color-primary);
+  color: #f0f0f0; /* Lighter text color on hover */
+}
+
 .Button_FOCUSED {
   background-color: #fff;
-  border: 1px solid var(--color-primary);
-  color: #000;
+  border: 2px solid var(--color-primary);
+  color: var(--color-primary);
 }
+
+.Button_FOCUSED:hover {
+  background-color: var(--color-primary);
+  color: #f0f0f0; /* Lighter text color on hover */
+}
+
 .Button_DISABLED {
   background-color: var(--color-disable);
   color: #fff;
+  cursor: pointer; /* Change cursor to indicate it's disabled */
+}
+
+.Button_DANGER {
+  background-color: #ff0000ca; /* Red color */
+  color: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.Button_DANGER:hover {
+  background-color: #b03434; /* Darker red shade on hover */
+  color: #f0f0f0; /* Lighter text color on hover */
 }
 
 .Button_SMALL {
+  font-size: 0.8em;
+  padding: 0.5em 1em;
+}
+
+.Button_MEDIUM {
   font-size: 1em;
 }
-.Button_MIDEUM {
+
+.Button_LARGE {
+  font-size: 1.2em;
+  padding: 1em 2.5em;
+}
+
+/* Like button special styles */
+.Button_LIKE {
+  background-color: #fff;
+  border: 2px solid #ff4757;
+  color: #ff4757;
+  padding: 0.5em 1em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.Button_LIKE:hover {
+  background-color: #ff4757;
+  color: #f0f0f0; /* Lighter text color on hover */
+}
+
+.Button_LIKE:before {
+  content: "♥";
   font-size: 1.2em;
 }
-.Button_LARGE {
-  font-size: 1.5em;
+
+.Button_LIKE.active {
+  background-color: #ff4757;
+  color: #fff;
+}
+
+.ButtonLink {
+  display: inline-flex;
+  text-decoration: none;
 }

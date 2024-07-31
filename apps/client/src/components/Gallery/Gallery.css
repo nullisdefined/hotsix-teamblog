@@ -1,5 +1,44 @@
 .Gallery {
+  display: grid;
+  gap: 20px;
+  border-radius: 10px;
+}
+
+/* 기본 레이아웃: 1열 */
+.Gallery {
+  grid-template-columns: 1fr;
+}
+
+/* 600px 이상: 2열 */
+@media (min-width: 600px) {
+  .Gallery {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* 900px 이상: 3열 */
+@media (min-width: 900px) {
+  .Gallery {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.Gallery .Card {
+  will-change: transform;
+  transition:
+    transform 0.3s ease-in-out,
+    border 0.3s ease-in-out;
+  border: 1px solid transparent;
+}
+
+.Gallery .Card:hover {
+  transform: scale(1.02);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.Gallery .Card a {
   display: flex;
-  padding-top: 5em;
-  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: space-between;
+  height: inherit;
 }

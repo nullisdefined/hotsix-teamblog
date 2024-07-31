@@ -52,8 +52,9 @@ jobs:
             -e NODE_ENV=production \
             -e PORT=${{ secrets.PORT }} \
             -e SMTP_PORT=${{ secrets.SMTP_PORT }} \
+            -e SERVER_URL=${{ secrets.SERVER_URL }} \
             -e JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} \
-            -e JWT_SECRET_EXPIRATION_TIME=${{ secrets.JWT_EXPIRATION_TIME }} \
+            -e JWT_EXPIRATION_TIME=${{ secrets.JWT_EXPIRATION_TIME }} \
             -e DB_HOST=${{ secrets.DB_HOST }} \
             -e DB_PORT=${{ secrets.DB_PORT }} \
             -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
@@ -67,4 +68,4 @@ jobs:
             hotsix-blog.kr.ncr.ntruss.com/hotsix-blog:${{ github.sha }}
 
     - name: 도커 이미지 다이제스트 출력
-      run: echo ${{ steps.docker_build.outputs.digest }}
+      run: echo ${{ steps.docker_build.outputs.digest }} 

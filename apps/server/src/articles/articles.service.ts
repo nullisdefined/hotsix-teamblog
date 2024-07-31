@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { ArticleDto } from './dto/article.dto';
 import { Article } from 'src/entities/article.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -91,17 +91,80 @@ export class ArticlesService {
   async findAll(
     page: number = 1,
     limit: number = 10,
-  ): Promise<{ data: Article[]; totalCount: number; currentPage: number; totalPages: number }> {
-    const [articles, totalCount] = await this.articleRepository.findAndCount({
-      skip: (page - 1) * limit,
-      take: limit,
-    });
+  ): Promise<{ data: any[]; totalCount: number; currentPage: number; totalPages: number }> {
+    const pageNumber = Number(page);
+    const limitNumber = Number(limit);
+
+    if (isNaN(pageNumber) || isNaN(limitNumber)) {
+      throw new BadRequestException('Invalid page or limit value');
+    }
+
+    const [articles, totalCount] = await this.articleRepository
+      .createQueryBuilder('article')
+      .leftJoinAndSelect('article.user', 'user')
+      .leftJoinAndSelect('article.likes', 'likes')
+      .leftJoinAndSelect('article.comments', 'comments')
+      .where('article.status = :status', { status: 1 }) // 여기서 공개 글만 필터링
+      .select(['article', 'user.userId', 'user.nickname', 'user.profileImage', 'likes', 'comments'])
+      .orderBy('article.createdAt', 'DESC')
+      .skip((pageNumber - 1) * limitNumber)
+      .take(limitNumber)
+      .getManyAndCount();
+
+    const articlesWithDetails = articles.map((article) => ({
+      ...article,
+      nickname: article.user.nickname,
+      profileImg: article.user.profileImage,
+      likes: article.likes.length,
+      commentCount: article.comments.length,
+    }));
 
     return {
-      data: articles,
+      data: articlesWithDetails,
       totalCount,
-      currentPage: page,
-      totalPages: Math.ceil(totalCount / limit),
+      currentPage: pageNumber,
+      totalPages: Math.ceil(totalCount / limitNumber),
+    };
+  }
+
+  async findAllByUser(
+    userId: number,
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<{ data: any[]; totalCount: number; currentPage: number; totalPages: number }> {
+    const pageNumber = Number(page);
+    const limitNumber = Number(limit);
+    // console.log(userId);
+
+    if (isNaN(pageNumber) || isNaN(limitNumber) || isNaN(userId)) {
+      throw new BadRequestException('Invalid page, limit, or userId value');
+    }
+
+    const [articles, totalCount] = await this.articleRepository
+      .createQueryBuilder('article')
+      .leftJoinAndSelect('article.user', 'user')
+      .leftJoinAndSelect('article.likes', 'likes')
+      .leftJoinAndSelect('article.comments', 'comments')
+      .where('article.userId = :userId', { userId })
+      .select(['article', 'user.userId', 'user.nickname', 'user.profileImage', 'likes', 'comments'])
+      .orderBy('article.createdAt', 'DESC')
+      .skip((pageNumber - 1) * limitNumber)
+      .take(limitNumber)
+      .getManyAndCount();
+
+    const articlesWithDetails = articles.map((article) => ({
+      ...article,
+      nickname: article.user.nickname,
+      profileImg: article.user.profileImage,
+      likes: article.likes.length,
+      commentCount: article.comments.length,
+    }));
+
+    return {
+      data: articlesWithDetails,
+      totalCount,
+      currentPage: pageNumber,
+      totalPages: Math.ceil(totalCount / limitNumber),
     };
   }
 }

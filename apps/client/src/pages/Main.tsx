@@ -1,72 +1,111 @@
-import { useEffect, useState } from "react";
-import Profile from "../components/Profile/Profile";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
+import Profile, { DEFAULT_PROFILE_IMAGE } from "../components/Profile/Profile";
 import Gallery from "../components/Gallery/Gallery";
+import Pagination from "../components/Pagination/Pagination";
 import postAPI from "../services/post";
-import axios from "axios";
-import { IPost } from "../types";
+import { IPost, IPostsResponse, IUser } from "../types";
+import userAPI from "../services/users";
+import { useLocation, useNavigate } from "react-router-dom";
+import axios, { AxiosError } from "axios";
+import LoadingSpinner from "../components/LoadingSpinner/LoadingSpinner";
+import ErrorMessage from "../components/ErrorMessage/ErrorMessage";
+
+export const POSTS_PER_PAGE = 6;
 
 function Main() {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [posts, setPosts] = useState<IPost[]>([]);
-  const [page, setPage] = useState<number>(1);
-  const [limit, setLimit] = useState<number>(10);
+  const [user, setUser] = useState<IUser | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const currentPage = parseInt(
+    new URLSearchParams(location.search).get("page") || "1",
+    10
+  );
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      const userResponse = await userAPI.getCurrentUser();
+      setUser(userResponse.data);
+
+      const response: IPostsResponse = await postAPI.getArticles(
+        currentPage,
+        POSTS_PER_PAGE
+      );
+      console.log("Posts data:", response);
+      setPosts(response.data);
+      setTotalPages(response.totalPages || 1);
+    } catch (err) {
+      console.error("Error fetching data:", err);
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401) {
+          console.log("Unauthorized, redirecting to login...");
+          navigate("/login");
+          return;
+        }
+        setError(
+          err.response?.data?.message || "데이터를 불러오는 데 실패했습니다."
+        );
+      } else {
+        setError("알 수 없는 오류가 발생했습니다.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [currentPage, navigate]);
 
   useEffect(() => {
-    const postArticle = async () => {
-      try {
-        const response = await postAPI.getArticles(page, limit);
-        setPosts(response.data);
-        console.log("SUCCESS MAIN", response);
-      } catch (err) {
-        if (axios.isAxiosError(err)) {
-          console.log("ERR", err.response?.data);
-        } else {
-          console.log("ERR", err);
-        }
-      }
-    };
+    fetchData();
+  }, [fetchData]);
 
-    postArticle();
-  }, []);
+  const handlePageChange = useCallback(
+    (newPage: number) => {
+      navigate(`?page=${newPage}`);
+    },
+    [navigate]
+  );
 
-  // const posts: IPost[] = [
-  //   {
-  //     id: 1,
-  //     nickname: "userName1",
-  //     thumb: "https://picsum.photos/id/88/300/250",
-  //     title: "First Post",
-  //     description: "Content of the first post",
-  //     createdAt: "2024-06-28T12:34:56.789Z",
-  //     updatedAt: "2024-06-28T12:34:56.789Z",
-  //     status: true,
-  //     likes: 0,
-  //     content: "",
-  //     comments: [],
-  //     showStatus: true,
-  //   },
-  //   {
-  //     id: 2,
-  //     nickname: "userName2",
-  //     thumb: "https://picsum.photos/id/192/300/250",
-  //     title: "Second Post",
-  //     description: "Content of the second post",
-  //     createdAt: "2024-06-28T12:34:56.789Z",
-  //     updatedAt: "2024-06-28T12:34:56.789Z",
-  //     status: true,
-  //     likes: 0,
-  //     content: "",
-  //     comments: [],
-  //     showStatus: true,
-  //   },
-  // ];
+  const handleLogout = useCallback(() => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  }, [navigate]);
+
+  const memoizedProfile = useMemo(
+    () =>
+      user && (
+        <Profile
+          onLogout={handleLogout}
+          nickname={user.nickname}
+          description={user.introduce || ""}
+          email={user.email}
+          gitUrl={user.gitUrl || ""}
+          img={user.profileImage || DEFAULT_PROFILE_IMAGE}
+        />
+      ),
+    [user]
+  );
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
+  if (error) {
+    return <ErrorMessage message={error} />;
+  }
+
   return (
     <div className="Container">
-      <Profile
-        nickname="김유저"
-        description="개발자입니다."
-        email="user@gmail.com"
-        gitUrl="https://www.github.com/user"
-      ></Profile>
-      <Gallery posts={posts}></Gallery>
+      {memoizedProfile}
+      <Gallery posts={posts} />
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 }

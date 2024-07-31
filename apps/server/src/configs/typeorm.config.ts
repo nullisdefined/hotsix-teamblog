@@ -14,4 +14,11 @@ export const typeORMConfig: TypeOrmModuleOptions = {
   database: process.env.DB_NAME || 'hotsix',
   entities: [User, Article, Comment, Photo, Like],
   synchronize: false,
+  extra: {
+    connectionLimit: 50,
+    acquireTimeout: 30000,
+    connectTimeout: 30000,
+    waitForConnections: true,
+    queueLimit: 0,
+  },
 };

@@ -1,4 +1,17 @@
-import { Body, Controller, Delete, Get, Req, UseGuards, HttpCode, HttpStatus, Post, Patch } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Req,
+  UseGuards,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Patch,
+  Query,
+  Put,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { AuthGuard } from '@nestjs/passport';
 import { CheckEmailDto } from './dto/checkEmail.dto';
@@ -19,7 +32,7 @@ export class UsersController {
   @Get('/')
   @UseGuards(AuthGuard())
   @HttpCode(HttpStatus.OK)
-  async getUserInfo(@Body('userId') userId: number): Promise<any> {
+  async getUserInfo(@Query('userId') userId: number): Promise<any> {
     return await this.usersService.getUserInfo(userId);
   }
 
@@ -31,14 +44,14 @@ export class UsersController {
     await this.usersService.deleteUser(userId);
   }
 
-  @Get('/check-email')
+  @Post('/check-email')
   @HttpCode(HttpStatus.OK)
   async checkEmailDuplicate(@Body() checkEmailDto: CheckEmailDto): Promise<{ isDuplicate: boolean }> {
     const isDuplicate = await this.usersService.isEmailDuplicate(checkEmailDto);
     return { isDuplicate };
   }
 
-  @Get('/check-nickname')
+  @Post('/check-nickname')
   @HttpCode(HttpStatus.OK)
   async checkNicknameDuplicate(@Body() checkNicknameDto: CheckNicknameDto): Promise<{ isDuplicate: boolean }> {
     const { nickname } = checkNicknameDto;
@@ -46,7 +59,7 @@ export class UsersController {
     return { isDuplicate };
   }
 
-  @Patch('/update')
+  @Put('/update')
   @UseGuards(AuthGuard())
   @HttpCode(HttpStatus.OK)
   async updateUser(@Req() req, @Body() updateUserDto: UpdateUserDto): Promise<void> {

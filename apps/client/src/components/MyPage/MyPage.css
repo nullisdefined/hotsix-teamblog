@@ -1,0 +1,68 @@
+@import '../Gallery/Gallery.css';
+
+.MyPageContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  padding-top: 7rem;
+}
+
+.MyPageTitle {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+}
+
+.UserInfoCard {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.UserInfoTitle {
+  font-size: 1.5rem;
+  font-weight: semibold;
+  margin-bottom: 1rem;
+}
+
+.EditProfileButton {
+  margin-top: 1rem;
+}
+
+.MyPostsSection {
+  margin-top: 2rem;
+}
+
+.MyPostsTitle {
+  font-size: 1.5rem;
+  font-weight: semibold;
+  margin-bottom: 1rem;
+}
+
+.Pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.PaginationButton {
+  margin: 0 0.5rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  background-color: #f0f0f0;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.PaginationButton.Active {
+  background-color: #007bff;
+  color: white;
+}
+
+.NoPostsMessage {
+  text-align: center;
+  font-style: italic;
+  color: #666;
+}

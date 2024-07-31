@@ -1,0 +1,42 @@
+.EditProfileContainer {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.EditProfileTitle {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+}
+
+.EditProfileForm {
+  display: flex;
+  flex-direction: column;
+}
+
+.FormGroup {
+  margin-bottom: 1rem;
+}
+
+.FormGroup label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.FormGroup input,
+.FormGroup textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.ErrorMessage {
+  color: red;
+  margin-bottom: 1rem;
+}
